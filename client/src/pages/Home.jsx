@@ -9,8 +9,8 @@ import { getServices } from '../api/index.js'
  *   #about    → About / Mission & Vision
  *   #services → Services (fetched live from API)
  *
- * All sections share the same hospital background image with a scrollable background
- * and consistent 60% opacity overlay for seamless navigation.
+ * A single, continuous hospital background image with a 60% opacity overlay
+ * spans the entire page.
  */
 export default function Home() {
   const [services, setServices] = useState([])
@@ -30,20 +30,19 @@ export default function Home() {
       })
   }, [])
 
-  // Common background style for all three sections
-  const sectionBgStyle = { backgroundImage: "url('/hospital-bg.jpg')" }
-
   return (
-    <div>
+    <div
+      className="relative min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/hospital-bg.jpg')" }}
+    >
+      {/* Global 60% opacity overlay spanning the full page background */}
+      <div className="absolute inset-0 bg-cream/60 backdrop-blur-[2px]" />
+
       {/* ── #home: Hero (Full Screen) ────────────────────────────────────── */}
       <section
         id="home"
-        className="relative flex min-h-[calc(100vh-5rem)] items-center bg-cover bg-center py-16"
-        style={sectionBgStyle}
+        className="relative flex min-h-[calc(100vh-5rem)] items-center py-16"
       >
-        {/* Semi-transparent cream overlay at 60% opacity */}
-        <div className="absolute inset-0 bg-cream/60 backdrop-blur-[2px]" />
-
         <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-secondary">
@@ -72,12 +71,8 @@ export default function Home() {
       {/* ── #about: About (Full Screen) ──────────────────────────────────── */}
       <section
         id="about"
-        className="relative flex min-h-[calc(100vh-5rem)] items-center bg-cover bg-center py-20"
-        style={sectionBgStyle}
+        className="relative flex min-h-[calc(100vh-5rem)] items-center py-20"
       >
-        {/* Semi-transparent cream overlay at 60% opacity */}
-        <div className="absolute inset-0 bg-cream/60 backdrop-blur-[2px]" />
-
         <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6">
           <p className="font-mono text-xs uppercase tracking-wide text-secondary">About Us</p>
           <h2 className="mt-1 font-display text-4xl font-semibold text-primary">
@@ -111,12 +106,8 @@ export default function Home() {
       {/* ── #services: Services (Full Screen) ────────────────────────────── */}
       <section
         id="services"
-        className="relative flex min-h-[calc(100vh-5rem)] items-center bg-cover bg-center py-20"
-        style={sectionBgStyle}
+        className="relative flex min-h-[calc(100vh-5rem)] items-center py-20"
       >
-        {/* Semi-transparent cream overlay at 60% opacity */}
-        <div className="absolute inset-0 bg-cream/60 backdrop-blur-[2px]" />
-
         <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
           <p className="font-mono text-xs uppercase tracking-wide text-secondary">
             Hospital Directory
