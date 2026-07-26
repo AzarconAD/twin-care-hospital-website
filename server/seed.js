@@ -5,7 +5,7 @@
  * pre-populate the 'services' and 'doctors' collections with sample data.
  *
  * How to run:
- *   cd client
+ *   cd server
  *   node seed.js
  *
  * What it does:

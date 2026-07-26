@@ -10,7 +10,7 @@ export default function Button({ to, variant = 'primary', children, ...props }) 
   const base =
     'inline-flex items-center justify-center rounded-md px-5 py-2.5 text-sm font-semibold transition-colors'
   const styles = {
-    primary: 'bg-accent text-primary-dark hover:bg-accent/90',
+    primary: 'bg-accent text-cream hover:bg-accent/90',
     outline: 'border border-cream/40 text-cream hover:bg-cream/10',
   }
   const className = `${base} ${styles[variant]}`

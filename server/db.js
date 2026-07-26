@@ -18,8 +18,7 @@ export async function connectDB() {
     await mongoose.connect(process.env.MONGODB_URI)
     console.log('MongoDB connected successfully.')
   } catch (err) {
-    // Log the error and exit — there's no point running the API without a database.
     console.error('MongoDB connection failed:', err.message)
-    process.exit(1)
+    throw err // let the caller (index.js) decide what to do
   }
 }

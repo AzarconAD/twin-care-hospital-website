@@ -10,12 +10,12 @@ export default {
         // Design tokens for Twin Care Hospital — swap these once real
         // brand colors come in, everything else pulls from here.
         primary: {
-          DEFAULT: '#0F5257', // deep teal — nav, headings, primary buttons
-          dark: '#0A3B3F',
-          light: '#E4EFEE',
+          DEFAULT: '#0544AB', // deep blue — nav, headings, primary buttons
+          dark: '#052D77',
+          light: '#E8F0FF',
         },
-        secondary: '#8FB9A8', // sage — supporting accents, hover states
-        accent: '#D9A441',    // warm gold — CTAs, highlights, sparingly
+        secondary: '#10B981', // emerald green — supporting accents, hover states
+        accent: '#E63946',    // red — CTAs, highlights, sparingly
         cream: '#F7FAF6',     // page background
         ink: '#1A2E2E',       // body text
       },

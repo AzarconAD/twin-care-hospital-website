@@ -33,8 +33,14 @@ app.use('/api/doctors', doctorsRoute)
 // This ensures the API never receives requests before the DB is ready.
 const PORT = process.env.PORT || 5000
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`)
-  })
+// Try to connect to MongoDB, but start the HTTP server regardless.
+// This way the server is still reachable even if the DB is temporarily down.
+// Routes that need the DB (services, doctors, contact) will return errors until
+// the MongoDB connection is restored.
+connectDB().catch((err) => {
+  console.warn('MongoDB unavailable — server starting anyway:', err.message)
+})
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`)
 })
