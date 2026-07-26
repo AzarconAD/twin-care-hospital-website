@@ -3,14 +3,6 @@ import { submitContact } from '../api/index.js'
 
 const initialForm = { name: '', email: '', message: '' }
 
-/**
- * Contact page — /contact
- *
- * Shows a contact form and hospital info panel side by side.
- * On submit, calls submitContact() from src/api/index.js which posts
- * to POST /api/contact. The backend saves the inquiry to MongoDB and
- * optionally sends a notification email.
- */
 export default function Contact() {
   const [form, setForm] = useState(initialForm)
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
@@ -24,7 +16,6 @@ export default function Contact() {
     setStatus('sending')
 
     try {
-      // submitContact() is defined in src/api/index.js — it posts to /api/contact
       await submitContact(form)
       setStatus('sent')
       setForm(initialForm)
@@ -36,7 +27,6 @@ export default function Contact() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
-      <p className="font-mono text-xs uppercase tracking-wide text-secondary">Get in Touch</p>
       <h1 className="mt-1 font-display text-4xl font-semibold text-primary">Contact Us</h1>
       <p className="mt-3 max-w-lg text-ink/70">
         Send us a message and our team will get back to you within one business day.
@@ -111,8 +101,8 @@ export default function Contact() {
         <div className="font-mono text-sm">
           <p className="uppercase tracking-wide text-secondary">Visit / Call</p>
           <ul className="mt-3 space-y-2 text-ink/80">
-            <li>123 Health Street, Quezon City</li>
-            <li>Trunkline: (02) 8888-0000</li>
+            <li>Tapatan Road, Marungko, Angat, Bulacan</li>
+            <li>Trunkline: (+63) 912-345-6789</li>
             <li>Emergency: 24/7</li>
             <li>info@twincarehospital.ph</li>
           </ul>

@@ -8,8 +8,8 @@ export default function Footer() {
           <div>
             <p className="font-display text-lg font-semibold text-cream">Twin Care Hospital Inc.</p>
             <p className="mt-2 font-mono text-xs leading-relaxed text-cream/70">
-              123 Health Street, Quezon City<br />
-              Metro Manila, Philippines
+              Tapatan Road, Marungko, Angat<br />
+              Bulacan, Philippines
             </p>
           </div>
 
@@ -26,7 +26,7 @@ export default function Footer() {
           <div>
             <p className="font-mono text-xs uppercase tracking-wide text-secondary">Reach us</p>
             <ul className="mt-2 space-y-1 text-sm text-cream/80">
-              <li>Trunkline: (02) 8888-0000</li>
+              <li>Trunkline: (+63) 912-345-6789</li>
               <li>Emergency: 24/7</li>
               <li>info@twincarehospital.ph</li>
             </ul>
@@ -34,7 +34,7 @@ export default function Footer() {
         </div>
 
         <p className="mt-8 border-t border-cream/10 pt-4 text-center font-mono text-xs text-cream/50">
-          &copy; {new Date().getFullYear()} Twin Care Hospital Incorporated. Placeholder content — for internship project use.
+          &copy; {new Date().getFullYear()} Twin Care Hospital Incorporated. Made by 2026 IT Interns.
         </p>
       </div>
     </footer>

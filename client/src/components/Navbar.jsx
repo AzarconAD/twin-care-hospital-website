@@ -1,28 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 
-/**
- * Navbar — shared across all pages.
- *
- * HOW THE NAVIGATION WORKS (read this carefully as a team!)
- * ─────────────────────────────────────────────────────────
- * The site has three "anchor" sections on the home page: #home, #about, #services.
- * The nav links for these don't change the URL route — they smooth-scroll within the page.
- *
- * There are two situations when a user clicks "About" or "Services":
- *
- *   Case 1 — Already on the home page (/):
- *     We just call scrollIntoView() on the target element. Simple.
- *
- *   Case 2 — On a different page (/doctors or /contact):
- *     We first call navigate('/') to go back to home, then wait a short moment
- *     (100ms) for React to render the home page, then scroll to the section.
- *     The setTimeout is the key trick here — without it, the element wouldn't
- *     exist in the DOM yet when we try to scroll to it.
- *
- * "Doctors" and "Contact" are regular NavLink components — they navigate
- * to a new route like any normal React Router link.
- */
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
@@ -37,10 +15,8 @@ export default function Navbar() {
     }
 
     if (location.pathname === '/') {
-      // Already on the home page — scroll immediately
       doScroll()
     } else {
-      // Navigate to home first, then scroll once it renders
       navigate('/')
       setTimeout(doScroll, 100)
     }
@@ -62,7 +38,6 @@ export default function Navbar() {
 
       <nav className="bg-cream/95 backdrop-blur border-b border-primary/10">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          {/* Logo — clicking it scrolls to #home */}
           <button
             onClick={() => scrollToSection('home')}
             className="flex items-center gap-2"

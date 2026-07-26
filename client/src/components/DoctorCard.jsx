@@ -1,12 +1,4 @@
-/**
- * DoctorCard
- * Displays a single doctor's profile.
- * Props:
- *   doctor – { name, specialty, schedule } from the API
- */
 export default function DoctorCard({ doctor }) {
-  // Build initials by skipping the first word ("Dr.") and taking the
-  // first letter of each remaining word. e.g. "Dr. Maria Santos" → "MS"
   const initials = doctor.name
     .split(' ')
     .slice(1)
@@ -15,7 +7,6 @@ export default function DoctorCard({ doctor }) {
 
   return (
     <div className="rounded-lg border border-primary/10 bg-white p-5 text-center shadow-sm transition-shadow hover:shadow-md">
-      {/* Avatar — shows initials until a real photo is available */}
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary-light font-display text-2xl text-primary">
         {initials}
       </div>

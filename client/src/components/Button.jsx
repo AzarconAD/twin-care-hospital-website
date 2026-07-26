@@ -1,11 +1,5 @@
 import { Link } from 'react-router-dom'
 
-/**
- * Reusable button. Renders a <Link> if `to` is passed (internal navigation),
- * otherwise a real <button> (e.g. for form submits).
- *
- * variant: "primary" | "outline"
- */
 export default function Button({ to, variant = 'primary', children, ...props }) {
   const base =
     'inline-flex items-center justify-center rounded-md px-5 py-2.5 text-sm font-semibold transition-colors'
