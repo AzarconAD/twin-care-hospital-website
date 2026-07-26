@@ -9,8 +9,8 @@ import { getServices } from '../api/index.js'
  *   #about    → About / Mission & Vision
  *   #services → Services (fetched live from API)
  *
- * All sections share the same hospital background image with a consistent overlay
- * and full-viewport height for seamless navigation.
+ * All sections share the same hospital background image with a scrollable background
+ * and consistent 60% opacity overlay for seamless navigation.
  */
 export default function Home() {
   const [services, setServices] = useState([])
@@ -38,11 +38,11 @@ export default function Home() {
       {/* ── #home: Hero (Full Screen) ────────────────────────────────────── */}
       <section
         id="home"
-        className="relative flex min-h-[calc(100vh-5rem)] items-center bg-cover bg-center bg-fixed py-16"
+        className="relative flex min-h-[calc(100vh-5rem)] items-center bg-cover bg-center py-16"
         style={sectionBgStyle}
       >
-        {/* Semi-transparent cream overlay for readable text */}
-        <div className="absolute inset-0 bg-cream/80 backdrop-blur-[2px]" />
+        {/* Semi-transparent cream overlay at 60% opacity */}
+        <div className="absolute inset-0 bg-cream/60 backdrop-blur-[2px]" />
 
         <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center">
           <div>
@@ -72,11 +72,11 @@ export default function Home() {
       {/* ── #about: About (Full Screen) ──────────────────────────────────── */}
       <section
         id="about"
-        className="relative flex min-h-[calc(100vh-5rem)] items-center bg-cover bg-center bg-fixed py-20"
+        className="relative flex min-h-[calc(100vh-5rem)] items-center bg-cover bg-center py-20"
         style={sectionBgStyle}
       >
-        {/* Same overlay style for background consistency */}
-        <div className="absolute inset-0 bg-cream/85 backdrop-blur-[2px]" />
+        {/* Semi-transparent cream overlay at 60% opacity */}
+        <div className="absolute inset-0 bg-cream/60 backdrop-blur-[2px]" />
 
         <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6">
           <p className="font-mono text-xs uppercase tracking-wide text-secondary">About Us</p>
@@ -111,11 +111,11 @@ export default function Home() {
       {/* ── #services: Services (Full Screen) ────────────────────────────── */}
       <section
         id="services"
-        className="relative flex min-h-[calc(100vh-5rem)] items-center bg-cover bg-center bg-fixed py-20"
+        className="relative flex min-h-[calc(100vh-5rem)] items-center bg-cover bg-center py-20"
         style={sectionBgStyle}
       >
-        {/* Same overlay style for background consistency */}
-        <div className="absolute inset-0 bg-cream/85 backdrop-blur-[2px]" />
+        {/* Semi-transparent cream overlay at 60% opacity */}
+        <div className="absolute inset-0 bg-cream/60 backdrop-blur-[2px]" />
 
         <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
           <p className="font-mono text-xs uppercase tracking-wide text-secondary">
