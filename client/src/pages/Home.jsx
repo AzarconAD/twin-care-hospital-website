@@ -4,24 +4,20 @@ import ServiceCard from '../components/ServiceCard.jsx'
 import { getServices } from '../api/index.js'
 
 /**
- * Home page — single scrollable page with three anchor sections:
+ * Home page — single scrollable page with three full-screen anchor sections:
+ *   #home     → Hero
+ *   #about    → About / Mission & Vision
+ *   #services → Services (fetched live from API)
  *
- *   #home     → Hero (hospital name, tagline, hero image, CTA)
- *   #about    → About (mission, vision, history)
- *   #services → Services (fetched live from the API, displayed as cards)
- *
- * The Navbar scrolls to each section by calling scrollIntoView({ behavior: 'smooth' })
- * on the element with the matching id.
+ * A single, continuous hospital background image with a 60% opacity overlay
+ * spans the entire page.
  */
 export default function Home() {
-  // ── Services data ──────────────────────────────────────────────────────────
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    // Fetch from GET /api/services when the component first mounts.
-    // getServices() is defined in src/api/index.js.
     getServices()
       .then((data) => {
         setServices(data)
@@ -32,22 +28,26 @@ export default function Home() {
         setError('Could not load services. Is the backend server running?')
         setLoading(false)
       })
-  }, []) // [] = run once on first render
+  }, [])
 
   return (
-    <div>
+    <div
+      className="relative min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/hospital-bg.jpg')" }}
+    >
+      {/* Global 60% opacity overlay spanning the full page background */}
+      <div className="absolute inset-0 bg-cream/60 backdrop-blur-[2px]" />
 
-      {/* ── #home: Hero ──────────────────────────────────────────────────── */}
+      {/* ── #home: Hero (Full Screen) ────────────────────────────────────── */}
       <section
         id="home"
-        className="relative flex min-h-[calc(100vh-8rem)] items-center bg-cover bg-center"
-        style={{ backgroundImage: "url('/hospital-bg.jpg')" }}
+        className="relative flex min-h-[calc(100vh-5rem)] items-center py-16"
       >
-        {/* Overlay so text is readable over the background photo */}
-        <div className="absolute inset-0 bg-cream/70" />
-
-        <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center">
+        <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center">
           <div>
+            <p className="font-mono text-xs uppercase tracking-widest text-secondary">
+              Twin Care Hospital Incorporated
+            </p>
             <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-primary sm:text-5xl">
               At Twin Care, we give the best healthcare you deserve.
             </h1>
@@ -57,14 +57,9 @@ export default function Home() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Button to="/contact">Book a Visit</Button>
-              {/*
-                href="#services" is a plain anchor link.
-                Clicking it scrolls down to the <section id="services"> on this same page.
-                This is the simplest possible "See Our Services" button — no JS needed.
-              */}
               <a
                 href="#services"
-                className="rounded-xl border border-primary/30 px-6 py-3 font-semibold text-primary transition-colors hover:bg-primary/5"
+                className="rounded-xl border border-primary/30 bg-white/50 px-6 py-3 font-semibold text-primary backdrop-blur-sm transition-colors hover:bg-primary/10"
               >
                 See Our Services
               </a>
@@ -73,9 +68,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── #about: About / Mission & Vision ─────────────────────────────── */}
-      <section id="about" className="bg-cream py-20">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+      {/* ── #about: About (Full Screen) ──────────────────────────────────── */}
+      <section
+        id="about"
+        className="relative flex min-h-[calc(100vh-5rem)] items-center py-20"
+      >
+        <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6">
           <p className="font-mono text-xs uppercase tracking-wide text-secondary">About Us</p>
           <h2 className="mt-1 font-display text-4xl font-semibold text-primary">
             About Twin Care Hospital
@@ -87,14 +85,14 @@ export default function Home() {
           </p>
 
           <div className="mt-10 grid gap-8 sm:grid-cols-2">
-            <div className="rounded-lg border border-primary/10 bg-white p-6">
+            <div className="rounded-xl border border-primary/10 bg-white/90 p-6 shadow-sm backdrop-blur-md">
               <h3 className="font-display text-xl font-semibold text-primary">Our Mission</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink/80">
                 [Placeholder] To deliver quality, patient-centered healthcare that is
                 accessible to every member of the community we serve.
               </p>
             </div>
-            <div className="rounded-lg border border-primary/10 bg-white p-6">
+            <div className="rounded-xl border border-primary/10 bg-white/90 p-6 shadow-sm backdrop-blur-md">
               <h3 className="font-display text-xl font-semibold text-primary">Our Vision</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink/80">
                 [Placeholder] To be the most trusted healthcare institution in the
@@ -105,9 +103,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── #services: Services (fetched from API) ───────────────────────── */}
-      <section id="services" className="bg-primary-light py-20">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      {/* ── #services: Services (Full Screen) ────────────────────────────── */}
+      <section
+        id="services"
+        className="relative flex min-h-[calc(100vh-5rem)] items-center py-20"
+      >
+        <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
           <p className="font-mono text-xs uppercase tracking-wide text-secondary">
             Hospital Directory
           </p>
@@ -134,7 +135,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
     </div>
   )
 }
