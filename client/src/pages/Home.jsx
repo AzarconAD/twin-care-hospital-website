@@ -1,0 +1,140 @@
+import { useState, useEffect } from 'react'
+import Button from '../components/Button.jsx'
+import ServiceCard from '../components/ServiceCard.jsx'
+import { getServices } from '../api/index.js'
+
+/**
+ * Home page — single scrollable page with three anchor sections:
+ *
+ *   #home     → Hero (hospital name, tagline, hero image, CTA)
+ *   #about    → About (mission, vision, history)
+ *   #services → Services (fetched live from the API, displayed as cards)
+ *
+ * The Navbar scrolls to each section by calling scrollIntoView({ behavior: 'smooth' })
+ * on the element with the matching id.
+ */
+export default function Home() {
+  // ── Services data ──────────────────────────────────────────────────────────
+  const [services, setServices] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    // Fetch from GET /api/services when the component first mounts.
+    // getServices() is defined in src/api/index.js.
+    getServices()
+      .then((data) => {
+        setServices(data)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error(err)
+        setError('Could not load services. Is the backend server running?')
+        setLoading(false)
+      })
+  }, []) // [] = run once on first render
+
+  return (
+    <div>
+
+      {/* ── #home: Hero ──────────────────────────────────────────────────── */}
+      <section
+        id="home"
+        className="relative flex min-h-[calc(100vh-8rem)] items-center bg-cover bg-center"
+        style={{ backgroundImage: "url('/hospital-bg.jpg')" }}
+      >
+        {/* Overlay so text is readable over the background photo */}
+        <div className="absolute inset-0 bg-cream/70" />
+
+        <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center">
+          <div>
+            <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-primary sm:text-5xl">
+              At Twin Care, we give the best healthcare you deserve.
+            </h1>
+            <p className="mt-4 max-w-md text-ink/80">
+              Twenty-four hours a day, our doctors, nurses, and staff are here for
+              you and your family — from routine checkups to emergency care.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Button to="/contact">Book a Visit</Button>
+              {/*
+                href="#services" is a plain anchor link.
+                Clicking it scrolls down to the <section id="services"> on this same page.
+                This is the simplest possible "See Our Services" button — no JS needed.
+              */}
+              <a
+                href="#services"
+                className="rounded-xl border border-primary/30 px-6 py-3 font-semibold text-primary transition-colors hover:bg-primary/5"
+              >
+                See Our Services
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── #about: About / Mission & Vision ─────────────────────────────── */}
+      <section id="about" className="bg-cream py-20">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <p className="font-mono text-xs uppercase tracking-wide text-secondary">About Us</p>
+          <h2 className="mt-1 font-display text-4xl font-semibold text-primary">
+            About Twin Care Hospital
+          </h2>
+          <p className="mt-6 max-w-2xl leading-relaxed text-ink/80">
+            [Placeholder] Twin Care Hospital Incorporated has served the community for
+            over — years, providing accessible, compassionate healthcare to patients
+            of all ages. Replace this paragraph with the hospital's real history.
+          </p>
+
+          <div className="mt-10 grid gap-8 sm:grid-cols-2">
+            <div className="rounded-lg border border-primary/10 bg-white p-6">
+              <h3 className="font-display text-xl font-semibold text-primary">Our Mission</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink/80">
+                [Placeholder] To deliver quality, patient-centered healthcare that is
+                accessible to every member of the community we serve.
+              </p>
+            </div>
+            <div className="rounded-lg border border-primary/10 bg-white p-6">
+              <h3 className="font-display text-xl font-semibold text-primary">Our Vision</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink/80">
+                [Placeholder] To be the most trusted healthcare institution in the
+                region, known for clinical excellence and genuine care.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── #services: Services (fetched from API) ───────────────────────── */}
+      <section id="services" className="bg-primary-light py-20">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <p className="font-mono text-xs uppercase tracking-wide text-secondary">
+            Hospital Directory
+          </p>
+          <h2 className="mt-1 font-display text-4xl font-semibold text-primary">Our Services</h2>
+          <p className="mt-3 max-w-xl text-ink/70">
+            A quick look at what's available across the hospital. [Placeholder — replace with
+            the real department list once confirmed.]
+          </p>
+
+          <div className="mt-10">
+            {loading && (
+              <p className="font-mono text-sm text-ink/60">Loading services…</p>
+            )}
+            {error && (
+              <p className="text-sm text-red-600">{error}</p>
+            )}
+            {!loading && !error && (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {services.map((service) => (
+                  <ServiceCard key={service._id} service={service} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+    </div>
+  )
+}

@@ -1,12 +1,16 @@
 import { useState } from 'react'
-
-// While developing locally this points at your local Express server.
-// Once the backend is deployed (Render/Railway), replace this with
-// that live URL — e.g. 'https://twincare-api.onrender.com/api/contact'
-const API_URL = 'http://localhost:5000/api/contact'
+import { submitContact } from '../api/index.js'
 
 const initialForm = { name: '', email: '', message: '' }
 
+/**
+ * Contact page — /contact
+ *
+ * Shows a contact form and hospital info panel side by side.
+ * On submit, calls submitContact() from src/api/index.js which posts
+ * to POST /api/contact. The backend saves the inquiry to MongoDB and
+ * optionally sends a notification email.
+ */
 export default function Contact() {
   const [form, setForm] = useState(initialForm)
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
@@ -20,14 +24,8 @@ export default function Contact() {
     setStatus('sending')
 
     try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-
-      if (!res.ok) throw new Error('Request failed')
-
+      // submitContact() is defined in src/api/index.js — it posts to /api/contact
+      await submitContact(form)
       setStatus('sent')
       setForm(initialForm)
     } catch (err) {
