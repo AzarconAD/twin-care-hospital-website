@@ -48,9 +48,6 @@ export default function Home() {
 
         <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:items-center">
           <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-secondary">
-              Twin Care Hospital Incorporated
-            </p>
             <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-primary sm:text-5xl">
               At Twin Care, we give the best healthcare you deserve.
             </h1>
