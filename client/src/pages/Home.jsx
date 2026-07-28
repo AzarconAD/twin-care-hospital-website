@@ -3,6 +3,7 @@ import Button from '../components/Button.jsx'
 import ServiceCard from '../components/ServiceCard.jsx'
 import DoctorCard from '../components/DoctorCard.jsx'
 import AboutSection from '../components/AboutSection.jsx'
+import ServicesSection from '../components/ServicesSection.jsx'
 import { getServices, getDoctors } from '../api/index.js'
 
 export default function Home() {
@@ -121,34 +122,7 @@ export default function Home() {
       </section>
 
       {/* ── #services: Services ── */}
-      <section
-        id="services"
-        className="relative flex min-h-[calc(100vh-5rem)] scroll-mt-24 items-center py-20"
-      >
-        <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <h2 className="mt-1 font-display text-4xl font-semibold text-primary">Our Services</h2>
-          <p className="mt-3 max-w-xl text-ink/90">
-            A quick look at what's available across the hospital. [Placeholder — replace with
-            the real department list once confirmed.]
-          </p>
-
-          <div className="mt-10">
-            {servicesLoading && (
-              <p className="font-mono text-sm text-ink/80">Loading services…</p>
-            )}
-            {servicesError && (
-              <p className="text-sm text-red-600">{servicesError}</p>
-            )}
-            {!servicesLoading && !servicesError && (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {services.map((service) => (
-                  <ServiceCard key={service._id} service={service} />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+      <ServicesSection />
     </div>
   )
 }
