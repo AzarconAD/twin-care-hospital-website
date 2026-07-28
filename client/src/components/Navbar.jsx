@@ -62,14 +62,14 @@ export default function Navbar() {
               </button>
             </li>
             <li>
-              <button onClick={() => scrollToSection('services')} className={anchorClass}>
-                Services
+              <button onClick={() => scrollToSection('doctors')} className={anchorClass}>
+                Doctors
               </button>
             </li>
             <li>
-              <NavLink to="/doctors" className={linkClass}>
-                Doctors
-              </NavLink>
+              <button onClick={() => scrollToSection('services')} className={anchorClass}>
+                Services
+              </button>
             </li>
             <li>
               <NavLink to="/contact" className={linkClass}>
@@ -112,20 +112,19 @@ export default function Navbar() {
             </li>
             <li>
               <button
+                onClick={() => scrollToSection('doctors')}
+                className={`block w-full py-2 text-left ${anchorClass}`}
+              >
+                Doctors
+              </button>
+            </li>
+            <li>
+              <button
                 onClick={() => scrollToSection('services')}
                 className={`block w-full py-2 text-left ${anchorClass}`}
               >
                 Services
               </button>
-            </li>
-            <li>
-              <NavLink
-                to="/doctors"
-                className={linkClass}
-                onClick={() => setOpen(false)}
-              >
-                <span className="block py-2">Doctors</span>
-              </NavLink>
             </li>
             <li>
               <NavLink

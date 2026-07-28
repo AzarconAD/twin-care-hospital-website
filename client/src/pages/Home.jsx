@@ -1,24 +1,27 @@
 import { useState, useEffect } from 'react'
 import Button from '../components/Button.jsx'
 import ServiceCard from '../components/ServiceCard.jsx'
-import { getServices } from '../api/index.js'
+import DoctorCard from '../components/DoctorCard.jsx'
+import { getServices, getDoctors } from '../api/index.js'
 
 export default function Home() {
   const [services, setServices] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [servicesLoading, setServicesLoading] = useState(true)
+  const [servicesError, setServicesError] = useState(null)
+
+  const [doctors, setDoctors] = useState([])
+  const [doctorsLoading, setDoctorsLoading] = useState(true)
+  const [doctorsError, setDoctorsError] = useState(null)
 
   useEffect(() => {
+    // Fetch services and doctors in parallel when the page first loads
     getServices()
-      .then((data) => {
-        setServices(data)
-        setLoading(false)
-      })
-      .catch((err) => {
-        console.error(err)
-        setError('Could not load services. Is the backend server running?')
-        setLoading(false)
-      })
+      .then((data) => { setServices(data); setServicesLoading(false) })
+      .catch((err) => { console.error(err); setServicesError('Could not load services. Is the backend running?'); setServicesLoading(false) })
+
+    getDoctors()
+      .then((data) => { setDoctors(data); setDoctorsLoading(false) })
+      .catch((err) => { console.error(err); setDoctorsError('Could not load doctors. Is the backend running?'); setDoctorsLoading(false) })
   }, [])
 
   return (
@@ -31,7 +34,7 @@ export default function Home() {
       {/* ── #home: Hero ── */}
       <section
         id="home"
-        className="relative flex min-h-[calc(100vh-5rem)] items-center py-16"
+        className="relative flex min-h-[calc(100vh-5rem)] scroll-mt-24 items-center py-16"
       >
         <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center">
           <div>
@@ -54,7 +57,7 @@ export default function Home() {
       {/* ── #about: About ── */}
       <section
         id="about"
-        className="relative flex min-h-[calc(100vh-5rem)] items-center py-20"
+        className="relative flex min-h-[calc(100vh-5rem)] scroll-mt-24 items-center py-20"
       >
         <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6">
           <h2 className="mt-1 font-display text-4xl font-semibold text-primary">
@@ -88,10 +91,36 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── #doctors: Doctors ── */}
+      <section
+        id="doctors"
+        className="relative flex min-h-[calc(100vh-5rem)] scroll-mt-24 items-center py-20"
+      >
+        <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
+          <h2 className="mt-1 font-display text-4xl font-semibold text-primary">Our Doctors</h2>
+
+          <div className="mt-10">
+            {doctorsLoading && (
+              <p className="font-mono text-sm text-ink/60">Loading doctors…</p>
+            )}
+            {doctorsError && (
+              <p className="text-sm text-red-600">{doctorsError}</p>
+            )}
+            {!doctorsLoading && !doctorsError && (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {doctors.map((doctor) => (
+                  <DoctorCard key={doctor._id} doctor={doctor} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* ── #services: Services ── */}
       <section
         id="services"
-        className="relative flex min-h-[calc(100vh-5rem)] items-center py-20"
+        className="relative flex min-h-[calc(100vh-5rem)] scroll-mt-24 items-center py-20"
       >
         <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
           <h2 className="mt-1 font-display text-4xl font-semibold text-primary">Our Services</h2>
@@ -101,13 +130,13 @@ export default function Home() {
           </p>
 
           <div className="mt-10">
-            {loading && (
+            {servicesLoading && (
               <p className="font-mono text-sm text-ink/60">Loading services…</p>
             )}
-            {error && (
-              <p className="text-sm text-red-600">{error}</p>
+            {servicesError && (
+              <p className="text-sm text-red-600">{servicesError}</p>
             )}
-            {!loading && !error && (
+            {!servicesLoading && !servicesError && (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {services.map((service) => (
                   <ServiceCard key={service._id} service={service} />
