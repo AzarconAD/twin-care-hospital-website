@@ -1,10 +1,19 @@
-import { useState } from 'react'
-import { NavLink, useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { NavLink, useNavigate, useLocation, Link } from 'react-router-dom'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   function scrollToSection(sectionId) {
     setOpen(false) // close mobile menu if it's open
@@ -31,14 +40,19 @@ export default function Navbar() {
     'font-body text-sm tracking-wide text-ink/80 transition-colors hover:text-accent'
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="fixed inset-x-0 top-0 z-50 transition-colors duration-300">
       <div className="bg-primary-dark px-4 py-1.5 text-center font-mono text-xs tracking-wide text-cream">
         EMERGENCY LINE: (+63) 912-345-6789 &middot; OPEN 24/7
       </div>
 
-      <nav className="bg-cream/95 backdrop-blur border-b border-primary/10">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <button
+      <nav 
+        className={`transition-all duration-300 border-b ${
+          scrolled ? 'bg-cream/95 backdrop-blur-md border-primary/10 shadow-sm py-2' : 'bg-transparent border-transparent py-4'
+        }`}
+      >
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6">
+          <Link
+            to="/"
             onClick={() => scrollToSection('home')}
             className="flex items-center gap-2"
             aria-label="Go to home section"
@@ -47,7 +61,7 @@ export default function Navbar() {
             <span className="font-display text-xl font-semibold text-primary">
               Twin Care Hospital Inc.
             </span>
-          </button>
+          </Link>
 
           {/* Desktop links */}
           <ul className="hidden items-center gap-8 md:flex">
@@ -62,9 +76,9 @@ export default function Navbar() {
               </button>
             </li>
             <li>
-              <button onClick={() => scrollToSection('doctors')} className={anchorClass}>
+              <NavLink to="/doctors" className={linkClass}>
                 Doctors
-              </button>
+              </NavLink>
             </li>
             <li>
               <button onClick={() => scrollToSection('services')} className={anchorClass}>
@@ -111,12 +125,13 @@ export default function Navbar() {
               </button>
             </li>
             <li>
-              <button
-                onClick={() => scrollToSection('doctors')}
-                className={`block w-full py-2 text-left ${anchorClass}`}
+              <NavLink
+                to="/doctors"
+                className={linkClass}
+                onClick={() => setOpen(false)}
               >
-                Doctors
-              </button>
+                <span className="block py-2">Doctors</span>
+              </NavLink>
             </li>
             <li>
               <button

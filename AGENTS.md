@@ -4,13 +4,13 @@ Instructions for AI coding agents (Claude Code, Cursor, Copilot, etc.) working i
 
 ## Project overview
 
-Twin Care Hospital Incorporated — a marketing/info website (not a patient portal). Static-content pages plus a single working contact form. Built by a student team learning React, Node, and Tailwind for the first time — favor simple, readable solutions over clever abstractions.
+Twin Care Hospital Incorporated — a marketing/info website with an admin dashboard for contact inquiries. Built by a solo developer (3rd-year Computer Engineering student) learning the MERN stack. Favor simple, readable solutions and well-commented code over unnecessary abstractions.
 
 ## Tech stack
 
-- **Frontend:** React 18 + Vite, React Router, Tailwind CSS — in `client/`
-- **Backend:** Node.js + Express, Nodemailer — in `server/`
-- No database. No auth. No TypeScript. Keep it that way unless a human explicitly asks to add one.
+- **Frontend:** React 18 + Vite, React Router, Tailwind CSS, Framer Motion — in `client/`
+- **Backend:** Node.js + Express, MongoDB (Mongoose), Nodemailer, session auth — in `server/`
+- **No TypeScript.** Keep it that way unless explicitly asked.
 
 ## Setup & commands
 
@@ -68,7 +68,7 @@ Defined in `server/.env` (never commit this — it's gitignored). Template is `s
 
 ## Things not to do
 
-- Don't add a database, authentication, or a CMS unless explicitly asked — scope is intentionally an info-only site.
-- Don't introduce new npm dependencies for things achievable with what's already installed (e.g. don't add a UI library on top of Tailwind, don't add a form library for one three-field form).
-- Don't rewrite the design tokens or swap fonts without being asked — the palette/typography choices are intentional, not defaults.
+- Don't use TypeScript or add complex frontend frameworks (e.g., Next.js) unless explicitly requested.
+- Don't introduce new npm dependencies for things achievable with what's already installed.
+- Don't rewrite the design tokens or swap fonts without being asked.
 - Don't remove `[Placeholder]` markers or invent real-sounding hospital details (names, addresses, phone numbers) — flag what's still needed instead.
