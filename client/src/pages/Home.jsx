@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Button from '../components/Button.jsx'
 import ServiceCard from '../components/ServiceCard.jsx'
 import DoctorCard from '../components/DoctorCard.jsx'
+import AboutSection from '../components/AboutSection.jsx'
 import { getServices, getDoctors } from '../api/index.js'
 
 export default function Home() {
@@ -30,7 +31,7 @@ export default function Home() {
       style={{ backgroundImage: "url('/hospital-bg.jpg')", clipPath: 'inset(0)' }}
     >
       {/* Global 60% cream overlay */}
-      <div className="absolute inset-0 bg-cream/60 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-cream/70" />
 
       {/*
         Decorative circles — strictly alternating left / right so no same-side
@@ -91,41 +92,7 @@ export default function Home() {
       </section>
 
       {/* ── #about: About ── */}
-      <section
-        id="about"
-        className="relative flex min-h-[calc(100vh-5rem)] scroll-mt-24 items-center py-20"
-      >
-        <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6">
-          <h2 className="mt-1 font-display text-4xl font-semibold text-primary">
-            About Twin Care Hospital
-          </h2>
-          <p className="mt-6 max-w-2xl leading-relaxed text-ink/80">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-            nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
-            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
-            occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </p>
-
-          <div className="mt-10 grid gap-8 sm:grid-cols-2">
-            <div className="rounded-xl border border-primary/10 bg-white/90 p-6 shadow-sm backdrop-blur-md">
-              <h3 className="font-display text-xl font-semibold text-primary">Our Mission</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink/80">
-                [Placeholder] To deliver quality, patient-centered healthcare that is
-                accessible to every member of the community we serve.
-              </p>
-            </div>
-            <div className="rounded-xl border border-primary/10 bg-white/90 p-6 shadow-sm backdrop-blur-md">
-              <h3 className="font-display text-xl font-semibold text-primary">Our Vision</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink/80">
-                [Placeholder] To be the most trusted healthcare institution in the
-                region, known for clinical excellence and genuine care.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AboutSection />
 
       {/* ── #doctors: Doctors ── */}
       <section

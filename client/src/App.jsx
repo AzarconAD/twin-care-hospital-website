@@ -4,14 +4,7 @@ import Footer from './components/Footer.jsx'
 import Home from './pages/Home.jsx'
 import Contact from './pages/Contact.jsx'
 
-/**
- * App — root component.
- * Two routes:
- *   /        → Home (contains #home, #about, #doctors, #services as anchor sections)
- *   /contact → Contact form
- *
- * Doctors is no longer a separate route — it's an anchor section on the home page.
- */
+
 export default function App() {
   return (
     <div className="flex min-h-screen flex-col">
