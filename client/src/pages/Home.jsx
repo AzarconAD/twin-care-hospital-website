@@ -104,7 +104,7 @@ export default function Home() {
 
           <div className="mt-10">
             {doctorsLoading && (
-              <p className="font-mono text-sm text-ink/60">Loading doctors…</p>
+              <p className="font-mono text-sm text-ink/80">Loading doctors…</p>
             )}
             {doctorsError && (
               <p className="text-sm text-red-600">{doctorsError}</p>
@@ -127,14 +127,14 @@ export default function Home() {
       >
         <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
           <h2 className="mt-1 font-display text-4xl font-semibold text-primary">Our Services</h2>
-          <p className="mt-3 max-w-xl text-ink/70">
+          <p className="mt-3 max-w-xl text-ink/90">
             A quick look at what's available across the hospital. [Placeholder — replace with
             the real department list once confirmed.]
           </p>
 
           <div className="mt-10">
             {servicesLoading && (
-              <p className="font-mono text-sm text-ink/60">Loading services…</p>
+              <p className="font-mono text-sm text-ink/80">Loading services…</p>
             )}
             {servicesError && (
               <p className="text-sm text-red-600">{servicesError}</p>
