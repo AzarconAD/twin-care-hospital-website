@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import Button from './Button'; // wait, does Button exist? Yes, I saw it in the dir list.
+import Button from './Button';
 
 export default function Hero() {
   return (

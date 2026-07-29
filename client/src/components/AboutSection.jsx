@@ -10,7 +10,6 @@ const COLORS = {
   green: "#10B981",
   blue: "#0544AB",
   red: "#E63946",
-  transparent: "transparent",
 };
 
 const defaultTimeline = [
