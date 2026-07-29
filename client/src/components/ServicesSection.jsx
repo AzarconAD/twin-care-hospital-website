@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const COLORS = {
   ink: "#1C1E1F",
@@ -9,9 +10,14 @@ const COLORS = {
   blue: "#0544AB",
 };
 
-// "category" is kept only so the filter tabs still work — it is no longer
-// used to color the cards. "photo" is a placeholder; replace with a real
-// path (e.g. "/services/emergency-room.jpg" in client/public) once you have one.
+// Must roughly match the card's rendered width (w-72 = 288px) + the gap (gap-6 = 24px).
+// Used to move the carousel by "one card" when an arrow button is clicked.
+const CARD_STEP = 312;
+
+// How many pixels the carousel auto-advances per animation frame (~60 times/sec).
+// Smaller = slower/smoother drift. Larger = faster.
+const AUTOPLAY_SPEED = 0.3;
+
 const CATEGORIES = {
   all: "All Services",
   emergency: "Emergency & Urgent Care",
@@ -19,6 +25,9 @@ const CATEGORIES = {
   diagnostic: "Diagnostic & Specialty Care",
 };
 
+// "category" is kept only so the filter tabs still work — it is no longer
+// used to color the cards. "photo" is a placeholder; replace with a real
+// path (e.g. "/services/emergency-room.jpg" in client/public) once you have one.
 const defaultServices = [
   {
     category: "emergency",
@@ -88,11 +97,76 @@ const cardVariants = {
 
 export default function ServicesSection({ services = defaultServices }) {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [isPaused, setIsPaused] = useState(false);
+  const scrollRef = useRef(null);
 
   const filtered =
     activeCategory === "all"
       ? services
       : services.filter((s) => s.category === activeCategory);
+
+  // Three copies of the (filtered) list back to back, so there's always
+  // more content to scroll into as the carousel wraps around.
+  const loopedServices =
+    filtered.length > 0 ? [...filtered, ...filtered, ...filtered] : [];
+
+  // On mount, and whenever the filter changes (which changes the list length,
+  // so the "middle copy" starts at a different pixel offset), jump the
+  // scroll position to the start of the middle copy — this is what makes
+  // the carousel open already "in the middle" instead of at the very start.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || filtered.length === 0) return;
+    requestAnimationFrame(() => {
+      const singleSetWidth = el.scrollWidth / 3;
+      el.scrollLeft = singleSetWidth;
+    });
+  }, [activeCategory, filtered.length]);
+
+  // Auto-advance the carousel to the right, frame by frame, unless paused
+  // (paused on hover so users can actually read a card without it drifting away).
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || filtered.length === 0) return;
+    let frameId;
+    let accumulatedScroll = 0;
+
+    const tick = () => {
+      if (!isPaused && el) {
+        // Accumulate sub-pixels to handle speeds < 1 on browsers that truncate scrollLeft
+        accumulatedScroll += AUTOPLAY_SPEED;
+        if (accumulatedScroll >= 1) {
+          const pixelsToMove = Math.floor(accumulatedScroll);
+          el.scrollLeft += pixelsToMove;
+          accumulatedScroll -= pixelsToMove;
+        }
+      }
+      frameId = requestAnimationFrame(tick);
+    };
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [isPaused, activeCategory, filtered.length]);
+
+  // Runs on EVERY scroll event, whether caused by autoplay, an arrow click,
+  // or the user manually dragging/swiping. If we've drifted into the first
+  // or third copy, silently snap back to the equivalent spot in the middle
+  // copy — since all three copies are identical, this jump is invisible.
+  const handleScroll = () => {
+    const el = scrollRef.current;
+    if (!el || filtered.length === 0) return;
+    const singleSetWidth = el.scrollWidth / 3;
+    if (el.scrollLeft <= 0) {
+      el.scrollLeft += singleSetWidth;
+    } else if (el.scrollLeft >= singleSetWidth * 2) {
+      el.scrollLeft -= singleSetWidth;
+    }
+  };
+
+  const scrollByCard = (direction) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: direction * CARD_STEP, behavior: "smooth" });
+  };
 
   return (
     <section
@@ -106,6 +180,10 @@ export default function ServicesSection({ services = defaultServices }) {
         .tc-body { font-family: 'Inter', sans-serif; }
         .tc-mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.08em; }
         .tc-tab { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+        .tc-scroll::-webkit-scrollbar { display: none; }
+        .tc-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .tc-arrow { transition: background-color 0.2s ease, transform 0.15s ease; }
+        .tc-arrow:hover { transform: scale(1.06); }
       `}</style>
 
       <motion.div
@@ -156,49 +234,85 @@ export default function ServicesSection({ services = defaultServices }) {
         })}
       </motion.div>
 
-      {/* Service cards — photo on top, description below, side by side in a grid */}
-      <div className="max-w-5xl mx-auto px-6 pb-20">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((service, i) => (
-              <motion.div
-                key={service.title}
-                layout
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                exit="exit"
-                viewport={{ once: true, amount: 0.2 }}
-                variants={cardVariants}
-                className="rounded-xl overflow-hidden border bg-white"
-                style={{ borderColor: COLORS.border }}
-              >
-                {/* Photo — placeholder until real service photos exist */}
-                <div className="w-full aspect-[4/3]">
-                  <img
-                    src={service.photo}
-                    alt={service.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                <div className="p-5">
-                  <h3 className="tc-display text-lg mb-2" style={{ color: COLORS.ink }}>
-                    {service.title}
-                  </h3>
-                  <p className="tc-body text-sm opacity-70 leading-relaxed">
-                    {service.text}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-
-        {filtered.length === 0 && (
+      {/* Carousel — infinite auto-scroll, pausable on hover, with arrow controls */}
+      <div className="pb-20">
+        {filtered.length === 0 ? (
           <p className="tc-body text-center opacity-60 py-10">
             No services in this category yet.
           </p>
+        ) : (
+          <div
+            className="relative"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="tc-scroll flex gap-6 overflow-x-auto px-6 md:px-[calc((100%-64rem)/2+1.5rem)] py-2"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+                maskImage:
+                  "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+              }}
+            >
+              <AnimatePresence mode="popLayout">
+                {loopedServices.map((service, i) => {
+                  const setIndex = Math.floor(i / filtered.length);
+                  const cardIndexInSet = i % filtered.length;
+                  return (
+                    <motion.div
+                      key={`${service.title}-${setIndex}`}
+                      layout
+                      custom={cardIndexInSet}
+                      initial="hidden"
+                      whileInView="visible"
+                      exit="exit"
+                      viewport={{ once: true, amount: 0.2 }}
+                      variants={cardVariants}
+                      className="flex-none w-72 sm:w-80 rounded-xl overflow-hidden border bg-white"
+                      style={{ borderColor: COLORS.border }}
+                    >
+                      <div className="w-full aspect-[4/3]">
+                        <img
+                          src={service.photo}
+                          alt={service.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-5">
+                        <h3 className="tc-display text-lg mb-2" style={{ color: COLORS.ink }}>
+                          {service.title}
+                        </h3>
+                        <p className="tc-body text-sm opacity-70 leading-relaxed">
+                          {service.text}
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
+
+            {/* Arrow buttons */}
+            <button
+              onClick={() => scrollByCard(-1)}
+              aria-label="Scroll left"
+              className="tc-arrow hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center shadow-md"
+              style={{ backgroundColor: COLORS.white, border: `1px solid ${COLORS.border}` }}
+            >
+              <ChevronLeft size={20} color={COLORS.blue} />
+            </button>
+            <button
+              onClick={() => scrollByCard(1)}
+              aria-label="Scroll right"
+              className="tc-arrow hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center shadow-md"
+              style={{ backgroundColor: COLORS.white, border: `1px solid ${COLORS.border}` }}
+            >
+              <ChevronRight size={20} color={COLORS.blue} />
+            </button>
+          </div>
         )}
       </div>
     </section>
