@@ -2,34 +2,6 @@ import React from "react";
 import { HeartHandshake, ShieldCheck, Sparkles, Users, Compass, Award, Heart, Activity } from "lucide-react";
 import { motion } from "framer-motion";
 
-const defaultTimeline = [
-  {
-    year: "1998",
-    title: "Two clinics, one purpose",
-    text: "On opposite ends of the city, two small community clinics open in the same month, each founded on the belief that care shouldn't wait for a referral.",
-  },
-  {
-    year: "2004",
-    title: "The clinics become one",
-    text: "The two founding clinics merge into a single hospital. The new name keeps the story alive: Twin Care, because good care was never meant to come from just one place.",
-  },
-  {
-    year: "2011",
-    title: "A dedicated maternity and pediatric wing",
-    text: "Twin Care opens a new wing built specifically for mothers and children, doubling capacity for the community's fastest-growing need.",
-  },
-  {
-    year: "2017",
-    title: "Full hospital accreditation",
-    text: "Twin Care Hospital earns full accreditation, formalizing standards that had guided the hospital since its earliest days.",
-  },
-  {
-    year: "Today",
-    title: "Still two, still one",
-    text: "Twin Care now serves the wider community with a growing team of specialists, but still runs on the same idea that opened its doors: two hands, working as one.",
-  },
-];
-
 const defaultValues = [
   {
     icon: ShieldCheck,
@@ -73,24 +45,7 @@ const defaultValues = [
   },
 ];
 
-function TwinArcDivider({ flip = false }) {
-  return (
-    <div className="w-full flex justify-center py-2" aria-hidden="true">
-      <svg
-        width="120"
-        height="36"
-        viewBox="0 0 120 36"
-        style={{ transform: flip ? "scaleX(-1)" : undefined }}
-      >
-        <circle cx="42" cy="18" r="16" fill="none" className="stroke-secondary" strokeWidth="2" opacity="0.55" />
-        <circle cx="78" cy="18" r="16" fill="none" className="stroke-accent" strokeWidth="2" opacity="0.75" />
-      </svg>
-    </div>
-  );
-}
-
 export default function AboutSection({
-  timeline = defaultTimeline,
   values = defaultValues,
   missionText = "To deliver attentive, high-quality care to every person who walks through our doors, regardless of where they started from or what they can afford.",
   visionText = "A community where excellent care is never a matter of luck, geography, or connections \u2014 just a short walk from home.",
@@ -98,181 +53,161 @@ export default function AboutSection({
   return (
     <section
       id="about"
-      className="relative z-10 w-full scroll-mt-24 text-ink"
+      className="relative w-full scroll-mt-24 text-ink pb-24"
     >
-
+      {/* Decorative background blobs */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div
+          className="absolute top-1/4 -left-20 w-[24rem] h-[24rem] rounded-full bg-secondary/20 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute bottom-40 left-[-10rem] w-[28rem] h-[28rem] rounded-full bg-accent/20 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute -bottom-32 right-[-5rem] w-96 h-96 rounded-full bg-primary/20 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute top-2/3 right-1/4 w-[20rem] h-[20rem] rounded-full bg-secondary/20 blur-3xl"
+          aria-hidden="true"
+        />
+      </div>
       {/* Header with hospital photo */}
-      <div className="max-w-6xl mx-auto px-6 pt-20 pb-10 grid md:grid-cols-2 gap-10 items-center">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-16 grid md:grid-cols-2 gap-12 items-center">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
-          className="relative rounded-2xl overflow-hidden shadow-lg border-4 border-white"
+          className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-8 border-white group"
         >
           <img 
             src="/hospital-bg.jpg"
             alt="Twin Care Hospital building"
-            className="w-full h-auto block"
+            className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
           />
+          <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none" />
         </motion.div>
 
         <motion.div 
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
         >
-          <p className="font-mono text-xs uppercase mb-4 font-semibold text-accent">
+          <p className="font-mono text-xs uppercase tracking-wider mb-4 font-bold text-accent">
             About Twin Care Hospital
           </p>
-          <h2 className="font-display text-4xl md:text-5xl leading-tight mb-5 text-primary">
+          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-6 text-primary">
             Two beginnings.<br />One standard of care.
           </h2>
-          <p className="font-body text-base md:text-lg opacity-80">
+          <p className="font-body text-base md:text-lg opacity-80 leading-relaxed text-ink/90">
             Twin Care Hospital Incorporated grew out of two community clinics that shared a single
             conviction: care should be close, honest, and unhurried. That conviction still shapes
-            everything we do.
+            everything we do today.
           </p>
         </motion.div>
       </div>
 
-      <TwinArcDivider />
-
-      {/* History timeline */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-4xl mx-auto px-6 sm:px-10 py-14 my-10 rounded-2xl shadow-sm border border-border bg-white/95 backdrop-blur-md"
-      >
-        <h3 className="font-display text-2xl mb-10 text-center text-primary">
-          Our History
-        </h3>
-        <div className="relative pl-8">
-          <div
-            className="absolute left-[7px] top-1 bottom-1 w-[2px] bg-border"
-            aria-hidden="true"
-          />
-          {timeline.map((item, i) => (
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false, amount: 0.8 }}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
-              key={i} 
-              className="relative pb-10 last:pb-0"
-            >
-              <div
-                className="absolute -left-8 top-1 w-4 h-4 rounded-full border-2 bg-white border-secondary"
-                aria-hidden="true"
-              />
-              <p className="font-mono text-xs mb-1 text-secondary">
-                {item.year}
-              </p>
-              <h4 className="font-display text-lg mb-1 text-ink">
-                {item.title}
-              </h4>
-              <p className="font-body text-sm opacity-75 leading-relaxed">{item.text}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      <TwinArcDivider flip />
-
-      {/* Another placeholder photo above Mission/Vision */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.8 }}
-        className="max-w-5xl mx-auto px-6 pt-10"
-      >
-        <div 
-          className="w-full h-48 md:h-64 rounded-2xl overflow-hidden shadow-md border-4 border-white relative"
-        >
-          <img 
-            src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=1000&auto=format&fit=crop" 
-            alt="[Placeholder: Modern hospital staff]" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute bottom-2 right-2 bg-cream/90 px-2 py-1 rounded text-[10px] font-mono">
-            Placeholder Photo 2
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Mission & Vision — twin overlapping panels (Animated on scroll) */}
-      <div className="max-w-5xl mx-auto px-6 py-14 overflow-hidden">
-        <div className="grid md:grid-cols-2 gap-0 md:gap-0 relative">
+      {/* Mission & Vision — twin overlapping panels */}
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="grid md:grid-cols-2 relative shadow-2xl shadow-ink/5 rounded-3xl overflow-hidden">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="p-8 md:p-10 md:rounded-l-2xl rounded-t-2xl md:rounded-t-none bg-secondary text-white"
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="p-12 md:p-16 bg-secondary text-white relative overflow-hidden group"
           >
-            <p className="font-mono text-xs uppercase mb-3 opacity-80">Mission</p>
-            <p className="font-display text-xl md:text-2xl leading-snug">{missionText}</p>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -mr-20 -mt-20 transition-transform duration-700 group-hover:scale-150" />
+            <p className="font-mono text-sm tracking-widest uppercase mb-4 opacity-90 font-bold">Mission</p>
+            <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{missionText}</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
-            className="p-8 md:p-10 md:rounded-r-2xl rounded-b-2xl md:rounded-b-none bg-primary text-white"
+            transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+            className="p-12 md:p-16 bg-primary text-white relative overflow-hidden group"
           >
-            <p className="font-mono text-xs uppercase mb-3 opacity-80">Vision</p>
-            <p className="font-display text-xl md:text-2xl leading-snug">{visionText}</p>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -ml-20 -mb-20 transition-transform duration-700 group-hover:scale-150" />
+            <p className="font-mono text-sm tracking-widest uppercase mb-4 opacity-90 font-bold">Vision</p>
+            <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{visionText}</p>
           </motion.div>
+
           {/* Seam mark symbolizing the two founding clinics joining */}
           <motion.div
-            initial={{ scale: 0, opacity: 0, x: "-50%", y: "-50%" }}
-            whileInView={{ scale: 1, opacity: 1, x: "-50%", y: "-50%" }}
+            initial={{ scale: 0, opacity: 0, x: "-50%", y: "-50%", rotate: -15 }}
+            whileInView={{ scale: 1, opacity: 1, x: "-50%", y: "-50%", rotate: 0 }}
             viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="hidden md:flex absolute left-1/2 top-1/2 items-center justify-center"
+            transition={{ duration: 0.6, delay: 0.3, type: "spring", bounce: 0.5 }}
+            className="hidden md:flex absolute left-1/2 top-1/2 items-center justify-center z-20"
             aria-hidden="true"
           >
-            <Heart size={48} className="text-accent fill-accent" />
+            <Heart size={80} className="text-accent fill-accent drop-shadow-2xl" />
           </motion.div>
         </div>
       </div>
 
-      {/* Core Values (Animated on scroll) */}
-      <div className="max-w-5xl mx-auto px-6 pt-6 pb-20">
-        <motion.h3 
+      {/* Core Values - TWIN CARE Acronym */}
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-20">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ duration: 0.6 }}
-          className="font-display text-2xl mb-10 text-center text-primary" 
+          className="text-center mb-16"
         >
-          Core Values
-        </motion.h3>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <p className="font-mono text-xs tracking-widest uppercase mb-3 font-bold text-secondary">
+            Our Guiding Principles
+          </p>
+          <h3 className="font-display text-4xl md:text-5xl text-primary mb-4">
+            The TWIN CARE Promise
+          </h3>
+          <p className="font-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
+            Our core values form the very name of our hospital. They are the standard by which we measure every interaction, every decision, and every life we touch.
+          </p>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {values.map((v, i) => {
             const Icon = v.icon;
+            const firstLetter = v.title.charAt(0);
+            const restOfTitle = v.title.slice(1);
+            const isTwin = i < 4; // T, W, I, N
+            
             return (
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, amount: 0.1 }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
                 key={i}
-                className="p-6 rounded-xl border shadow-sm bg-white border-border"
+                className="group relative p-8 rounded-2xl bg-white border border-border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center mb-4 bg-cream border border-border"
-                >
-                  <Icon size={20} className="text-secondary" strokeWidth={1.75} />
+                {/* Subtle background letter watermark */}
+                <div className="absolute -right-4 -top-8 font-display text-[12rem] font-bold text-cream select-none pointer-events-none opacity-50 group-hover:text-primary/5 transition-colors duration-500">
+                  {firstLetter}
                 </div>
-                <h4 className="font-display text-base mb-1.5 text-ink">
-                  {v.title}
-                </h4>
-                <p className="font-body text-sm opacity-70 leading-relaxed">{v.text}</p>
+
+                <div className="relative z-10">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 ${isTwin ? 'bg-secondary/10 text-secondary group-hover:bg-secondary group-hover:text-white' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white'}`}>
+                    <Icon size={24} strokeWidth={2} />
+                  </div>
+                  
+                  <h4 className="font-display text-2xl mb-3 text-ink flex items-baseline">
+                    <span className={`text-3xl font-bold mr-[1px] ${isTwin ? 'text-secondary' : 'text-primary'}`}>
+                      {firstLetter}
+                    </span>
+                    {restOfTitle}
+                  </h4>
+                  
+                  <p className="font-body text-sm opacity-75 leading-relaxed">
+                    {v.text}
+                  </p>
+                </div>
               </motion.div>
             );
           })}

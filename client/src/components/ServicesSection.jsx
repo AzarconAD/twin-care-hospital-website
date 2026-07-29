@@ -164,8 +164,23 @@ export default function ServicesSection({ services = defaultServices }) {
   return (
     <section
       id="services"
-      className="w-full bg-cream text-ink"
+      className="relative w-full text-ink"
     >
+      {/* Decorative background blobs */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div
+          className="absolute top-1/3 left-[-5rem] w-80 h-80 rounded-full bg-accent/20 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute -bottom-20 right-[-5rem] w-96 h-96 rounded-full bg-primary/20 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute top-10 right-1/4 w-[20rem] h-[20rem] rounded-full bg-secondary/20 blur-3xl"
+          aria-hidden="true"
+        />
+      </div>
       <style>{`
         .tc-tab { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
         .tc-scroll::-webkit-scrollbar { display: none; }
@@ -175,7 +190,7 @@ export default function ServicesSection({ services = defaultServices }) {
       `}</style>
 
       <motion.div
-        className="max-w-5xl mx-auto px-6 pt-20 pb-10 text-center"
+        className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-10 text-center"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.3 }}
@@ -197,7 +212,7 @@ export default function ServicesSection({ services = defaultServices }) {
 
       {/* Category filter tabs — kept for filtering, no longer color-coded per category */}
       <motion.div
-        className="max-w-4xl mx-auto px-6 flex flex-wrap justify-center gap-3 pb-12"
+        className="relative z-10 max-w-4xl mx-auto px-6 flex flex-wrap justify-center gap-3 pb-12"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.3 }}
@@ -222,7 +237,7 @@ export default function ServicesSection({ services = defaultServices }) {
       </motion.div>
 
       {/* Carousel — infinite auto-scroll, pausable on hover, with arrow controls */}
-      <div className="pb-20">
+      <div className="relative z-10 pb-20">
         {filtered.length === 0 ? (
           <p className="font-body text-center opacity-60 py-10">
             No services in this category yet.
