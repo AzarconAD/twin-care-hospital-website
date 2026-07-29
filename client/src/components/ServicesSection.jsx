@@ -1,14 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-const COLORS = {
-  ink: "#1C1E1F",
-  paper: "#FAFAF9",
-  white: "#FFFFFF",
-  border: "#E7E7E5",
-  blue: "#0544AB",
-};
+import { THEME_COLORS } from "../theme";
 
 // Must roughly match the card's rendered width (w-72 = 288px) + the gap (gap-6 = 24px).
 // Used to move the carousel by "one card" when an arrow button is clicked.
@@ -171,14 +164,9 @@ export default function ServicesSection({ services = defaultServices }) {
   return (
     <section
       id="services"
-      style={{ backgroundColor: COLORS.paper, color: COLORS.ink }}
-      className="w-full"
+      className="w-full bg-cream text-ink"
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
-        .tc-display { font-family: 'Fraunces', serif; }
-        .tc-body { font-family: 'Inter', sans-serif; }
-        .tc-mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.08em; }
         .tc-tab { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
         .tc-scroll::-webkit-scrollbar { display: none; }
         .tc-scroll { -ms-overflow-style: none; scrollbar-width: none; }
@@ -193,15 +181,15 @@ export default function ServicesSection({ services = defaultServices }) {
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.5 }}
       >
-        <p className="tc-mono text-xs uppercase mb-4" style={{ color: COLORS.blue }}>
+        <p className="font-mono text-xs uppercase mb-4 text-primary">
           What We Offer
         </p>
-        <h2 className="tc-display text-4xl md:text-5xl leading-tight mb-5">
+        <h2 className="font-display text-4xl md:text-5xl leading-tight mb-5">
           Care organized around
           <br />
           how urgently you need it.
         </h2>
-        <p className="tc-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
+        <p className="font-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
           Every service below is grouped by the kind of care it provides &mdash; so
           you always know where to start.
         </p>
@@ -221,9 +209,9 @@ export default function ServicesSection({ services = defaultServices }) {
             <button
               key={key}
               onClick={() => setActiveCategory(key)}
-              className={`tc-body text-sm font-medium !rounded-full ${
+              className={`tc-tab font-body text-sm font-medium !rounded-full ${
                 isActive 
-                  ? "px-6 py-3 bg-[#10B981] text-white border border-[#10B981]" 
+                  ? "px-6 py-3 bg-secondary text-white border border-secondary" 
                   : "btn-fill"
               }`}
             >
@@ -236,7 +224,7 @@ export default function ServicesSection({ services = defaultServices }) {
       {/* Carousel — infinite auto-scroll, pausable on hover, with arrow controls */}
       <div className="pb-20">
         {filtered.length === 0 ? (
-          <p className="tc-body text-center opacity-60 py-10">
+          <p className="font-body text-center opacity-60 py-10">
             No services in this category yet.
           </p>
         ) : (
@@ -270,8 +258,7 @@ export default function ServicesSection({ services = defaultServices }) {
                       exit="exit"
                       viewport={{ once: false, amount: 0.2 }}
                       variants={cardVariants}
-                      className="flex-none w-72 sm:w-80 rounded-xl overflow-hidden border bg-white"
-                      style={{ borderColor: COLORS.border }}
+                      className="flex-none w-72 sm:w-80 rounded-xl overflow-hidden border border-border bg-white"
                     >
                       <div className="w-full aspect-[4/3]">
                         <img
@@ -281,10 +268,10 @@ export default function ServicesSection({ services = defaultServices }) {
                         />
                       </div>
                       <div className="p-5">
-                        <h3 className="tc-display text-lg mb-2" style={{ color: COLORS.ink }}>
+                        <h3 className="font-display text-lg mb-2 text-ink">
                           {service.title}
                         </h3>
-                        <p className="tc-body text-sm opacity-70 leading-relaxed">
+                        <p className="font-body text-sm opacity-70 leading-relaxed">
                           {service.text}
                         </p>
                       </div>
@@ -298,18 +285,16 @@ export default function ServicesSection({ services = defaultServices }) {
             <button
               onClick={() => scrollByCard(-1)}
               aria-label="Scroll left"
-              className="tc-arrow hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center shadow-md"
-              style={{ backgroundColor: COLORS.white, border: `1px solid ${COLORS.border}` }}
+              className="tc-arrow hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center shadow-md bg-white border border-border"
             >
-              <ChevronLeft size={20} color={COLORS.blue} />
+              <ChevronLeft size={20} color={THEME_COLORS.primary} />
             </button>
             <button
               onClick={() => scrollByCard(1)}
               aria-label="Scroll right"
-              className="tc-arrow hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center shadow-md"
-              style={{ backgroundColor: COLORS.white, border: `1px solid ${COLORS.border}` }}
+              className="tc-arrow hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center shadow-md bg-white border border-border"
             >
-              <ChevronRight size={20} color={COLORS.blue} />
+              <ChevronRight size={20} color={THEME_COLORS.primary} />
             </button>
           </div>
         )}

@@ -18,6 +18,7 @@ export default {
         accent: '#E63946',    // red — CTAs, highlights, sparingly
         cream: '#F7FAF6',     // page background
         ink: '#1A2E2E',       // body text
+        border: '#E7E7E5',    // component borders
       },
       fontFamily: {
         display: ['"Newsreader"', 'serif'],   // headings

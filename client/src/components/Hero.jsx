@@ -20,7 +20,7 @@ export default function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button to="/contact">Book a Visit</Button>
-            <a href="#services" className="btn-fill tc-body">
+            <a href="#services" className="btn-fill font-body">
               See Our Services &rarr;
             </a>
           </div>

@@ -2,16 +2,6 @@ import React from "react";
 import { HeartHandshake, ShieldCheck, Sparkles, Users, Compass, Award, Heart, Activity } from "lucide-react";
 import { motion } from "framer-motion";
 
-const COLORS = {
-  ink: "#1C1E1F",
-  paper: "#FAFAF9",
-  white: "#FFFFFF",
-  border: "#E7E7E5",
-  green: "#10B981",
-  blue: "#0544AB",
-  red: "#E63946",
-};
-
 const defaultTimeline = [
   {
     year: "1998",
@@ -92,8 +82,8 @@ function TwinArcDivider({ flip = false }) {
         viewBox="0 0 120 36"
         style={{ transform: flip ? "scaleX(-1)" : undefined }}
       >
-        <circle cx="42" cy="18" r="16" fill="none" stroke={COLORS.green} strokeWidth="2" opacity="0.55" />
-        <circle cx="78" cy="18" r="16" fill="none" stroke={COLORS.red} strokeWidth="2" opacity="0.75" />
+        <circle cx="42" cy="18" r="16" fill="none" className="stroke-secondary" strokeWidth="2" opacity="0.55" />
+        <circle cx="78" cy="18" r="16" fill="none" className="stroke-accent" strokeWidth="2" opacity="0.75" />
       </svg>
     </div>
   );
@@ -108,16 +98,8 @@ export default function AboutSection({
   return (
     <section
       id="about"
-      style={{ color: COLORS.ink }}
-      className="relative z-10 w-full scroll-mt-24"
+      className="relative z-10 w-full scroll-mt-24 text-ink"
     >
-
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
-        .tc-display { font-family: 'Fraunces', serif; }
-        .tc-body { font-family: 'Inter', sans-serif; }
-        .tc-mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.08em; }
-      `}</style>
 
       {/* Header with hospital photo */}
       <div className="max-w-6xl mx-auto px-6 pt-20 pb-10 grid md:grid-cols-2 gap-10 items-center">
@@ -126,8 +108,7 @@ export default function AboutSection({
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
-          className="relative rounded-2xl overflow-hidden shadow-lg border-4"
-          style={{ borderColor: COLORS.white }}
+          className="relative rounded-2xl overflow-hidden shadow-lg border-4 border-white"
         >
           <img 
             src="/hospital-bg.jpg"
@@ -142,13 +123,13 @@ export default function AboutSection({
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
         >
-          <p className="tc-mono text-xs uppercase mb-4 font-semibold" style={{ color: COLORS.red }}>
+          <p className="font-mono text-xs uppercase mb-4 font-semibold text-accent">
             About Twin Care Hospital
           </p>
-          <h2 className="tc-display text-4xl md:text-5xl leading-tight mb-5" style={{ color: COLORS.blue }}>
+          <h2 className="font-display text-4xl md:text-5xl leading-tight mb-5 text-primary">
             Two beginnings.<br />One standard of care.
           </h2>
-          <p className="tc-body text-base md:text-lg opacity-80">
+          <p className="font-body text-base md:text-lg opacity-80">
             Twin Care Hospital Incorporated grew out of two community clinics that shared a single
             conviction: care should be close, honest, and unhurried. That conviction still shapes
             everything we do.
@@ -164,16 +145,14 @@ export default function AboutSection({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.8 }}
-        className="max-w-4xl mx-auto px-6 sm:px-10 py-14 my-10 rounded-2xl shadow-sm border bg-white/95 backdrop-blur-md"
-        style={{ borderColor: COLORS.border }}
+        className="max-w-4xl mx-auto px-6 sm:px-10 py-14 my-10 rounded-2xl shadow-sm border border-border bg-white/95 backdrop-blur-md"
       >
-        <h3 className="tc-display text-2xl mb-10 text-center" style={{ color: COLORS.blue }}>
+        <h3 className="font-display text-2xl mb-10 text-center text-primary">
           Our History
         </h3>
         <div className="relative pl-8">
           <div
-            className="absolute left-[7px] top-1 bottom-1 w-[2px]"
-            style={{ backgroundColor: COLORS.border }}
+            className="absolute left-[7px] top-1 bottom-1 w-[2px] bg-border"
             aria-hidden="true"
           />
           {timeline.map((item, i) => (
@@ -186,17 +165,16 @@ export default function AboutSection({
               className="relative pb-10 last:pb-0"
             >
               <div
-                className="absolute -left-8 top-1 w-4 h-4 rounded-full border-2 bg-white"
-                style={{ borderColor: COLORS.green }}
+                className="absolute -left-8 top-1 w-4 h-4 rounded-full border-2 bg-white border-secondary"
                 aria-hidden="true"
               />
-              <p className="tc-mono text-xs mb-1" style={{ color: COLORS.green }}>
+              <p className="font-mono text-xs mb-1 text-secondary">
                 {item.year}
               </p>
-              <h4 className="tc-display text-lg mb-1" style={{ color: COLORS.ink }}>
+              <h4 className="font-display text-lg mb-1 text-ink">
                 {item.title}
               </h4>
-              <p className="tc-body text-sm opacity-75 leading-relaxed">{item.text}</p>
+              <p className="font-body text-sm opacity-75 leading-relaxed">{item.text}</p>
             </motion.div>
           ))}
         </div>
@@ -213,15 +191,14 @@ export default function AboutSection({
         className="max-w-5xl mx-auto px-6 pt-10"
       >
         <div 
-          className="w-full h-48 md:h-64 rounded-2xl overflow-hidden shadow-md border-4 relative"
-          style={{ borderColor: COLORS.white }}
+          className="w-full h-48 md:h-64 rounded-2xl overflow-hidden shadow-md border-4 border-white relative"
         >
           <img 
             src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=1000&auto=format&fit=crop" 
             alt="[Placeholder: Modern hospital staff]" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute bottom-2 right-2 bg-[#FAFAF9]/90 px-2 py-1 rounded text-[10px] tc-mono">
+          <div className="absolute bottom-2 right-2 bg-cream/90 px-2 py-1 rounded text-[10px] font-mono">
             Placeholder Photo 2
           </div>
         </div>
@@ -235,22 +212,20 @@ export default function AboutSection({
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="p-8 md:p-10 md:rounded-l-2xl rounded-t-2xl md:rounded-t-none"
-            style={{ backgroundColor: COLORS.green, color: "#FFFFFF" }}
+            className="p-8 md:p-10 md:rounded-l-2xl rounded-t-2xl md:rounded-t-none bg-secondary text-white"
           >
-            <p className="tc-mono text-xs uppercase mb-3 opacity-80">Mission</p>
-            <p className="tc-display text-xl md:text-2xl leading-snug">{missionText}</p>
+            <p className="font-mono text-xs uppercase mb-3 opacity-80">Mission</p>
+            <p className="font-display text-xl md:text-2xl leading-snug">{missionText}</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
-            className="p-8 md:p-10 md:rounded-r-2xl rounded-b-2xl md:rounded-b-none"
-            style={{ backgroundColor: COLORS.blue, color: "#FFFFFF" }}
+            className="p-8 md:p-10 md:rounded-r-2xl rounded-b-2xl md:rounded-b-none bg-primary text-white"
           >
-            <p className="tc-mono text-xs uppercase mb-3 opacity-80">Vision</p>
-            <p className="tc-display text-xl md:text-2xl leading-snug">{visionText}</p>
+            <p className="font-mono text-xs uppercase mb-3 opacity-80">Vision</p>
+            <p className="font-display text-xl md:text-2xl leading-snug">{visionText}</p>
           </motion.div>
           {/* Seam mark symbolizing the two founding clinics joining */}
           <motion.div
@@ -261,7 +236,7 @@ export default function AboutSection({
             className="hidden md:flex absolute left-1/2 top-1/2 items-center justify-center"
             aria-hidden="true"
           >
-            <Heart size={48} color={COLORS.red} fill={COLORS.red} />
+            <Heart size={48} className="text-accent fill-accent" />
           </motion.div>
         </div>
       </div>
@@ -273,8 +248,7 @@ export default function AboutSection({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ duration: 0.6 }}
-          className="tc-display text-2xl mb-10 text-center" 
-          style={{ color: COLORS.blue }}
+          className="font-display text-2xl mb-10 text-center text-primary" 
         >
           Core Values
         </motion.h3>
@@ -288,19 +262,17 @@ export default function AboutSection({
                 viewport={{ once: false, amount: 0.1 }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 key={i}
-                className="p-6 rounded-xl border shadow-sm"
-                style={{ backgroundColor: COLORS.white, borderColor: COLORS.border }}
+                className="p-6 rounded-xl border shadow-sm bg-white border-border"
               >
                 <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
-                  style={{ backgroundColor: COLORS.paper, border: `1px solid ${COLORS.border}` }}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center mb-4 bg-cream border border-border"
                 >
-                  <Icon size={20} color={COLORS.green} strokeWidth={1.75} />
+                  <Icon size={20} className="text-secondary" strokeWidth={1.75} />
                 </div>
-                <h4 className="tc-display text-base mb-1.5" style={{ color: COLORS.ink }}>
+                <h4 className="font-display text-base mb-1.5 text-ink">
                   {v.title}
                 </h4>
-                <p className="tc-body text-sm opacity-70 leading-relaxed">{v.text}</p>
+                <p className="font-body text-sm opacity-70 leading-relaxed">{v.text}</p>
               </motion.div>
             );
           })}

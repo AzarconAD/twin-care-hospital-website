@@ -1,22 +1,13 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User } from "lucide-react";
-
-const COLORS = {
-  ink: "#1C1E1F",
-  paper: "#FAFAF9",
-  white: "#FFFFFF",
-  border: "#E7E7E5",
-  green: "#10B981",
-  blue: "#0544AB",
-  red: "#E63946",
-};
+import { THEME_COLORS } from "../theme";
 
 const CATEGORIES = {
-  all: { label: "All Doctors", color: COLORS.ink },
-  emergency: { label: "Emergency & Urgent Care", color: COLORS.red },
-  wellness: { label: "Wellness & Preventive Care", color: COLORS.green },
-  diagnostic: { label: "Diagnostic & Specialty Care", color: COLORS.blue },
+  all: { label: "All Doctors", color: THEME_COLORS.ink },
+  emergency: { label: "Emergency & Urgent Care", color: THEME_COLORS.accent },
+  wellness: { label: "Wellness & Preventive Care", color: THEME_COLORS.secondary },
+  diagnostic: { label: "Diagnostic & Specialty Care", color: THEME_COLORS.primary },
 };
 
 const defaultDoctors = [
@@ -77,12 +68,8 @@ export default function DoctorsPage({ doctors = defaultDoctors }) {
       : doctors.filter((d) => d.category === activeCategory);
 
   return (
-    <div style={{ backgroundColor: COLORS.paper, color: COLORS.ink }} className="w-full min-h-screen">
+    <div className="w-full min-h-screen bg-cream text-ink">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
-        .tc-display { font-family: 'Fraunces', serif; }
-        .tc-body { font-family: 'Inter', sans-serif; }
-        .tc-mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.08em; }
         .tc-tab { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
       `}</style>
 
@@ -92,15 +79,15 @@ export default function DoctorsPage({ doctors = defaultDoctors }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <p className="tc-mono text-xs uppercase mb-4" style={{ color: COLORS.blue }}>
+        <p className="font-mono text-xs uppercase mb-4 text-primary">
           Meet Our Team
         </p>
-        <h1 className="tc-display text-4xl md:text-5xl leading-tight mb-5">
+        <h1 className="font-display text-4xl md:text-5xl leading-tight mb-5">
           Doctors who treat the whole story,
           <br />
           not just the chart.
         </h1>
-        <p className="tc-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
+        <p className="font-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
           Every doctor below is grouped by the kind of care they specialize in, matching
           how our Services are organized.
         </p>
@@ -113,11 +100,11 @@ export default function DoctorsPage({ doctors = defaultDoctors }) {
             <button
               key={key}
               onClick={() => setActiveCategory(key)}
-              className="tc-tab tc-body text-sm px-5 py-2 rounded-full border font-medium"
+              className="tc-tab font-body text-sm px-5 py-2 rounded-full border font-medium"
               style={{
                 backgroundColor: isActive ? cat.color : "transparent",
                 borderColor: cat.color,
-                color: isActive ? COLORS.white : cat.color,
+                color: isActive ? THEME_COLORS.white : cat.color,
               }}
             >
               {cat.label}
@@ -141,27 +128,26 @@ export default function DoctorsPage({ doctors = defaultDoctors }) {
                   exit="exit"
                   viewport={{ once: false, amount: 0.2 }}
                   variants={cardVariants}
-                  className="p-6 rounded-xl border bg-white text-center"
-                  style={{ borderColor: COLORS.border }}
+                  className="p-6 rounded-xl border border-border bg-white text-center"
                 >
                   {/* Placeholder avatar — swap this div for a real <img> once photos exist */}
                   <div
                     className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
                     style={{ backgroundColor: color }}
                   >
-                    <User size={28} color={COLORS.white} strokeWidth={1.75} />
+                    <User size={28} color={THEME_COLORS.white} strokeWidth={1.75} />
                   </div>
                   <p
-                    className="tc-mono text-[10px] uppercase mb-2"
+                    className="font-mono text-[10px] uppercase mb-2"
                     style={{ color }}
                   >
                     {CATEGORIES[doctor.category].label}
                   </p>
-                  <h3 className="tc-display text-lg mb-1">{doctor.name}</h3>
-                  <p className="tc-body text-sm font-medium mb-2 opacity-90">
+                  <h3 className="font-display text-lg mb-1">{doctor.name}</h3>
+                  <p className="font-body text-sm font-medium mb-2 opacity-90">
                     {doctor.specialty}
                   </p>
-                  <p className="tc-body text-sm opacity-70 leading-relaxed">
+                  <p className="font-body text-sm opacity-70 leading-relaxed">
                     {doctor.bio}
                   </p>
                 </motion.div>
@@ -171,7 +157,7 @@ export default function DoctorsPage({ doctors = defaultDoctors }) {
         </div>
 
         {filtered.length === 0 && (
-          <p className="tc-body text-center opacity-60 py-10">
+          <p className="font-body text-center opacity-60 py-10">
             No doctors in this category yet.
           </p>
         )}
