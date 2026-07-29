@@ -90,7 +90,6 @@ const cardVariants = {
 
 export default function ServicesSection({ services = defaultServices }) {
   const [activeCategory, setActiveCategory] = useState("all");
-  const [isPaused, setIsPaused] = useState(false);
   const scrollRef = useRef(null);
 
   const filtered =
@@ -116,8 +115,7 @@ export default function ServicesSection({ services = defaultServices }) {
     });
   }, [activeCategory, filtered.length]);
 
-  // Auto-advance the carousel to the right, frame by frame, unless paused
-  // (paused on hover so users can actually read a card without it drifting away).
+  // Auto-advance the carousel to the right, frame by frame.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el || filtered.length === 0) return;
@@ -125,7 +123,7 @@ export default function ServicesSection({ services = defaultServices }) {
     let accumulatedScroll = 0;
 
     const tick = () => {
-      if (!isPaused && el && activeCategory === "all") {
+      if (el && activeCategory === "all") {
         // Accumulate sub-pixels to handle speeds < 1 on browsers that truncate scrollLeft
         accumulatedScroll += AUTOPLAY_SPEED;
         if (accumulatedScroll >= 1) {
@@ -138,7 +136,7 @@ export default function ServicesSection({ services = defaultServices }) {
     };
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, [isPaused, activeCategory, filtered.length]);
+  }, [activeCategory, filtered.length]);
 
   // Runs on EVERY scroll event, whether caused by autoplay, an arrow click,
   // or the user manually dragging/swiping. If we've drifted into the first
@@ -245,8 +243,6 @@ export default function ServicesSection({ services = defaultServices }) {
         ) : (
           <div
             className="relative"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
           >
             <div
               ref={scrollRef}

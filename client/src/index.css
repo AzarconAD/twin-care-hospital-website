@@ -8,10 +8,10 @@
   }
 
   /* Prevent horizontal scrollbar from decorative circles that extend
-     beyond the left/right edges — without creating a scroll container
-     on any inner element (which would break vertical scroll). */
+     beyond the left/right edges. Using clip instead of hidden prevents 
+     the body from becoming a scroll container (which causes double scrollbars). */
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 }
 

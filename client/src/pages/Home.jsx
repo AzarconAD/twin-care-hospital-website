@@ -4,7 +4,7 @@ import ServicesSection from '../components/ServicesSection.jsx'
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-cream overflow-x-hidden">
+    <div className="relative min-h-screen bg-cream">
       {/* ── #home: Hero ── */}
       <Hero />
 
