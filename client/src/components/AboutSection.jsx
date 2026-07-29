@@ -3,13 +3,14 @@ import { HeartHandshake, ShieldCheck, Sparkles, Users, Compass, Award } from "lu
 import { motion } from "framer-motion";
 
 const COLORS = {
-  ink: "#1A2E2E",
-  transparent: "transparent",
+  ink: "#1C1E1F",
+  paper: "#FAFAF9",
+  white: "#FFFFFF",
+  border: "#E7E7E5",
   green: "#10B981",
   blue: "#0544AB",
   red: "#E63946",
-  lightMint: "rgba(255,255,255,0.7)", 
-  white: "rgba(255,255,255,0.95)",
+  transparent: "transparent",
 };
 
 const defaultTimeline = [
@@ -101,6 +102,7 @@ export default function AboutSection({
       style={{ color: COLORS.ink }}
       className="relative z-10 w-full scroll-mt-24"
     >
+
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
         .tc-display { font-family: 'Fraunces', serif; }
@@ -108,26 +110,42 @@ export default function AboutSection({
         .tc-mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.08em; }
       `}</style>
 
-      {/* Header */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-5xl mx-auto px-6 pt-20 pb-10 text-center"
-      >
-        <p className="tc-mono text-xs uppercase mb-4" style={{ color: COLORS.red }}>
-          About Twin Care Hospital
-        </p>
-        <h2 className="tc-display text-4xl md:text-5xl leading-tight mb-5" style={{ color: COLORS.blue }}>
-          Two beginnings.<br />One standard of care.
-        </h2>
-        <p className="tc-body text-base md:text-lg max-w-2xl mx-auto opacity-80">
-          Twin Care Hospital Incorporated grew out of two community clinics that shared a single
-          conviction: care should be close, honest, and unhurried. That conviction still shapes
-          everything we do.
-        </p>
-      </motion.div>
+      {/* Header with hospital photo */}
+      <div className="max-w-6xl mx-auto px-6 pt-20 pb-10 grid md:grid-cols-2 gap-10 items-center">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8 }}
+          className="relative rounded-2xl overflow-hidden shadow-lg border-4"
+          style={{ borderColor: COLORS.white }}
+        >
+          <img 
+            src="/hospital-bg.jpg"
+            alt="Twin Care Hospital building"
+            className="w-full h-auto block"
+          />
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8 }}
+        >
+          <p className="tc-mono text-xs uppercase mb-4 font-semibold" style={{ color: COLORS.red }}>
+            About Twin Care Hospital
+          </p>
+          <h2 className="tc-display text-4xl md:text-5xl leading-tight mb-5" style={{ color: COLORS.blue }}>
+            Two beginnings.<br />One standard of care.
+          </h2>
+          <p className="tc-body text-base md:text-lg opacity-80">
+            Twin Care Hospital Incorporated grew out of two community clinics that shared a single
+            conviction: care should be close, honest, and unhurried. That conviction still shapes
+            everything we do.
+          </p>
+        </motion.div>
+      </div>
 
       <TwinArcDivider />
 
@@ -137,8 +155,8 @@ export default function AboutSection({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.8 }}
-        className="max-w-3xl mx-auto px-6 sm:px-10 py-14 my-10 rounded-2xl shadow-sm border backdrop-blur-md"
-        style={{ backgroundColor: COLORS.white, borderColor: COLORS.lightMint }}
+        className="max-w-4xl mx-auto px-6 sm:px-10 py-14 my-10 rounded-2xl shadow-sm border bg-white/95 backdrop-blur-md"
+        style={{ borderColor: COLORS.border }}
       >
         <h3 className="tc-display text-2xl mb-10 text-center" style={{ color: COLORS.blue }}>
           Our History
@@ -146,7 +164,7 @@ export default function AboutSection({
         <div className="relative pl-8">
           <div
             className="absolute left-[7px] top-1 bottom-1 w-[2px]"
-            style={{ backgroundColor: COLORS.lightMint }}
+            style={{ backgroundColor: COLORS.border }}
             aria-hidden="true"
           />
           {timeline.map((item, i) => (
@@ -176,6 +194,29 @@ export default function AboutSection({
       </motion.div>
 
       <TwinArcDivider flip />
+
+      {/* Another placeholder photo above Mission/Vision */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="max-w-5xl mx-auto px-6 pt-10"
+      >
+        <div 
+          className="w-full h-48 md:h-64 rounded-2xl overflow-hidden shadow-md border-4 relative"
+          style={{ borderColor: COLORS.white }}
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=1000&auto=format&fit=crop" 
+            alt="[Placeholder: Modern hospital staff]" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute bottom-2 right-2 bg-[#FAFAF9]/90 px-2 py-1 rounded text-[10px] tc-mono">
+            Placeholder Photo 2
+          </div>
+        </div>
+      </motion.div>
 
       {/* Mission & Vision — twin overlapping panels (Animated on scroll) */}
       <div className="max-w-5xl mx-auto px-6 py-14 overflow-hidden">
@@ -240,11 +281,11 @@ export default function AboutSection({
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 key={i}
                 className="p-6 rounded-xl border shadow-sm"
-                style={{ backgroundColor: COLORS.white, borderColor: COLORS.lightMint }}
+                style={{ backgroundColor: COLORS.white, borderColor: COLORS.border }}
               >
                 <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
-                  style={{ backgroundColor: COLORS.lightMint }}
+                  style={{ backgroundColor: COLORS.paper, border: `1px solid ${COLORS.border}` }}
                 >
                   <Icon size={20} color={COLORS.green} strokeWidth={1.75} />
                 </div>
