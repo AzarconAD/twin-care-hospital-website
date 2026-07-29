@@ -1,74 +1,66 @@
-# AGENTS.md
+# Project: Twin Care Hospital Website
 
-Instructions for AI coding agents (Claude Code, Cursor, Copilot, etc.) working in this repository. Human contributors should read `README.md` and `TEAM_GUIDE.md` instead.
+## Context
+Solo developer (student), beginner with React/Node/Tailwind but comfortable with core HTML/CSS/JS.
+Internship side project, no hard deadline. Keep code simple, well-commented, minimal dependencies.
+Explain non-trivial logic briefly in comments.
 
-## Project overview
+## Tech Stack (fixed — do not change or add alternatives)
+- Frontend: React (Vite) + Tailwind CSS + React Router + Framer Motion
+- Backend: Node.js + Express + MongoDB via Mongoose, hosted on MongoDB Atlas
+- No TypeScript
 
-Twin Care Hospital Incorporated — a marketing/info website with an admin dashboard for contact inquiries. Built by a solo developer (3rd-year Computer Engineering student) learning the MERN stack. Favor simple, readable solutions and well-commented code over unnecessary abstractions.
+## Database Status
+MongoDB IS used in this project. Any earlier note saying "no database" is outdated — ignore it.
+Used for: Services, Doctors, Contact form submissions, and (later) a single Admin account for login.
 
-## Tech stack
+## Site Structure
+- `/` — Home page: Hero, About, and Services sections stacked as one scrollable page
+  (anchors: `#home`, `#about`, `#services`)
+- `/doctors` — own route, doctor cards
+- `/contact` — own route, public contact form
+- `/admin/login` and `/admin/dashboard` — planned, not yet built. Do not build until explicitly asked.
 
-- **Frontend:** React 18 + Vite, React Router, Tailwind CSS, Framer Motion — in `client/`
-- **Backend:** Node.js + Express, MongoDB (Mongoose), Nodemailer, session auth — in `server/`
-- **No TypeScript.** Keep it that way unless explicitly asked.
+## Navbar Behavior
+- Sticky at top; transparent/minimal at page top, becomes solid background after scrolling down
+- Uses real logo file
+- "Home"/"About"/"Services" links scroll to the matching section on `/` (navigate to `/` first if on another page)
+- "Doctors" and "Contact" links are normal route navigation
 
-## Setup & commands
+## Design System
+Colors (functional, not just decorative — e.g. Services uses these to color-code categories):
 
-```bash
-# Frontend
-cd client
-npm install
-npm run dev        # http://localhost:5173
-npm run build       # production build
+red: 
+#E63946
+green: 
+#10B981
+blue: 
+#0544AB
+ink: 
+#1C1E1F
+paper: 
+#FAFAF9
+white: 
+#FFFFFF
+border:
+#E7E7E5
 
-# Backend
-cd server
-npm install
-cp .env.example .env   # then fill in real values, see comments in that file
-npm run dev          # http://localhost:5000
-```
+Fonts: 'Fraunces' (display/headings), 'Inter' (body), 'IBM Plex Mono' (small labels/eyebrows).
+Match existing components (`AboutSection.jsx`, `ServicesSection.jsx`) for spacing, card style, and
+Framer Motion animation patterns (`whileInView` + `viewport={{ once: true }}`) in any new component.
 
-There is no test suite yet. If you add one, use Vitest for the client (keeps it consistent with Vite) and document the run command here.
+## Images
+- `client/public/hospital-bg.jpg` is a REAL photo of the actual hospital building — use it as a real
+  photo (e.g. in a card), not as a decorative background.
+- Other placeholder photos (stock/picsum URLs) are temporary and should stay clearly swappable —
+  don't hardcode them in ways that are hard to find and replace later.
 
-## Project structure
+## Admin / Auth (future work — do not build yet unless explicitly asked)
+When asked to build this: bcryptjs for password hashing, express-session + connect-mongo for
+sessions, single admin account created via a one-time seed script (not a public signup route).
 
-```
-client/src/
-  pages/         one component per route (Home.jsx, About.jsx, Services.jsx, Doctors.jsx, Contact.jsx)
-  components/    shared UI (Navbar, Footer, Button, Card)
-  data/          placeholderData.js — all hospital content (services, doctors) lives here
-server/
-  index.js       Express app entry, CORS + JSON middleware, mounts routes
-  routes/        one file per route group (currently just contact.js)
-```
-
-## Conventions
-
-- **Content vs. code separation:** hospital-specific text (service names, doctor bios, contact info) belongs in `client/src/data/placeholderData.js`, not hardcoded inside page/component JSX. When asked to update copy, edit the data file first and check whether the component already reads from it before hardcoding new strings.
-- **Design tokens live in `tailwind.config.js`:** colors (`primary`, `secondary`, `accent`, `cream`, `ink`) and fonts (`font-display`, `font-body`, `font-mono`) are defined there. Use those token classes (e.g. `text-primary`, `font-display`) instead of raw hex values or arbitrary Tailwind colors like `text-blue-600`.
-- **Component style:** functional components, hooks (`useState`/`useEffect`), no class components. Keep components small — one page = one file in `pages/`, reusable pieces extracted to `components/`.
-- **Placeholder content stays labeled:** anything not yet confirmed by the actual hospital should keep a `[Placeholder]` marker in the text so it's obviously not final.
-- **Comments:** this codebase is a learning project — prefer a few extra explanatory comments over terse, uncommented code, especially in `server/`.
-
-## Environment variables (server only)
-
-Defined in `server/.env` (never commit this — it's gitignored). Template is `server/.env.example`. Required: `PORT`, `CLIENT_URL`, `HOSPITAL_INBOX_EMAIL`, `SMTP_EMAIL`, `SMTP_PASSWORD`.
-
-## Git workflow — please follow this even when acting autonomously
-
-- Never commit or push directly to `main`. Work on a branch named `feature/<short-description>` or `fix/<short-description>`.
-- Commit message format:
-  ```
-  TYPE - {file(s)}: {summary}
-  - {sub-point if needed}
-  ```
-  `TYPE` is one of `FEAT`, `FIX`, `STYLE`, `DOCS`, `CHORE`.
-- Don't merge your own PRs — leave them open for human review.
-- Never commit `.env`, `node_modules/`, or `dist/` — already covered by `.gitignore`; don't work around it.
-
-## Things not to do
-
-- Don't use TypeScript or add complex frontend frameworks (e.g., Next.js) unless explicitly requested.
-- Don't introduce new npm dependencies for things achievable with what's already installed.
-- Don't rewrite the design tokens or swap fonts without being asked.
-- Don't remove `[Placeholder]` markers or invent real-sounding hospital details (names, addresses, phone numbers) — flag what's still needed instead.
+## Workflow Rules
+- Build in the phase/task given — do not expand scope or jump ahead to unrequested features
+- If a request conflicts with something in this file, ask before proceeding
+- After finishing a task, summarize exactly what files were created/changed
+- Git commits: small and frequent, format `TYPE - {file(s)}: {summary}` with bullet sub-points
