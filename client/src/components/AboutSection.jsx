@@ -1,5 +1,5 @@
 import React from "react";
-import { HeartHandshake, ShieldCheck, Sparkles, Users, Compass, Award } from "lucide-react";
+import { HeartHandshake, ShieldCheck, Sparkles, Users, Compass, Award, Heart, Activity } from "lucide-react";
 import { motion } from "framer-motion";
 
 const COLORS = {
@@ -43,24 +43,29 @@ const defaultTimeline = [
 
 const defaultValues = [
   {
-    icon: HeartHandshake,
-    title: "Compassion",
-    text: "Every patient is met as a person first, a case second.",
+    icon: ShieldCheck,
+    title: "Trust",
+    text: "Building lasting confidence through honest, transparent care.",
   },
   {
-    icon: ShieldCheck,
-    title: "Integrity",
-    text: "Honest guidance, even when it's not the easy answer.",
+    icon: Activity,
+    title: "Wellness",
+    text: "Focusing on complete health, not just the absence of illness.",
   },
   {
     icon: Award,
-    title: "Excellence",
-    text: "We hold our care to a standard, not a minimum.",
+    title: "Integrity",
+    text: "Doing the right thing, even when no one is watching.",
   },
   {
-    icon: Users,
-    title: "Partnership",
-    text: "Patients, families, and staff make decisions together.",
+    icon: HeartHandshake,
+    title: "Nurture",
+    text: "Providing a supportive and healing environment for all.",
+  },
+  {
+    icon: Heart,
+    title: "Compassion",
+    text: "Every patient is met as a person first, a case second.",
   },
   {
     icon: Compass,
@@ -68,9 +73,14 @@ const defaultValues = [
     text: "Quality care shouldn't depend on how far you can travel.",
   },
   {
+    icon: Users,
+    title: "Respect",
+    text: "Honoring the dignity and rights of every individual we serve.",
+  },
+  {
     icon: Sparkles,
-    title: "Renewal",
-    text: "We keep learning, so our care never stands still.",
+    title: "Excellence",
+    text: "We hold our care to a standard, not a minimum.",
   },
 ];
 
@@ -115,7 +125,7 @@ export default function AboutSection({
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
           className="relative rounded-2xl overflow-hidden shadow-lg border-4"
           style={{ borderColor: COLORS.white }}
@@ -130,7 +140,7 @@ export default function AboutSection({
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
         >
           <p className="tc-mono text-xs uppercase mb-4 font-semibold" style={{ color: COLORS.red }}>
@@ -153,7 +163,7 @@ export default function AboutSection({
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.8 }}
         className="max-w-4xl mx-auto px-6 sm:px-10 py-14 my-10 rounded-2xl shadow-sm border bg-white/95 backdrop-blur-md"
         style={{ borderColor: COLORS.border }}
@@ -171,7 +181,7 @@ export default function AboutSection({
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.8 }}
+              viewport={{ once: false, amount: 0.8 }}
               transition={{ duration: 0.5, delay: i * 0.15 }}
               key={i} 
               className="relative pb-10 last:pb-0"
@@ -199,7 +209,7 @@ export default function AboutSection({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
         className="max-w-5xl mx-auto px-6 pt-10"
       >
@@ -224,7 +234,7 @@ export default function AboutSection({
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="p-8 md:p-10 md:rounded-l-2xl rounded-t-2xl md:rounded-t-none"
             style={{ backgroundColor: COLORS.green, color: "#FFFFFF" }}
@@ -235,7 +245,7 @@ export default function AboutSection({
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
             className="p-8 md:p-10 md:rounded-r-2xl rounded-b-2xl md:rounded-b-none"
             style={{ backgroundColor: COLORS.blue, color: "#FFFFFF" }}
@@ -247,13 +257,12 @@ export default function AboutSection({
           <motion.div
             initial={{ scale: 0, opacity: 0, x: "-50%", y: "-50%" }}
             whileInView={{ scale: 1, opacity: 1, x: "-50%", y: "-50%" }}
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="hidden md:flex absolute left-1/2 top-1/2 w-9 h-9 rounded-full items-center justify-center border-4"
-            style={{ backgroundColor: COLORS.red, borderColor: COLORS.transparent }}
+            className="hidden md:flex absolute left-1/2 top-1/2 items-center justify-center"
             aria-hidden="true"
           >
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "#FFFFFF" }} />
+            <Heart size={48} color={COLORS.red} fill={COLORS.red} />
           </motion.div>
         </div>
       </div>
@@ -263,21 +272,21 @@ export default function AboutSection({
         <motion.h3 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: false }}
           transition={{ duration: 0.6 }}
           className="tc-display text-2xl mb-10 text-center" 
           style={{ color: COLORS.blue }}
         >
           Core Values
         </motion.h3>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {values.map((v, i) => {
             const Icon = v.icon;
             return (
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.1 }}
+                viewport={{ once: false, amount: 0.1 }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 key={i}
                 className="p-6 rounded-xl border shadow-sm"

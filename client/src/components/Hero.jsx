@@ -8,7 +8,8 @@ export default function Hero() {
       <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
         >
           <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-primary sm:text-5xl">
@@ -19,7 +20,7 @@ export default function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button to="/contact">Book a Visit</Button>
-            <a href="#services" className="font-body text-sm font-semibold text-primary hover:text-primary-dark transition-colors">
+            <a href="#services" className="btn-fill tc-body">
               See Our Services &rarr;
             </a>
           </div>
@@ -27,7 +28,8 @@ export default function Hero() {
         
         <motion.div
           initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative h-64 sm:h-80 md:h-[400px] w-full rounded-2xl overflow-hidden shadow-xl"
         >

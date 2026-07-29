@@ -33,55 +33,55 @@ const defaultServices = [
     category: "emergency",
     title: "Emergency Room",
     text: "24/7 emergency care for critical and life-threatening conditions.",
-    photo: "https://picsum.photos/seed/svc-er/500/375",
+    photo: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=500&h=375",
   },
   {
     category: "emergency",
     title: "Trauma & Critical Care",
     text: "A rapid-response team ready for high-acuity trauma cases at any hour.",
-    photo: "https://picsum.photos/seed/svc-trauma/500/375",
+    photo: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=500&h=375",
   },
   {
     category: "emergency",
     title: "Ambulance & Transport",
     text: "Round-the-clock ambulance dispatch for urgent patient transport.",
-    photo: "https://picsum.photos/seed/svc-ambulance/500/375",
+    photo: "https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&w=500&h=375",
   },
   {
     category: "wellness",
     title: "Wellness & Nutrition",
     text: "Personalized nutrition and lifestyle counseling for long-term health.",
-    photo: "https://picsum.photos/seed/svc-wellness/500/375",
+    photo: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=500&h=375",
   },
   {
     category: "wellness",
     title: "Vaccination & Immunization",
     text: "Full immunization schedules and boosters for every age group.",
-    photo: "https://picsum.photos/seed/svc-vaccine/500/375",
+    photo: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=500&h=375",
   },
   {
     category: "wellness",
     title: "Annual Checkups",
     text: "Comprehensive physical exams designed to catch issues early.",
-    photo: "https://picsum.photos/seed/svc-checkup/500/375",
+    photo: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=500&h=375",
   },
   {
     category: "diagnostic",
     title: "Laboratory Services",
     text: "Fast, accurate lab testing across a full range of diagnostics.",
-    photo: "https://picsum.photos/seed/svc-lab/500/375",
+    photo: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=500&h=375",
   },
   {
     category: "diagnostic",
     title: "Imaging & Radiology",
     text: "On-site X-ray, ultrasound, and CT imaging with quick turnaround.",
-    photo: "https://picsum.photos/seed/svc-imaging/500/375",
+    photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=500&h=375",
   },
   {
     category: "diagnostic",
     title: "Specialist Clinics",
     text: "Cardiology, pediatrics, OB-GYN, and other specialist consultations.",
-    photo: "https://picsum.photos/seed/svc-specialist/500/375",
+    photo: "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=500&h=375",
   },
 ];
 
@@ -132,7 +132,7 @@ export default function ServicesSection({ services = defaultServices }) {
     let accumulatedScroll = 0;
 
     const tick = () => {
-      if (!isPaused && el) {
+      if (!isPaused && el && activeCategory === "all") {
         // Accumulate sub-pixels to handle speeds < 1 on browsers that truncate scrollLeft
         accumulatedScroll += AUTOPLAY_SPEED;
         if (accumulatedScroll >= 1) {
@@ -190,7 +190,7 @@ export default function ServicesSection({ services = defaultServices }) {
         className="max-w-5xl mx-auto px-6 pt-20 pb-10 text-center"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.5 }}
       >
         <p className="tc-mono text-xs uppercase mb-4" style={{ color: COLORS.blue }}>
@@ -212,7 +212,7 @@ export default function ServicesSection({ services = defaultServices }) {
         className="max-w-4xl mx-auto px-6 flex flex-wrap justify-center gap-3 pb-12"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         {Object.entries(CATEGORIES).map(([key, label]) => {
@@ -221,12 +221,11 @@ export default function ServicesSection({ services = defaultServices }) {
             <button
               key={key}
               onClick={() => setActiveCategory(key)}
-              className="tc-tab tc-body text-sm px-5 py-2 rounded-full border font-medium"
-              style={{
-                backgroundColor: isActive ? COLORS.blue : "transparent",
-                borderColor: COLORS.blue,
-                color: isActive ? COLORS.white : COLORS.blue,
-              }}
+              className={`tc-body text-sm font-medium !rounded-full ${
+                isActive 
+                  ? "px-6 py-3 bg-[#10B981] text-white border border-[#10B981]" 
+                  : "btn-fill"
+              }`}
             >
               {label}
             </button>
@@ -269,7 +268,7 @@ export default function ServicesSection({ services = defaultServices }) {
                       initial="hidden"
                       whileInView="visible"
                       exit="exit"
-                      viewport={{ once: true, amount: 0.2 }}
+                      viewport={{ once: false, amount: 0.2 }}
                       variants={cardVariants}
                       className="flex-none w-72 sm:w-80 rounded-xl overflow-hidden border bg-white"
                       style={{ borderColor: COLORS.border }}
