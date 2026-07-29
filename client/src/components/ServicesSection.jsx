@@ -1,94 +1,81 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Siren,
-  Activity,
-  HeartPulse,
-  Leaf,
-  Syringe,
-  Stethoscope,
-  FlaskConical,
-  ScanLine,
-  Users,
-} from "lucide-react";
 
-// Kept synced with Tailwind and using translucent background to blend with the page
 const COLORS = {
-  ink: "#1A2E2E", 
-  paper: "transparent",
-  white: "rgba(255, 255, 255, 0.95)",
-  border: "rgba(255, 255, 255, 0.7)", 
-  green: "#10B981",
+  ink: "#1C1E1F",
+  paper: "#FAFAF9",
+  white: "#FFFFFF",
+  border: "#E7E7E5",
   blue: "#0544AB",
-  red: "#E63946",
 };
 
+// "category" is kept only so the filter tabs still work — it is no longer
+// used to color the cards. "photo" is a placeholder; replace with a real
+// path (e.g. "/services/emergency-room.jpg" in client/public) once you have one.
 const CATEGORIES = {
-  all: { label: "All Services", color: COLORS.ink },
-  emergency: { label: "Emergency & Urgent Care", color: COLORS.red },
-  wellness: { label: "Wellness & Preventive Care", color: COLORS.green },
-  diagnostic: { label: "Diagnostic & Specialty Care", color: COLORS.blue },
+  all: "All Services",
+  emergency: "Emergency & Urgent Care",
+  wellness: "Wellness & Preventive Care",
+  diagnostic: "Diagnostic & Specialty Care",
 };
 
 const defaultServices = [
   {
     category: "emergency",
-    icon: Siren,
     title: "Emergency Room",
     text: "24/7 emergency care for critical and life-threatening conditions.",
+    photo: "https://picsum.photos/seed/svc-er/500/375",
   },
   {
     category: "emergency",
-    icon: Activity,
     title: "Trauma & Critical Care",
     text: "A rapid-response team ready for high-acuity trauma cases at any hour.",
+    photo: "https://picsum.photos/seed/svc-trauma/500/375",
   },
   {
     category: "emergency",
-    icon: HeartPulse,
     title: "Ambulance & Transport",
     text: "Round-the-clock ambulance dispatch for urgent patient transport.",
+    photo: "https://picsum.photos/seed/svc-ambulance/500/375",
   },
   {
     category: "wellness",
-    icon: Leaf,
     title: "Wellness & Nutrition",
     text: "Personalized nutrition and lifestyle counseling for long-term health.",
+    photo: "https://picsum.photos/seed/svc-wellness/500/375",
   },
   {
     category: "wellness",
-    icon: Syringe,
     title: "Vaccination & Immunization",
     text: "Full immunization schedules and boosters for every age group.",
+    photo: "https://picsum.photos/seed/svc-vaccine/500/375",
   },
   {
     category: "wellness",
-    icon: Stethoscope,
     title: "Annual Checkups",
     text: "Comprehensive physical exams designed to catch issues early.",
+    photo: "https://picsum.photos/seed/svc-checkup/500/375",
   },
   {
     category: "diagnostic",
-    icon: FlaskConical,
     title: "Laboratory Services",
     text: "Fast, accurate lab testing across a full range of diagnostics.",
+    photo: "https://picsum.photos/seed/svc-lab/500/375",
   },
   {
     category: "diagnostic",
-    icon: ScanLine,
     title: "Imaging & Radiology",
     text: "On-site X-ray, ultrasound, and CT imaging with quick turnaround.",
+    photo: "https://picsum.photos/seed/svc-imaging/500/375",
   },
   {
     category: "diagnostic",
-    icon: Users,
     title: "Specialist Clinics",
     text: "Cardiology, pediatrics, OB-GYN, and other specialist consultations.",
+    photo: "https://picsum.photos/seed/svc-specialist/500/375",
   },
 ];
 
-// Each card fades up on scroll; the "custom" index (i) staggers the delay
-// so cards animate in one after another instead of all at once.
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: (i) => ({
@@ -110,9 +97,8 @@ export default function ServicesSection({ services = defaultServices }) {
   return (
     <section
       id="services"
-      style={{ color: COLORS.ink }}
-      // Kept relative z-10 so the global cream overlay doesn't blur the text
-      className="relative z-10 w-full scroll-mt-24 py-10"
+      style={{ backgroundColor: COLORS.paper, color: COLORS.ink }}
+      className="w-full"
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
@@ -132,18 +118,18 @@ export default function ServicesSection({ services = defaultServices }) {
         <p className="tc-mono text-xs uppercase mb-4" style={{ color: COLORS.blue }}>
           What We Offer
         </p>
-        <h2 className="tc-display text-4xl md:text-5xl leading-tight mb-5 text-primary">
+        <h2 className="tc-display text-4xl md:text-5xl leading-tight mb-5">
           Care organized around
           <br />
           how urgently you need it.
         </h2>
-        <p className="tc-body text-base md:text-lg max-w-2xl mx-auto text-ink/90">
+        <p className="tc-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
           Every service below is grouped by the kind of care it provides &mdash; so
           you always know where to start.
         </p>
       </motion.div>
 
-      {/* Category filter tabs */}
+      {/* Category filter tabs — kept for filtering, no longer color-coded per category */}
       <motion.div
         className="max-w-4xl mx-auto px-6 flex flex-wrap justify-center gap-3 pb-12"
         initial={{ opacity: 0, y: 20 }}
@@ -151,66 +137,61 @@ export default function ServicesSection({ services = defaultServices }) {
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        {Object.entries(CATEGORIES).map(([key, cat]) => {
+        {Object.entries(CATEGORIES).map(([key, label]) => {
           const isActive = activeCategory === key;
           return (
             <button
               key={key}
               onClick={() => setActiveCategory(key)}
-              className="tc-tab tc-body text-sm px-5 py-2 rounded-full border font-medium shadow-sm hover:scale-105 transform duration-200"
+              className="tc-tab tc-body text-sm px-5 py-2 rounded-full border font-medium"
               style={{
-                backgroundColor: isActive ? cat.color : COLORS.white,
-                borderColor: cat.color,
-                color: isActive ? "#FFFFFF" : cat.color,
+                backgroundColor: isActive ? COLORS.blue : "transparent",
+                borderColor: COLORS.blue,
+                color: isActive ? COLORS.white : COLORS.blue,
               }}
             >
-              {cat.label}
+              {label}
             </button>
           );
         })}
       </motion.div>
 
-      {/* Service cards */}
-      <div className="max-w-5xl mx-auto px-6 pb-20 min-h-[400px]">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {/* AnimatePresence lets cards animate OUT (not just disappear)
-              when the filter changes and they no longer match. */}
+      {/* Service cards — photo on top, description below, side by side in a grid */}
+      <div className="max-w-5xl mx-auto px-6 pb-20">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
-            {filtered.map((service, i) => {
-              const Icon = service.icon;
-              const color = CATEGORIES[service.category].color;
-              return (
-                <motion.div
-                  key={service.title}
-                  layout
-                  custom={i}
-                  initial="hidden"
-                  whileInView="visible"
-                  exit="exit"
-                  viewport={{ once: true, amount: 0.2 }}
-                  variants={cardVariants}
-                  className="p-6 rounded-xl border backdrop-blur-md shadow-sm"
-                  style={{ backgroundColor: COLORS.white, borderColor: COLORS.border, borderLeft: `4px solid ${color}` }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
-                    style={{ backgroundColor: `${color}1A` }}
-                  >
-                    <Icon size={20} color={color} strokeWidth={1.75} />
-                  </div>
-                  <p
-                    className="tc-mono text-[10px] uppercase mb-2"
-                    style={{ color }}
-                  >
-                    {CATEGORIES[service.category].label}
-                  </p>
-                  <h4 className="tc-display text-lg mb-1.5 font-semibold text-primary">{service.title}</h4>
-                  <p className="tc-body text-sm text-ink/80 leading-relaxed">
+            {filtered.map((service, i) => (
+              <motion.div
+                key={service.title}
+                layout
+                custom={i}
+                initial="hidden"
+                whileInView="visible"
+                exit="exit"
+                viewport={{ once: true, amount: 0.2 }}
+                variants={cardVariants}
+                className="rounded-xl overflow-hidden border bg-white"
+                style={{ borderColor: COLORS.border }}
+              >
+                {/* Photo — placeholder until real service photos exist */}
+                <div className="w-full aspect-[4/3]">
+                  <img
+                    src={service.photo}
+                    alt={service.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                <div className="p-5">
+                  <h3 className="tc-display text-lg mb-2" style={{ color: COLORS.ink }}>
+                    {service.title}
+                  </h3>
+                  <p className="tc-body text-sm opacity-70 leading-relaxed">
                     {service.text}
                   </p>
-                </motion.div>
-              );
-            })}
+                </div>
+              </motion.div>
+            ))}
           </AnimatePresence>
         </div>
 

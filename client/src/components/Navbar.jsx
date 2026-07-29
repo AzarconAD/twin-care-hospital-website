@@ -76,14 +76,14 @@ export default function Navbar() {
               </button>
             </li>
             <li>
-              <NavLink to="/doctors" className={linkClass}>
-                Doctors
-              </NavLink>
-            </li>
-            <li>
               <button onClick={() => scrollToSection('services')} className={anchorClass}>
                 Services
               </button>
+            </li>
+            <li>
+              <NavLink to="/doctors" className={linkClass}>
+                Doctors
+              </NavLink>
             </li>
             <li>
               <NavLink to="/contact" className={linkClass}>
