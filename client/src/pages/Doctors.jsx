@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User } from "lucide-react";
 import { THEME_COLORS } from "../theme";
@@ -61,6 +61,10 @@ const cardVariants = {
 
 export default function DoctorsPage({ doctors = defaultDoctors }) {
   const [activeCategory, setActiveCategory] = useState("all");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const filtered =
     activeCategory === "all"

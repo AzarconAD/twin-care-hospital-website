@@ -96,8 +96,14 @@ export default function AboutSection({
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8, delay: 0.1 }}
+          className="relative z-10"
         >
-          <p className="font-mono text-xs uppercase tracking-wider mb-4 font-bold text-accent">
+          {/* Decorative text blobs */}
+          <div className="absolute -top-12 -right-12 w-48 h-48 bg-accent/15 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true" />
+          <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-secondary/15 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true" />
+          <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-primary/10 rounded-full blur-2xl -z-10 pointer-events-none" aria-hidden="true" />
+          
+          <p className="font-mono text-xs uppercase tracking-wider mb-4 font-bold text-accent relative z-10">
             About Twin Care Hospital
           </p>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-6 text-primary">
@@ -111,9 +117,29 @@ export default function AboutSection({
         </motion.div>
       </div>
 
-      {/* Mission & Vision — twin overlapping panels */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="grid md:grid-cols-2 relative shadow-2xl shadow-ink/5 rounded-3xl overflow-hidden">
+      {/* Mission & Vision section and Photo Collage */}
+      <div className="max-w-6xl mx-auto px-6 pt-12 pb-8">
+        {/* Mission & Vision Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <p className="font-mono text-xs tracking-widest uppercase mb-3 font-bold text-secondary">
+            Our Purpose
+          </p>
+          <h3 className="font-display text-4xl md:text-5xl text-primary mb-4">
+            Mission & Vision
+          </h3>
+          <p className="font-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
+            Dedicated to providing exceptional healthcare, rooted in our community, with a forward-looking approach to wellness.
+          </p>
+        </motion.div>
+
+        {/* Mission & Vision — twin overlapping panels */}
+        <div className="grid md:grid-cols-2 relative shadow-2xl shadow-ink/5 rounded-3xl overflow-hidden z-10">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -147,6 +173,65 @@ export default function AboutSection({
             aria-hidden="true"
           >
             <Heart size={80} className="text-accent fill-accent drop-shadow-2xl" />
+          </motion.div>
+        </div>
+
+        {/* Editorial Scattered Photo Collage */}
+        <div className="relative w-full flex flex-row items-center justify-center -space-x-6 sm:-space-x-12 md:-space-x-20 -mt-12 sm:-mt-24 mb-16 z-30 px-4">
+          
+          {/* Back Left Photo */}
+          <motion.div
+            initial={{ opacity: 0, y: 20, rotate: -5 }}
+            whileInView={{ opacity: 1, y: 10, rotate: -12 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="z-0 w-16 sm:w-32 md:w-56 aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0"
+          >
+            <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80" alt="Hospital care" className="w-full h-full object-cover" />
+          </motion.div>
+
+          {/* Front Left Photo */}
+          <motion.div
+            initial={{ opacity: 0, y: 20, rotate: 0 }}
+            whileInView={{ opacity: 1, y: -10, rotate: -6 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="z-10 w-24 sm:w-48 md:w-64 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0"
+          >
+            <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80" alt="Care team" className="w-full h-full object-cover" />
+          </motion.div>
+
+          {/* Center Main Photo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0, rotate: 2 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.7 }}
+            className="z-20 w-32 sm:w-64 md:w-80 aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-4 sm:border-8 border-white group flex-shrink-0"
+          >
+            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80" alt="Modern facility" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          </motion.div>
+
+          {/* Front Right Photo */}
+          <motion.div
+            initial={{ opacity: 0, y: 20, rotate: 0 }}
+            whileInView={{ opacity: 1, y: 15, rotate: 8 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="z-10 w-24 sm:w-48 md:w-64 aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0"
+          >
+            <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=80" alt="Specialist" className="w-full h-full object-cover" />
+          </motion.div>
+
+          {/* Back Right Photo */}
+          <motion.div
+            initial={{ opacity: 0, y: 20, rotate: 5 }}
+            whileInView={{ opacity: 1, y: -5, rotate: 15 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="z-0 w-16 sm:w-32 md:w-48 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0"
+          >
+            <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80" alt="Lab" className="w-full h-full object-cover" />
           </motion.div>
         </div>
       </div>
