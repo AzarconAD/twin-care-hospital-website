@@ -188,7 +188,7 @@ export default function AboutSection({
                 className="group relative p-8 rounded-2xl bg-white border border-border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 {/* Subtle background letter watermark */}
-                <div className="absolute -right-4 -top-8 font-display text-[12rem] font-bold text-cream select-none pointer-events-none opacity-50 group-hover:text-primary/5 transition-colors duration-500">
+                <div className="absolute -right-4 -top-8 font-display text-[12rem] font-bold text-cream select-none pointer-events-none opacity-70 group-hover:text-primary/10 group-hover:opacity-100 transition-all duration-500">
                   {firstLetter}
                 </div>
 
