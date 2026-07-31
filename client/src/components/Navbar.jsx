@@ -4,16 +4,36 @@ import { NavLink, useNavigate, useLocation, Link } from 'react-router-dom'
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState('home')
   const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
+
+      if (window.location.pathname === '/') {
+        const sections = ['home', 'about', 'services']
+        let current = 'home'
+        for (const section of sections) {
+          const el = document.getElementById(section)
+          if (el) {
+            const rect = el.getBoundingClientRect()
+            if (rect.top <= 150) {
+              current = section
+            }
+          }
+        }
+        setActiveSection(current)
+      } else {
+        setActiveSection('')
+      }
     }
+
+    handleScroll()
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [location.pathname])
 
   function scrollToSection(sectionId) {
     setOpen(false) // close mobile menu if it's open
@@ -36,8 +56,10 @@ export default function Navbar() {
       isActive ? 'text-primary font-semibold' : 'text-ink/80'
     }`
 
-  const anchorClass =
-    'font-body text-sm tracking-wide text-ink/80 transition-colors hover:text-accent'
+  const anchorClass = (isActive = false) =>
+    `font-body text-sm tracking-wide transition-colors hover:text-accent ${
+      isActive ? 'text-primary font-semibold' : 'text-ink/80'
+    }`
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 transition-colors duration-300">
@@ -66,17 +88,17 @@ export default function Navbar() {
           {/* Desktop links */}
           <ul className="hidden items-center gap-8 md:flex">
             <li>
-              <button onClick={() => scrollToSection('home')} className={anchorClass}>
+              <button onClick={() => scrollToSection('home')} className={anchorClass(activeSection === 'home')}>
                 Home
               </button>
             </li>
             <li>
-              <button onClick={() => scrollToSection('about')} className={anchorClass}>
+              <button onClick={() => scrollToSection('about')} className={anchorClass(activeSection === 'about')}>
                 About
               </button>
             </li>
             <li>
-              <button onClick={() => scrollToSection('services')} className={anchorClass}>
+              <button onClick={() => scrollToSection('services')} className={anchorClass(activeSection === 'services')}>
                 Services
               </button>
             </li>
@@ -111,7 +133,7 @@ export default function Navbar() {
             <li>
               <button
                 onClick={() => scrollToSection('home')}
-                className={`block w-full py-2 text-left ${anchorClass}`}
+                className={`block w-full py-2 text-left ${anchorClass(activeSection === 'home')}`}
               >
                 Home
               </button>
@@ -119,7 +141,7 @@ export default function Navbar() {
             <li>
               <button
                 onClick={() => scrollToSection('about')}
-                className={`block w-full py-2 text-left ${anchorClass}`}
+                className={`block w-full py-2 text-left ${anchorClass(activeSection === 'about')}`}
               >
                 About
               </button>
@@ -136,7 +158,7 @@ export default function Navbar() {
             <li>
               <button
                 onClick={() => scrollToSection('services')}
-                className={`block w-full py-2 text-left ${anchorClass}`}
+                className={`block w-full py-2 text-left ${anchorClass(activeSection === 'services')}`}
               >
                 Services
               </button>
