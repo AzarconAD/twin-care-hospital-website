@@ -50,6 +50,7 @@ export default function AboutSection({
   values = defaultValues,
   missionText = "To deliver attentive, high-quality care to every person who walks through our doors, regardless of where they started from or what they can afford.",
   visionText = "A community where excellent care is never a matter of luck, geography, or connections \u2014 just a short walk from home.",
+  onImageClick,
 }) {
   return (
     <section
@@ -65,7 +66,8 @@ export default function AboutSection({
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
-          className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-8 border-white group"
+          className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-8 border-white group cursor-pointer"
+          onClick={() => onImageClick?.("/hospital-bg.jpg")}
         >
           <img 
             src="/hospital-bg.jpg"
@@ -175,9 +177,10 @@ export default function AboutSection({
             whileInView={{ opacity: 1, y: 10, rotate: -12 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="z-0 w-16 sm:w-32 md:w-56 aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0"
+            className="z-0 w-16 sm:w-32 md:w-56 aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0 cursor-pointer group"
+            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80")}
           >
-            <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80" alt="Hospital care" className="w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80" alt="Hospital care" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
           </motion.div>
 
           {/* Front Left Photo */}
@@ -186,9 +189,10 @@ export default function AboutSection({
             whileInView={{ opacity: 1, y: -10, rotate: -6 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="z-10 w-24 sm:w-48 md:w-64 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0"
+            className="z-10 w-24 sm:w-48 md:w-64 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0 cursor-pointer group"
+            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80")}
           >
-            <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80" alt="Care team" className="w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80" alt="Care team" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
           </motion.div>
 
           {/* Center Main Photo */}
@@ -197,9 +201,10 @@ export default function AboutSection({
             whileInView={{ opacity: 1, scale: 1, y: 0, rotate: 2 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7 }}
-            className="z-20 w-32 sm:w-64 md:w-80 aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-4 sm:border-8 border-white group flex-shrink-0"
+            className="z-20 w-32 sm:w-64 md:w-80 aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-4 sm:border-8 border-white group flex-shrink-0 cursor-pointer"
+            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80")}
           >
-            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80" alt="Modern facility" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80" alt="Modern facility" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
           </motion.div>
 
           {/* Front Right Photo */}
@@ -208,9 +213,10 @@ export default function AboutSection({
             whileInView={{ opacity: 1, y: 15, rotate: 8 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="z-10 w-24 sm:w-48 md:w-64 aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0"
+            className="z-10 w-24 sm:w-48 md:w-64 aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0 cursor-pointer group"
+            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=80")}
           >
-            <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=80" alt="Specialist" className="w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=80" alt="Specialist" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
           </motion.div>
 
           {/* Back Right Photo */}
@@ -219,9 +225,10 @@ export default function AboutSection({
             whileInView={{ opacity: 1, y: -5, rotate: 15 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7, delay: 0.25 }}
-            className="z-0 w-16 sm:w-32 md:w-48 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0"
+            className="z-0 w-16 sm:w-32 md:w-48 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0 cursor-pointer group"
+            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80")}
           >
-            <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80" alt="Lab" className="w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80" alt="Lab" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
           </motion.div>
         </div>
       </div>

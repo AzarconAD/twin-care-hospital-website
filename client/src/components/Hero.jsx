@@ -10,7 +10,7 @@ const trustPoints = [
   { icon: HeartHandshake, text: 'Compassionate Approach' },
 ];
 
-export default function Hero() {
+export default function Hero({ onImageClick }) {
   return (
     <section
       id="home"
@@ -61,11 +61,14 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative h-64 sm:h-80 md:h-[400px] w-full"
         >
-          <div className="relative h-full w-full rounded-2xl overflow-hidden shadow-xl">
+          <div 
+            className="relative h-full w-full rounded-2xl overflow-hidden shadow-xl cursor-pointer group"
+            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop")}
+          >
             <img
               src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop"
               alt="Modern hospital facility"
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </div>
 

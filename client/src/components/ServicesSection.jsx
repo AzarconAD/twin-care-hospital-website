@@ -89,7 +89,7 @@ const cardVariants = {
   exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
 };
 
-export default function ServicesSection({ services = defaultServices }) {
+export default function ServicesSection({ services = defaultServices, onImageClick }) {
   const [activeCategory, setActiveCategory] = useState("all");
   const scrollRef = useRef(null);
 
@@ -259,11 +259,14 @@ export default function ServicesSection({ services = defaultServices }) {
                       variants={cardVariants}
                       className="flex-none w-72 sm:w-80 rounded-xl overflow-hidden border border-border bg-white"
                     >
-                      <div className="w-full aspect-[4/3]">
+                      <div 
+                        className="w-full aspect-[4/3] cursor-pointer group overflow-hidden"
+                        onClick={() => onImageClick?.(service.photo)}
+                      >
                         <img
                           src={service.photo}
                           alt={service.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       </div>
                       <div className="p-5">
