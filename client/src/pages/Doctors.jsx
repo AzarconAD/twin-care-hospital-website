@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search } from "lucide-react";
 import { THEME_COLORS } from "../theme";
@@ -92,6 +92,7 @@ const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export default function DoctorsPage({ doctors = defaultDoctors, schedule = defaultSchedule }) {
+  const calendarRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState("all");
   const [currentDate, setCurrentDate] = useState(() => {
     const today = new Date();
@@ -208,14 +209,23 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
         transition={{ duration: 0.5 }}
       >
         {/* Live status row — today's date + how many doctors are on today */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-5">
-          <span className="font-mono text-xs uppercase tracking-wide text-primary/60">
-            {todayLabel}
-          </span>
-          <span className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wide bg-secondary/10 text-secondary px-3 py-1 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
-            {availableTodayCount} doctors available today
-          </span>
+        <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-6 bg-white/70 backdrop-blur-md border border-primary/10 shadow-sm px-4 py-2 rounded-full">
+          <div className="flex items-center gap-2 text-primary/80">
+            <CalendarIcon size={16} className="text-primary/60" />
+            <span className="font-mono text-xs uppercase tracking-wide font-medium">
+              {todayLabel}
+            </span>
+          </div>
+          <div className="hidden sm:block w-px h-4 bg-primary/20"></div>
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              {availableTodayCount > 0 && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>}
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${availableTodayCount > 0 ? 'bg-secondary' : 'bg-primary/40'}`}></span>
+            </span>
+            <span className="font-mono text-xs uppercase tracking-wide text-secondary font-medium">
+              {availableTodayCount} {availableTodayCount === 1 ? 'doctor' : 'doctors'} available today
+            </span>
+          </div>
         </div>
 
         <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-primary mb-6">
@@ -233,6 +243,11 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    calendarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
                 placeholder="Search by doctor name or specialty..."
                 className="tc-search-input font-body"
               />
@@ -244,7 +259,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
         </div>
       </motion.div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-24">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-24 scroll-mt-24" ref={calendarRef}>
         <div className="tc-calendar-wrapper">
           <div className="tc-calendar-container">
             {/* Calendar Controls */}
