@@ -195,17 +195,19 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
         </h1>
         
         {/* Search Bar */}
-        <div className="max-w-md mx-auto relative mt-6">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-primary/40" />
+        <div className="tc-search-wrapper">
+          <div className="tc-search-container">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by doctor name or specialty..."
+              className="tc-search-input font-body"
+            />
+            <div className="tc-search-icon">
+              <Search strokeWidth={3} size={20} />
+            </div>
           </div>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by doctor name or specialty..."
-            className="block w-full px-11 py-3 text-center bg-white/40 backdrop-blur-md border border-primary/15 rounded-full text-ink placeholder:text-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.02)]"
-          />
         </div>
       </motion.div>
 
