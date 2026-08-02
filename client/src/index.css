@@ -131,7 +131,6 @@
   z-index: 0;
   max-width: 500px;
   width: 100%;
-  margin: 1.5rem auto 0 auto; /* mt-6 mx-auto */
 }
 
 .tc-search-container {
@@ -210,4 +209,47 @@
 
 .tc-search-icon svg {
   color: white;
+}
+
+/* Custom Calendar Styles mirroring Search Bar */
+.tc-calendar-wrapper {
+  position: relative;
+  background: linear-gradient(135deg, rgb(179, 208, 253) 0%, rgb(164, 202, 248) 100%);
+  border-radius: 1.5rem; /* 3xl */
+  padding: 12px;
+  z-index: 0;
+  width: 100%;
+}
+
+.tc-calendar-container {
+  position: relative;
+  width: 100%;
+  border-radius: 1rem; /* 2xl */
+  background: linear-gradient(135deg, rgb(218, 232, 247) 0%, rgb(214, 229, 247) 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.tc-calendar-container::after, .tc-calendar-container::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  position: absolute;
+  pointer-events: none;
+}
+
+.tc-calendar-container::before {
+  top: -1px;
+  left: -1px;
+  background: linear-gradient(0deg, rgb(218, 232, 247) 0%, rgb(255, 255, 255) 100%);
+  z-index: -1;
+}
+
+.tc-calendar-container::after {
+  bottom: -1px;
+  right: -1px;
+  background: linear-gradient(0deg, rgb(163, 206, 255) 0%, rgb(211, 232, 255) 100%);
+  box-shadow: rgba(79, 156, 232, 0.7) 3px 3px 5px 0px, rgba(79, 156, 232, 0.7) 5px 5px 20px 0px;
+  z-index: -2;
 }

@@ -87,7 +87,7 @@ export default function Hero() {
               <HeartHandshake size={20} className="text-white" strokeWidth={1.75} />
             </div>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-wide font-semibold text-primary mb-0.5">
+              <p className="font-mono text-xs uppercase tracking-wide font-semibold text-primary mb-0.5">
                 Latest Update
               </p>
               <p className="text-sm font-medium font-body leading-snug text-ink">

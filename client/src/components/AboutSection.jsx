@@ -85,8 +85,8 @@ export default function AboutSection({
           {/* Decorative text blobs */}
           <AboutHeaderBlobs />
           
-          <p className="font-mono text-xs uppercase tracking-wider mb-4 font-bold text-accent relative z-10">
-            About Twin Care Hospital
+          <p className="font-mono text-sm tracking-widest uppercase mb-3 font-bold text-secondary">
+            About Twin Care Hospital      
           </p>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-6 text-primary">
             Two beginnings.<br />One standard of care.
@@ -112,7 +112,7 @@ export default function AboutSection({
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <p className="font-mono text-xs tracking-widest uppercase mb-3 font-bold text-secondary">
+          <p className="font-mono text-sm tracking-widest uppercase mb-3 font-bold text-secondary">
             Our Purpose
           </p>
           <h3 className="font-display text-4xl md:text-5xl text-primary mb-4">
@@ -137,7 +137,7 @@ export default function AboutSection({
               className="p-12 md:p-16 bg-secondary/80 backdrop-blur-2xl text-white relative overflow-hidden group border border-white/20"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -mr-20 -mt-20 transition-transform duration-700 group-hover:scale-150" />
-              <p className="font-mono text-sm tracking-widest uppercase mb-4 opacity-90 font-bold">Mission</p>
+              <p className="font-mono text-base tracking-widest uppercase mb-4 opacity-90 font-bold">Mission</p>
               <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{missionText}</p>
             </motion.div>
             <motion.div
@@ -148,7 +148,7 @@ export default function AboutSection({
               className="p-12 md:p-16 bg-primary/80 backdrop-blur-2xl text-white relative overflow-hidden group border border-white/20"
             >
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -ml-20 -mb-20 transition-transform duration-700 group-hover:scale-150" />
-              <p className="font-mono text-sm tracking-widest uppercase mb-4 opacity-90 font-bold">Vision</p>
+              <p className="font-mono text-base tracking-widest uppercase mb-4 opacity-90 font-bold">Vision</p>
               <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{visionText}</p>
             </motion.div>
 
@@ -235,7 +235,7 @@ export default function AboutSection({
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <p className="font-mono text-xs tracking-widest uppercase mb-3 font-bold text-secondary">
+          <p className="font-mono text-sm tracking-widest uppercase mb-3 font-bold text-secondary">
             Our Guiding Principles
           </p>
           <h3 className="font-display text-4xl md:text-5xl text-primary mb-4">

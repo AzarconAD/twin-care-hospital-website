@@ -182,10 +182,10 @@ export default function ServicesSection({ services = defaultServices }) {
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.5 }}
       >
-        <p className="font-mono text-xs uppercase mb-4 text-primary">
+        <p className="font-mono text-sm tracking-widest uppercase mb-3 font-bold text-secondary">
           What We Offer
         </p>
-        <h2 className="font-display text-4xl md:text-5xl leading-tight mb-5">
+        <h2 className="font-display text-4xl md:text-5xl leading-tight mb-5 text-primary">
           Care organized around
           <br />
           how urgently you need it.

@@ -23,7 +23,7 @@ export default {
       fontFamily: {
         display: ['"Newsreader"', 'serif'],   // headings
         body: ['"Inter"', 'sans-serif'],        // paragraphs, UI text
-        mono: ['"Space Mono"', 'monospace'],  // labels, hours, directory codes
+        mono: ['"Roboto"', 'sans-serif'],  // labels, hours, directory codes
       },
     },
   },

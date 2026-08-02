@@ -193,31 +193,34 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
         <h1 className="font-display text-4xl sm:text-5xl font-semibold leading-tight text-primary mb-5">
           Doctors' Schedule
         </h1>
-        
-        {/* Search Bar */}
-        <div className="tc-search-wrapper">
-          <div className="tc-search-container">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by doctor name or specialty..."
-              className="tc-search-input font-body"
-            />
-            <div className="tc-search-icon">
-              <Search strokeWidth={3} size={20} />
-            </div>
-          </div>
-        </div>
       </motion.div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-24">
-        {/* Calendar Controls */}
-        <div className="flex items-center justify-between bg-white/40 backdrop-blur-md p-5 rounded-t-2xl border-x border-t border-primary/15 shadow-[0_4px_30px_rgba(0,0,0,0.02)]">
-          <h2 className="font-display text-2xl sm:text-3xl text-primary">
+        <div className="tc-calendar-wrapper">
+          <div className="tc-calendar-container">
+            {/* Calendar Controls */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 border-b border-primary/15 relative z-10">
+              <h2 className="font-display text-2xl sm:text-3xl text-primary md:w-1/4 text-center md:text-left whitespace-nowrap">
             {MONTHS[month]} <span className="text-primary/60">{year}</span>
           </h2>
-          <div className="flex gap-2">
+          
+          {/* Search Bar */}
+          <div className="tc-search-wrapper flex-1 mx-auto max-w-[500px]">
+            <div className="tc-search-container">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by doctor name or specialty..."
+                className="tc-search-input font-body"
+              />
+              <div className="tc-search-icon">
+                <Search strokeWidth={3} size={20} />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2 md:w-1/4 justify-center md:justify-end">
             <button 
               onClick={prevMonth}
               className="p-2 rounded-full hover:bg-white/60 border border-transparent hover:border-white transition-colors text-primary"
@@ -236,7 +239,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
         </div>
 
         {/* Desktop Calendar Grid (>640px) */}
-        <div className="hidden sm:block bg-white/30 backdrop-blur-md border-x border-b border-primary/15 rounded-b-2xl shadow-[0_4px_30px_rgba(0,0,0,0.02)]">
+        <div className="hidden sm:block relative z-10">
           <div className="grid grid-cols-7 border-b border-primary/15 bg-secondary/10">
             {WEEKDAYS.map(day => (
               <div key={day} className="py-3 text-center font-mono text-xs uppercase text-secondary font-semibold tracking-wider border-r last:border-r-0 border-primary/15">
@@ -290,7 +293,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
         </div>
 
         {/* Mobile Agenda List (<640px) */}
-        <div className="sm:hidden bg-white/30 backdrop-blur-md border border-primary/15 rounded-b-2xl shadow-[0_4px_30px_rgba(0,0,0,0.02)] overflow-hidden flex flex-col divide-y divide-primary/15">
+        <div className="sm:hidden overflow-hidden flex flex-col divide-y divide-primary/15 relative z-10">
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
             const dateKey = formatKey(day);
@@ -308,7 +311,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
                   <div className={`font-mono text-lg font-medium w-9 h-9 flex items-center justify-center rounded-full ${isToday ? 'bg-secondary text-white' : 'bg-white/50 text-primary'}`}>
                     {day}
                   </div>
-                  <div className="font-body text-sm font-semibold text-primary/70 uppercase tracking-wider">
+                  <div className="font-mono text-sm font-semibold text-primary/70 uppercase tracking-wider">
                     {dayOfWeek}
                   </div>
                 </div>
@@ -387,6 +390,8 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
                No doctors found for this category in {MONTHS[month]}.
              </div>
           )}
+        </div>
+          </div>
         </div>
       </div>
     </div>
