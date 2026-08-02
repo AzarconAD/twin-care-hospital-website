@@ -229,7 +229,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
         </div>
 
         <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-primary mb-6">
-          Find your <span className="text-secondary">Specialist</span>
+          Find your <span className="text-accent">Specialist</span>
         </h1>
         <p className="font-body text-lg text-primary/70 leading-relaxed max-w-2xl mx-auto mb-8">
           Browse our team of experienced medical professionals and view their real-time availability to schedule your next visit.
@@ -251,7 +251,10 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
                 placeholder="Search by doctor name or specialty..."
                 className="tc-search-input font-body"
               />
-              <div className="tc-search-icon">
+              <div 
+                className="tc-search-icon"
+                onClick={() => calendarRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              >
                 <Search strokeWidth={3} size={20} />
               </div>
             </div>

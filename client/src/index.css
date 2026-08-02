@@ -188,27 +188,22 @@
 }
 
 .tc-search-icon {
-  width: 44px; /* Slightly smaller to fit */
+  width: 44px;
   height: 44px;
-  border-left: 2px solid white;
-  border-top: 3px solid transparent;
-  border-bottom: 3px solid transparent;
-  border-radius: 50%;
-  padding-left: 10px;
-  margin-right: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: default;
-  transition: border-left 0.2s ease;
-}
-
-.tc-search-icon:hover {
-  border-left: 3px solid white;
+  cursor: pointer;
+  margin-right: 5px;
 }
 
 .tc-search-icon svg {
   color: white;
+  transition: transform 0.2s ease;
+}
+
+.tc-search-icon:hover svg {
+  transform: scale(1.15);
 }
 
 /* Custom Calendar Styles mirroring Search Bar */
