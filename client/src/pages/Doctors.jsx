@@ -173,6 +173,23 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
     </div>
   );
 
+  const today = new Date();
+
+  // Built from LOCAL date parts on purpose, not toISOString()
+  const pad = (n) => String(n).padStart(2, "0");
+  const todayISO = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+  const todayLabel = today.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+
+  const availableTodayCount = new Set(
+    schedule
+      .filter((entry) => entry.date === todayISO)
+      .map((entry) => entry.doctorId)
+  ).size;
+
   return (
     <div className="relative w-full min-h-screen bg-cream text-primary overflow-hidden">
       {/* Decorative background blobs */}
@@ -185,26 +202,31 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
 
       {/* Header Area */}
       <motion.div
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-32 lg:pt-40 pb-8 text-center"
+        className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 pt-32 lg:pt-40 pb-12 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="font-display text-4xl sm:text-5xl font-semibold leading-tight text-primary mb-5">
-          Doctors' Schedule
-        </h1>
-      </motion.div>
+        {/* Live status row — today's date + how many doctors are on today */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-5">
+          <span className="font-mono text-xs uppercase tracking-wide text-primary/60">
+            {todayLabel}
+          </span>
+          <span className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wide bg-secondary/10 text-secondary px-3 py-1 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+            {availableTodayCount} doctors available today
+          </span>
+        </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-24">
-        <div className="tc-calendar-wrapper">
-          <div className="tc-calendar-container">
-            {/* Calendar Controls */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 border-b border-primary/15 relative z-10">
-              <h2 className="font-display text-2xl sm:text-3xl text-primary md:w-1/4 text-center md:text-left whitespace-nowrap">
-            {MONTHS[month]} <span className="text-primary/60">{year}</span>
-          </h2>
-          
-          {/* Search Bar */}
+        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-primary mb-6">
+          Find your <span className="text-secondary">Specialist</span>
+        </h1>
+        <p className="font-body text-lg text-primary/70 leading-relaxed max-w-2xl mx-auto mb-8">
+          Browse our team of experienced medical professionals and view their real-time availability to schedule your next visit.
+        </p>
+
+        {/* Search */}
+        <div className="max-w-md mx-auto">
           <div className="tc-search-wrapper flex-1 mx-auto max-w-[500px]">
             <div className="tc-search-container">
               <input
@@ -219,8 +241,19 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
               </div>
             </div>
           </div>
+        </div>
+      </motion.div>
 
-          <div className="flex gap-2 md:w-1/4 justify-center md:justify-end">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-24">
+        <div className="tc-calendar-wrapper">
+          <div className="tc-calendar-container">
+            {/* Calendar Controls */}
+            <div className="flex items-center justify-between gap-4 p-5 border-b border-primary/15 relative z-10">
+              <h2 className="font-display text-2xl sm:text-3xl text-primary">
+                {MONTHS[month]} <span className="text-primary/60">{year}</span>
+              </h2>
+
+              <div className="flex gap-2">
             <button 
               onClick={prevMonth}
               className="p-2 rounded-full hover:bg-white/60 border border-transparent hover:border-white transition-colors text-primary"
