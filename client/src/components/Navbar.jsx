@@ -108,7 +108,7 @@ export default function Navbar() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/contact" className={linkClass}>
+              <NavLink to="/contact" className={linkClass} onClick={() => window.scrollTo(0, 0)}>
                 Contact
               </NavLink>
             </li>
@@ -167,7 +167,10 @@ export default function Navbar() {
               <NavLink
                 to="/contact"
                 className={linkClass}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false)
+                  window.scrollTo(0, 0)
+                }}
               >
                 <span className="block py-2">Contact</span>
               </NavLink>

@@ -196,7 +196,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
               </p>
               <Link
                 to="/contact"
-                state={{ appointment: true }}
+                state={{ appointment: true, doctorName: doctor.name }}
                 className="btn-fill-popup flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
               >
                 <CalendarIcon size={16} />

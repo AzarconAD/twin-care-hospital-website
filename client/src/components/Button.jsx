@@ -11,7 +11,7 @@ export default function Button({ to, variant = 'primary', children, ...props }) 
 
   if (to) {
     return (
-      <Link to={to} className={className}>
+      <Link to={to} className={className} {...props}>
         {children}
       </Link>
     )

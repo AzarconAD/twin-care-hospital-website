@@ -31,7 +31,7 @@ export default function Hero({ onImageClick }) {
             At Twin Care, we give the best healthcare you deserve.
           </h1>
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button to="/contact">Book a Visit</Button>
+            <Button to="/contact" state={{ appointment: true }}>Book a Visit</Button>
             <a href="#services" className="btn-fill font-body">
               See Our Services &rarr;
             </a>
