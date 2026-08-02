@@ -122,6 +122,56 @@
   transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
 }
 
+.btn-fill-popup {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  background-color: transparent;
+  border: 1px solid #10B981;
+  color: #10B981;
+}
+
+.btn-fill-popup:hover {
+  color: #ffffff;
+}
+
+.btn-fill-popup::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scaleY(1) scaleX(1.25);
+  top: 100%;
+  width: 140%;
+  height: 180%;
+  background-color: rgba(16, 185, 129, 0.2);
+  border-radius: 50%;
+  display: block;
+  transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  z-index: -1;
+}
+
+.btn-fill-popup::after {
+  content: "";
+  position: absolute;
+  left: 55%;
+  transform: translateX(-50%) scaleY(1) scaleX(1.45);
+  top: 180%;
+  width: 160%;
+  height: 190%;
+  background-color: #10B981;
+  border-radius: 50%;
+  display: block;
+  transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  z-index: -1;
+}
+
+.btn-fill-popup:hover::before,
+.btn-fill-popup:hover::after {
+  top: -45%;
+  background-color: #10B981;
+  transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+}
+
 /* Custom Search Bar Styles */
 .tc-search-wrapper {
   position: relative;

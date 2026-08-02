@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search } from "lucide-react";
 import { THEME_COLORS } from "../theme";
 import { DoctorsBackgroundBlobs } from "../components/bg-decorations";
@@ -102,6 +103,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
   // Mobile accordion state: tracks which doctor's detail is open on which day
   // Format: "YYYY-MM-DD-doctorId"
   const [openMobileDetail, setOpenMobileDetail] = useState(null);
+  const [openDesktopPopup, setOpenDesktopPopup] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -149,30 +151,68 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
     setOpenMobileDetail(prev => prev === id ? null : id);
   };
 
-  // Helper for hover popover content (Desktop)
-  const DoctorPopup = ({ doctor }) => (
-    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-4 rounded-xl border border-border bg-white shadow-xl z-50 hidden group-hover:block cursor-default">
-      <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-b border-r border-border rotate-45"></div>
-      <div className="flex flex-col items-center text-center relative z-10">
-        <div 
-          className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
-          style={{ backgroundColor: CATEGORIES[doctor.category].color }}
-        >
-          <User size={20} color={THEME_COLORS.white} strokeWidth={2} />
-        </div>
-        <p className="font-mono text-[10px] uppercase mb-1" style={{ color: CATEGORIES[doctor.category].color }}>
-          {CATEGORIES[doctor.category].label}
-        </p>
-        <h4 className="font-display text-base mb-1 text-ink">{doctor.name}</h4>
-        <p className="font-body text-xs font-medium mb-2 text-ink/90">
-          {doctor.specialty}
-        </p>
-        <p className="font-body text-xs text-ink/70 leading-relaxed">
-          {doctor.bio}
-        </p>
-      </div>
-    </div>
-  );
+  // Helper for hover popover (Desktop) — fully Framer Motion animated
+  const DoctorPopup = ({ doctor, isVisible }) => {
+    const catColor = THEME_COLORS.secondary;
+    return (
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            key="popup"
+            initial={{ opacity: 0, y: 8, x: "-50%", scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+            exit={{ opacity: 0, y: 6, x: "-50%", scale: 0.97, transition: { duration: 0.25 } }}
+            transition={{ type: "spring", stiffness: 320, damping: 24 }}
+            className="absolute bottom-full left-1/2 mb-2 w-72 rounded-2xl shadow-2xl border border-white/60 z-50 cursor-default backdrop-blur-md"
+            style={{ filter: "drop-shadow(0 8px 32px rgba(5,68,171,0.13))" }}
+          >
+            {/* Gradient header band */}
+            <div
+              className="relative flex flex-col items-center pt-5 pb-4 px-5 rounded-t-2xl"
+              style={{ background: `linear-gradient(135deg, ${catColor}18 0%, ${catColor}0d 100%)`, borderBottom: `1px solid ${catColor}22` }}
+            >
+              {/* Avatar */}
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center mb-3 shadow-md ring-4 ring-white"
+                style={{ backgroundColor: catColor }}
+              >
+                <User size={24} color="#fff" strokeWidth={2} />
+              </div>
+              {/* Category badge */}
+              <span
+                className="font-mono text-[9px] uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2"
+                style={{ backgroundColor: `${catColor}22`, color: catColor }}
+              >
+                {CATEGORIES[doctor.category].label}
+              </span>
+              <h4 className="font-display text-base leading-tight text-ink text-center">{doctor.name}</h4>
+              <p className="font-mono text-[10px] uppercase tracking-wide mt-0.5 text-ink/60">{doctor.specialty}</p>
+            </div>
+
+            {/* Body */}
+            <div className="bg-white/80 px-5 pt-3 pb-4 rounded-b-2xl">
+              <p className="font-body text-xs text-ink/65 leading-relaxed text-center mb-4">
+                {doctor.bio}
+              </p>
+              <Link
+                to="/contact"
+                state={{ appointment: true }}
+                className="btn-fill-popup flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
+              >
+                <CalendarIcon size={16} />
+                Make an Appointment
+              </Link>
+            </div>
+
+            {/* Caret */}
+            <div
+              className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-b border-r border-border rotate-45"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  };
 
   const today = new Date();
 
@@ -223,7 +263,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
               <span className={`relative inline-flex rounded-full h-2 w-2 ${availableTodayCount > 0 ? 'bg-secondary' : 'bg-primary/40'}`}></span>
             </span>
             <span className="font-mono text-xs uppercase tracking-wide text-secondary font-medium">
-              {availableTodayCount} {availableTodayCount === 1 ? 'doctor' : 'doctors'} available today
+              {availableTodayCount} {availableTodayCount === 1 ? 'doctor is' : 'doctors are'} available today
             </span>
           </div>
         </div>
@@ -319,16 +359,17 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
                   </div>
                   <div className="flex flex-col gap-1.5">
                     {docsToday.map(doc => (
-                      <div key={doc.id} className="relative group tc-doctor-pill">
+                      <div key={doc.id} className="relative tc-doctor-pill">
                         <div 
+                          onClick={() => setOpenDesktopPopup(prev => prev === `${dateKey}-${doc.id}` ? null : `${dateKey}-${doc.id}`)}
                           className="flex items-center gap-1.5 p-1.5 px-2 rounded-md border border-primary/15 cursor-pointer bg-white/70 hover:bg-white shadow-sm transition-colors"
                         >
                           <span className="font-body text-xs font-medium truncate text-ink/90">
                             {doc.name}
                           </span>
                         </div>
-                        {/* Hover Popup */}
-                        <DoctorPopup doctor={doc} />
+                        {/* Animated Popup */}
+                        <DoctorPopup doctor={doc} isVisible={openDesktopPopup === `${dateKey}-${doc.id}`} />
                       </div>
                     ))}
                   </div>
