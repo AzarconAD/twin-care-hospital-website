@@ -67,14 +67,39 @@ export function ServicesBackgroundBlobs() {
   );
 }
 
+export function ContactBackgroundBlobs() {
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0">
+      {/* Top area */}
+      <div className="absolute -top-10 -left-10 w-96 h-96 rounded-full bg-secondary/30 blur-3xl" aria-hidden="true" />
+      <div className="absolute top-20 right-[-4rem] w-[22rem] h-[22rem] rounded-full bg-accent/25 blur-3xl" aria-hidden="true" />
+      <div className="absolute top-1/4 left-1/3 w-[20rem] h-[20rem] rounded-full bg-primary/20 blur-3xl" aria-hidden="true" />
+
+      {/* Mid-page (appointment section) */}
+      <div className="absolute top-1/2 -left-20 w-[28rem] h-[28rem] rounded-full bg-accent/20 blur-3xl" aria-hidden="true" />
+      <div className="absolute top-[55%] right-[-3rem] w-[24rem] h-[24rem] rounded-full bg-secondary/25 blur-3xl" aria-hidden="true" />
+
+      {/* Bottom area */}
+      <div className="absolute bottom-20 left-1/4 w-[22rem] h-[22rem] rounded-full bg-primary/20 blur-3xl" aria-hidden="true" />
+      <div className="absolute bottom-[-4rem] right-10 w-[28rem] h-[28rem] rounded-full bg-accent/30 blur-3xl" aria-hidden="true" />
+    </div>
+  );
+}
+
 export function DoctorsBackgroundBlobs() {
   return (
     <div className="absolute inset-0 pointer-events-none z-0">
-      <div className="absolute top-1/4 -left-32 w-[32rem] h-[32rem] rounded-full bg-primary/10 blur-3xl" aria-hidden="true" />
-      <div className="absolute top-1/3 -right-32 w-[28rem] h-[28rem] rounded-full bg-secondary/15 blur-3xl" aria-hidden="true" />
-      <div className="absolute bottom-32 left-1/4 w-[24rem] h-[24rem] rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
-      <div className="absolute top-10 right-1/3 w-[20rem] h-[20rem] rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
-      <div className="absolute bottom-1/4 -right-10 w-[26rem] h-[26rem] rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
+      {/* New Header Area Blobs */}
+      <div className="absolute -top-20 -left-10 w-[28rem] h-[28rem] rounded-full bg-secondary/30 blur-3xl" aria-hidden="true" />
+      <div className="absolute -top-10 -right-10 w-[24rem] h-[24rem] rounded-full bg-accent/25 blur-3xl" aria-hidden="true" />
+      <div className="absolute top-20 left-1/3 w-[20rem] h-[20rem] rounded-full bg-primary/25 blur-3xl" aria-hidden="true" />
+      
+      {/* Existing Body Blobs */}
+      <div className="absolute top-1/4 -left-32 w-[32rem] h-[32rem] rounded-full bg-primary/20 blur-3xl" aria-hidden="true" />
+      <div className="absolute top-1/3 -right-32 w-[28rem] h-[28rem] rounded-full bg-secondary/25 blur-3xl" aria-hidden="true" />
+      <div className="absolute bottom-32 left-1/4 w-[24rem] h-[24rem] rounded-full bg-accent/20 blur-3xl" aria-hidden="true" />
+      <div className="absolute top-10 right-1/3 w-[20rem] h-[20rem] rounded-full bg-accent/20 blur-3xl" aria-hidden="true" />
+      <div className="absolute bottom-1/4 -right-10 w-[26rem] h-[26rem] rounded-full bg-accent/20 blur-3xl" aria-hidden="true" />
     </div>
   );
 }
