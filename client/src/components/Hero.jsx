@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Clock, HeartHandshake } from 'lucide-react';
 import Button from './Button';
+import { HeroBackgroundBlobs } from './bg-decorations';
 
 const trustPoints = [
   { icon: Clock, text: '24/7 Emergency Care' },
@@ -16,16 +17,8 @@ export default function Hero() {
       className="relative flex min-h-screen items-center py-16"
     >
       {/* Decorative background blobs — purely visual texture, sits behind everything */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div
-          className="absolute -top-10 -left-10 w-96 h-96 rounded-full bg-secondary/20 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute bottom-10 right-10 w-[28rem] h-[28rem] rounded-full bg-accent/20 blur-3xl"
-          aria-hidden="true"
-        />
-      </div>
+      <HeroBackgroundBlobs />
+
 
       <div className="relative z-10 mx-auto grid w-full max-w-6xl gap-10 px-4 sm:px-6 md:grid-cols-2 md:items-center">
         <motion.div

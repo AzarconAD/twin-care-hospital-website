@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { THEME_COLORS } from "../theme";
+import { ServicesBackgroundBlobs } from "./bg-decorations";
 
 // Must roughly match the card's rendered width (w-72 = 288px) + the gap (gap-6 = 24px).
 // Used to move the carousel by "one card" when an arrow button is clicked.
@@ -165,20 +166,7 @@ export default function ServicesSection({ services = defaultServices }) {
       className="relative w-full text-ink"
     >
       {/* Decorative background blobs */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div
-          className="absolute top-1/3 left-[-5rem] w-80 h-80 rounded-full bg-accent/20 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute -bottom-20 right-[-5rem] w-96 h-96 rounded-full bg-primary/20 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute top-10 right-1/4 w-[20rem] h-[20rem] rounded-full bg-secondary/20 blur-3xl"
-          aria-hidden="true"
-        />
-      </div>
+      <ServicesBackgroundBlobs />
       <style>{`
         .tc-tab { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
         .tc-scroll::-webkit-scrollbar { display: none; }

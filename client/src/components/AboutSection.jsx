@@ -1,6 +1,7 @@
 import React from "react";
 import { HeartHandshake, ShieldCheck, Sparkles, Users, Compass, Award, Heart, Activity } from "lucide-react";
 import { motion } from "framer-motion";
+import { AboutBackgroundBlobs, AboutHeaderBlobs, AboutMissionBlobs, AboutMissionPanelBlobs } from "./bg-decorations";
 
 const defaultValues = [
   {
@@ -56,24 +57,7 @@ export default function AboutSection({
       className="relative w-full scroll-mt-24 text-ink pb-24"
     >
       {/* Decorative background blobs */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div
-          className="absolute top-1/4 -left-20 w-[24rem] h-[24rem] rounded-full bg-secondary/20 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute bottom-40 left-[-10rem] w-[28rem] h-[28rem] rounded-full bg-accent/20 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute -bottom-32 right-[-5rem] w-96 h-96 rounded-full bg-primary/20 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute top-2/3 right-1/4 w-[20rem] h-[20rem] rounded-full bg-secondary/20 blur-3xl"
-          aria-hidden="true"
-        />
-      </div>
+      <AboutBackgroundBlobs />
       {/* Header with hospital photo */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-16 grid md:grid-cols-2 gap-12 items-center">
         <motion.div
@@ -99,9 +83,7 @@ export default function AboutSection({
           className="relative z-10"
         >
           {/* Decorative text blobs */}
-          <div className="absolute -top-12 -right-12 w-48 h-48 bg-accent/15 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true" />
-          <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-secondary/15 rounded-full blur-3xl -z-10 pointer-events-none" aria-hidden="true" />
-          <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-primary/10 rounded-full blur-2xl -z-10 pointer-events-none" aria-hidden="true" />
+          <AboutHeaderBlobs />
           
           <p className="font-mono text-xs uppercase tracking-wider mb-4 font-bold text-accent relative z-10">
             About Twin Care Hospital
@@ -118,7 +100,10 @@ export default function AboutSection({
       </div>
 
       {/* Mission & Vision section and Photo Collage */}
-      <div className="max-w-6xl mx-auto px-6 pt-12 pb-8">
+      <div className="max-w-6xl mx-auto px-6 pt-12 pb-8 relative">
+        {/* Local decorative blobs for Mission & Vision area */}
+        <AboutMissionBlobs />
+        
         {/* Mission & Vision Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -139,29 +124,33 @@ export default function AboutSection({
         </motion.div>
 
         {/* Mission & Vision — twin overlapping panels */}
-        <div className="grid md:grid-cols-2 relative shadow-2xl shadow-ink/5 rounded-3xl overflow-hidden z-10">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            className="p-12 md:p-16 bg-secondary text-white relative overflow-hidden group"
-          >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -mr-20 -mt-20 transition-transform duration-700 group-hover:scale-150" />
-            <p className="font-mono text-sm tracking-widest uppercase mb-4 opacity-90 font-bold">Mission</p>
-            <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{missionText}</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-            className="p-12 md:p-16 bg-primary text-white relative overflow-hidden group"
-          >
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -ml-20 -mb-20 transition-transform duration-700 group-hover:scale-150" />
-            <p className="font-mono text-sm tracking-widest uppercase mb-4 opacity-90 font-bold">Vision</p>
-            <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{visionText}</p>
-          </motion.div>
+        <div className="relative z-10">
+          {/* Dense blobs perfectly aligned behind the panels */}
+          <AboutMissionPanelBlobs />
+
+          <div className="grid md:grid-cols-2 relative shadow-2xl shadow-ink/5 rounded-3xl overflow-hidden z-10">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className="p-12 md:p-16 bg-secondary/80 backdrop-blur-2xl text-white relative overflow-hidden group border border-white/20"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -mr-20 -mt-20 transition-transform duration-700 group-hover:scale-150" />
+              <p className="font-mono text-sm tracking-widest uppercase mb-4 opacity-90 font-bold">Mission</p>
+              <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{missionText}</p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+              className="p-12 md:p-16 bg-primary/80 backdrop-blur-2xl text-white relative overflow-hidden group border border-white/20"
+            >
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -ml-20 -mb-20 transition-transform duration-700 group-hover:scale-150" />
+              <p className="font-mono text-sm tracking-widest uppercase mb-4 opacity-90 font-bold">Vision</p>
+              <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{visionText}</p>
+            </motion.div>
 
           {/* Seam mark symbolizing the two founding clinics joining */}
           <motion.div
@@ -175,6 +164,7 @@ export default function AboutSection({
             <Heart size={80} className="text-accent fill-accent drop-shadow-2xl" />
           </motion.div>
         </div>
+      </div>
 
         {/* Editorial Scattered Photo Collage */}
         <div className="relative w-full flex flex-row items-center justify-center -space-x-6 sm:-space-x-12 md:-space-x-20 -mt-12 sm:-mt-24 mb-16 z-30 px-4">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search } from "lucide-react";
 import { THEME_COLORS } from "../theme";
+import { DoctorsBackgroundBlobs } from "../components/bg-decorations";
 
 const CATEGORIES = {
   all: { label: "All Doctors", color: THEME_COLORS.ink },
@@ -175,13 +176,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
   return (
     <div className="relative w-full min-h-screen bg-cream text-primary overflow-hidden">
       {/* Decorative background blobs */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-1/4 -left-32 w-[32rem] h-[32rem] rounded-full bg-primary/10 blur-3xl" aria-hidden="true" />
-        <div className="absolute top-1/3 -right-32 w-[28rem] h-[28rem] rounded-full bg-secondary/15 blur-3xl" aria-hidden="true" />
-        <div className="absolute bottom-32 left-1/4 w-[24rem] h-[24rem] rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
-        <div className="absolute top-10 right-1/3 w-[20rem] h-[20rem] rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
-        <div className="absolute bottom-1/4 -right-10 w-[26rem] h-[26rem] rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
-      </div>
+      <DoctorsBackgroundBlobs />
       <style>{`
         .tc-tab { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
         .tc-doctor-pill { transition: transform 0.1s ease, box-shadow 0.1s ease; }
