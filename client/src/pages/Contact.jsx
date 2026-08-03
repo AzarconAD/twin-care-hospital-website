@@ -47,7 +47,6 @@ export default function ContactPage() {
     e.preventDefault();
     // TODO: replace with a real POST to an /api/appointments route once that
     // backend model exists. For now this just confirms the UI flow works.
-    console.log("Appointment request (not yet sent to backend):", apptForm);
     setApptStatus("success");
     setApptForm({ doctorName: "", date: "", time: "", patientName: "", email: "", phone: "", notes: "" });
   };

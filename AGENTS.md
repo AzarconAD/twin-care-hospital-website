@@ -24,7 +24,12 @@ Doctors/Contact links are normal route navigation.
 
 ## Design System
 Colors (functional, not decorative — e.g. Services uses these to color-code categories):
-red `#E63946` · green `#10B981` · blue `#0544AB` · ink `#1C1E1F` · paper `#FAFAF9` · white `#FFFFFF` · border `#E7E7E5`
+red `#E63946` · green `#10B981` · blue `#0544AB` · ink `#1A2E2E` · cream `#F7FAF6` · white `#FFFFFF` · border `#E7E7E5`
+
+> **⚠️ IMPORTANT:** Brand colors exist in *three* places that must be kept manually in sync. If a color changes, you MUST update all three:
+> 1. `tailwind.config.js` (Tailwind classes)
+> 2. `client/src/theme.js` (Dynamic JS colors)
+> 3. `client/src/index.css` (`:root` variables)
 
 Fonts: Fraunces (display/headings), Inter (body), IBM Plex Mono (labels/eyebrows).
 

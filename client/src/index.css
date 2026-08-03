@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Must match tailwind.config.js theme.extend.colors — no automatic sync,
+     update both places if a brand color ever changes. */
+  --color-primary: #0544AB;
+  --color-secondary: #10B981;
+  --color-accent: #E63946;
+  --color-cream: #F7FAF6;
+  --color-ink: #1A2E2E;
+  --color-border: #E7E7E5;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -22,54 +33,18 @@
   outline-offset: 2px;
 }
 
-/* Landing Page Styles */
-.hero-section {
-  position: relative;
-  height: 100vh;
-  background-image: url('/src/assets/hospital-bg.jpg');
-  background-size: cover;
-  background-position: center;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.6);
-  /* Light overlay to make content readable */
-}
-
-.hero-content {
-  position: relative;
-  z-index: 10;
-  text-align: center;
-}
-
-.brand-slogan {
-  font-size: 2.5rem;
-  font-weight: 600;
-  margin-top: 10px;
-}
-
-.hero-description {
-  margin-top: 20px;
-  font-size: 1.2rem;
-  color: #555;
-}
 
 .btn-fill {
   display: inline-block;
   padding: 12px 24px;
-  border: 1px solid #1C1E1F;
+  border: 1px solid var(--color-ink);
   border-radius: 4px;
   transition: all 0.2s ease-in;
   position: relative;
   overflow: hidden;
   font-size: 16px;
   cursor: pointer;
-  color: #1C1E1F;
+  color: var(--color-ink);
   z-index: 1;
   font-weight: 600;
   font-family: inherit;
@@ -99,7 +74,7 @@
   top: 180%;
   width: 160%;
   height: 190%;
-  background-color: #10B981;
+  background-color: var(--color-secondary);
   border-radius: 50%;
   display: block;
   transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
@@ -108,18 +83,18 @@
 
 .btn-fill:hover {
   color: #ffffff;
-  border: 1px solid #10B981;
+  border: 1px solid var(--color-secondary);
 }
 
 .btn-fill:hover::before {
   top: -35%;
-  background-color: #10B981;
+  background-color: var(--color-secondary);
   transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
 }
 
 .btn-fill:hover::after {
   top: -45%;
-  background-color: #10B981;
+  background-color: var(--color-secondary);
   transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
 }
 
@@ -128,8 +103,8 @@
   overflow: hidden;
   z-index: 1;
   background-color: transparent;
-  border: 1px solid #10B981;
-  color: #10B981;
+  border: 1px solid var(--color-secondary);
+  color: var(--color-secondary);
 }
 
 .main-button:hover {
@@ -159,7 +134,7 @@
   top: 180%;
   width: 160%;
   height: 190%;
-  background-color: #10B981;
+  background-color: var(--color-secondary);
   border-radius: 50%;
   display: block;
   transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
@@ -169,7 +144,7 @@
 .main-button:hover::before,
 .main-button:hover::after {
   top: -45%;
-  background-color: #10B981;
+  background-color: var(--color-secondary);
   transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
 }
 
