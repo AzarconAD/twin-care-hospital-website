@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { THEME_COLORS } from "../theme";
 import { ServicesBackgroundBlobs } from "./bg-decorations";
+import Button from "./Button";
 
 // Must roughly match the card's rendered width (w-72 = 288px) + the gap (gap-6 = 24px).
 // Used to move the carousel by "one card" when an arrow button is clicked.
@@ -307,6 +308,16 @@ export default function ServicesSection({ services = defaultServices, onImageCli
             </button>
           </div>
         )}
+        
+        <div className="mt-12 flex justify-center pb-8">
+          <Button 
+            to="/contact" 
+            variant="primary" 
+            className="!px-10 !py-4 text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105 transition-all duration-300"
+          >
+            Message Us
+          </Button>
+        </div>
       </div>
     </section>
   );

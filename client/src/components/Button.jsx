@@ -7,18 +7,20 @@ export default function Button({ to, variant = 'primary', children, ...props }) 
     primary: 'bg-accent text-cream hover:bg-accent/90',
     outline: 'border border-cream/40 text-cream hover:bg-cream/10',
   }
-  const className = `${base} ${styles[variant]}`
+  
+  const { className: customClassName, ...restProps } = props
+  const className = `${base} ${styles[variant]} ${customClassName || ''}`.trim()
 
   if (to) {
     return (
-      <Link to={to} className={className} {...props}>
+      <Link to={to} className={className} {...restProps}>
         {children}
       </Link>
     )
   }
 
   return (
-    <button className={className} {...props}>
+    <button className={className} {...restProps}>
       {children}
     </button>
   )
