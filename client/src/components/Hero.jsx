@@ -61,15 +61,19 @@ export default function Hero({ onImageClick }) {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative h-64 sm:h-80 md:h-[400px] w-full"
         >
-          <div 
-            className="relative h-full w-full rounded-2xl overflow-hidden shadow-xl cursor-pointer group"
-            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop")}
-          >
-            <img
-              src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop"
-              alt="Modern hospital facility"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+          <div className="main-container-wrapper h-full">
+            <div className="main-container h-full relative z-10 p-1 sm:p-2">
+              <div 
+                className="relative h-full w-full rounded-[inherit] overflow-hidden shadow-xl cursor-pointer group"
+                onClick={() => onImageClick?.("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop")}
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop"
+                  alt="Modern hospital facility"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            </div>
           </div>
 
           {/*

@@ -75,18 +75,20 @@ export default function AboutSection({
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
-          className="relative"
+          className="relative main-container-wrapper"
         >
-          <div 
-            className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 group cursor-pointer"
-            onClick={() => onImageClick?.("/hospital-bg.jpg")}
-          >
-            <img 
-              src="/hospital-bg.jpg"
-              alt="Twin Care Hospital building"
-              className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none" />
+          <div className="main-container relative z-10 p-1 sm:p-2">
+            <div 
+              className="relative rounded-[inherit] overflow-hidden shadow-2xl shadow-primary/10 group cursor-pointer"
+              onClick={() => onImageClick?.("/hospital-bg.jpg")}
+            >
+              <img 
+                src="/hospital-bg.jpg"
+                alt="Twin Care Hospital building"
+                className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none" />
+            </div>
           </div>
           
           {/* Floating Visit Us Box */}

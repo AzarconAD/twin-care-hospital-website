@@ -157,7 +157,7 @@ export default function ContactPage() {
                 href={DIRECTIONS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-fill-popup inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-full font-body text-sm font-semibold transition-all duration-200 active:scale-95"
+                className="main-button inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-full font-body text-sm font-semibold transition-all duration-200 active:scale-95"
               >
                 <MapPin size={16} />
                 Get Directions
@@ -166,8 +166,8 @@ export default function ContactPage() {
           </div>
 
           {/* Right Column: Message Box */}
-          <div className="tc-calendar-wrapper h-full flex flex-col">
-            <div className="tc-calendar-container p-5 sm:p-6 relative z-10 flex-grow flex flex-col">
+          <div className="main-container-wrapper h-full flex flex-col">
+            <div className="main-container p-5 sm:p-6 relative z-10 flex-grow flex flex-col">
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <MessageSquare size={20} className="text-accent" strokeWidth={2} />
@@ -219,7 +219,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={contactStatus === "loading"}
-                  className="btn-fill-popup w-full font-body text-sm font-semibold py-3 rounded-full transition-all duration-200 active:scale-95 disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+                  className="main-button w-full font-body text-sm font-semibold py-3 rounded-full transition-all duration-200 active:scale-95 disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
                 >
                   <Send size={16} />
                   {contactStatus === "loading" ? "Sending..." : "Send Message"}
@@ -251,8 +251,8 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <div className="tc-calendar-wrapper">
-          <div className="tc-calendar-container p-8 sm:p-10 relative z-10">
+        <div className="main-container-wrapper">
+          <div className="main-container p-8 sm:p-10 relative z-10">
 
           {apptStatus === "success" ? (
             <div className="text-center py-10 px-6 bg-secondary/10 rounded-2xl">
@@ -387,7 +387,7 @@ export default function ContactPage() {
 
               <button
                 type="submit"
-                className="btn-fill-popup w-full font-body text-sm font-semibold py-3 rounded-full transition-all duration-200 active:scale-95"
+                className="main-button w-full font-body text-sm font-semibold py-3 rounded-full transition-all duration-200 active:scale-95"
               >
                 Request Appointment
               </button>

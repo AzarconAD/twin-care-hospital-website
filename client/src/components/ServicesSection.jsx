@@ -211,7 +211,7 @@ export default function ServicesSection({ services = defaultServices, onImageCli
               key={key}
               onClick={() => setActiveCategory(key)}
               className={`tc-tab font-body text-sm font-medium !rounded-full ${
-                isActive 
+                isActive
                   ? "px-6 py-3 bg-secondary text-white border border-secondary" 
                   : "btn-fill"
               }`}

@@ -217,7 +217,7 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
               <Link
                 to="/contact"
                 state={{ appointment: true, doctorName: doctor.name }}
-                className="btn-fill-popup flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
+                className="main-button flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
               >
                 <CalendarIcon size={16} />
                 Make an Appointment
@@ -323,8 +323,8 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
       </motion.div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-24 scroll-mt-24" ref={calendarRef}>
-        <div className="tc-calendar-wrapper">
-          <div className="tc-calendar-container">
+        <div className="main-container-wrapper">
+          <div className="main-container">
             {/* Calendar Controls */}
             <div className="flex items-center justify-between gap-4 p-5 border-b border-primary/15 relative z-10">
               <h2 className="font-display text-2xl sm:text-3xl text-primary">
