@@ -21,7 +21,7 @@ const defaultDoctors = {
     specialty: "Emergency Medicine",
     bio: "Leads rapid assessment and treatment for urgent, high-risk conditions around the clock.",
     // Swap with real photo later
-    photo: "/doctors/dr_ramon_villareal.jpg",
+    photo: "https://picsum.photos/seed/dr_ramon/400/500",
   },
   d2: {
     id: "d2",
@@ -30,7 +30,7 @@ const defaultDoctors = {
     specialty: "Trauma Surgery",
     bio: "Specializes in emergency surgical care for serious injuries and critical trauma cases.",
     // Swap with real photo later
-    photo: "/doctors/dr_carla_mendoza.jpg",
+    photo: "https://picsum.photos/seed/dr_carla/400/500",
   },
   d3: {
     id: "d3",
@@ -39,7 +39,7 @@ const defaultDoctors = {
     specialty: "Family & Wellness Medicine",
     bio: "Focuses on long-term health, preventive screening, and whole-family primary care.",
     // Swap with real photo later
-    photo: "/doctors/dr_bea_santos.jpg",
+    photo: "https://picsum.photos/seed/dr_bea/400/500",
   },
   d4: {
     id: "d4",
@@ -48,7 +48,7 @@ const defaultDoctors = {
     specialty: "Pediatrics",
     bio: "Provides checkups, immunizations, and developmental care for infants through teens.",
     // Swap with real photo later
-    photo: "/doctors/dr_miguel_torres.jpg",
+    photo: "https://picsum.photos/seed/dr_miguel/400/500",
   },
   d5: {
     id: "d5",
@@ -57,7 +57,7 @@ const defaultDoctors = {
     specialty: "Cardiology",
     bio: "Diagnoses and manages heart conditions using on-site imaging and diagnostic testing.",
     // Swap with real photo later
-    photo: "/doctors/dr_elena_cruz.jpg",
+    photo: "https://picsum.photos/seed/dr_elena/400/500",
   },
   d6: {
     id: "d6",
@@ -66,7 +66,7 @@ const defaultDoctors = {
     specialty: "Radiology",
     bio: "Reads and interprets X-ray, ultrasound, and CT imaging to guide accurate diagnoses.",
     // Swap with real photo later
-    photo: "/doctors/dr_paolo_reyes.jpg",
+    photo: "https://picsum.photos/seed/dr_paolo/400/500",
   },
 };
 
