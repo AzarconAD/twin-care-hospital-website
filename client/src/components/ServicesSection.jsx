@@ -190,7 +190,7 @@ export default function ServicesSection({ services = defaultServices, onImageCli
           <br />
           how urgently you need it.
         </h2>
-        <p className="font-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
+        <p className="font-body text-base md:text-lg max-w-2xl mx-auto text-primary/70">
           Every service below is grouped by the kind of care it provides &mdash; so
           you always know where to start.
         </p>

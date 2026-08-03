@@ -125,7 +125,7 @@ export default function AboutSection({
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.1] mb-6 text-primary">
             Two beginnings.<br />One standard of care.
           </h2>
-          <p className="font-body text-base md:text-lg opacity-80 leading-relaxed text-ink/90">
+          <p className="font-body text-base md:text-lg leading-relaxed text-primary/70">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
             sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
@@ -156,7 +156,7 @@ export default function AboutSection({
           <h3 className="font-display text-4xl md:text-5xl text-primary mb-4">
             Mission & Vision
           </h3>
-          <p className="font-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
+          <p className="font-body text-base md:text-lg max-w-2xl mx-auto text-primary/70">
             Dedicated to providing exceptional healthcare, rooted in our community, with a forward-looking approach to wellness.
           </p>
         </motion.div>
@@ -223,69 +223,7 @@ export default function AboutSection({
         </div>
       </div>
 
-        {/* Editorial Scattered Photo Collage */}
-        <div className="relative w-full flex flex-row items-center justify-center -space-x-6 sm:-space-x-12 md:-space-x-20 -mt-12 sm:-mt-24 mb-16 z-30 px-4">
-          
-          {/* Back Left Photo */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, rotate: -5 }}
-            whileInView={{ opacity: 1, y: 10, rotate: -12 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="z-0 w-16 sm:w-32 md:w-56 aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 cursor-pointer group"
-            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80")}
-          >
-            <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80" alt="Hospital care" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-          </motion.div>
 
-          {/* Front Left Photo */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, rotate: 0 }}
-            whileInView={{ opacity: 1, y: -10, rotate: -6 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="z-10 w-24 sm:w-48 md:w-64 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 cursor-pointer group"
-            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80")}
-          >
-            <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80" alt="Care team" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-          </motion.div>
-
-          {/* Center Main Photo */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0, rotate: 2 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.7 }}
-            className="z-20 w-32 sm:w-64 md:w-80 aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl group flex-shrink-0 cursor-pointer"
-            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80")}
-          >
-            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80" alt="Modern facility" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-          </motion.div>
-
-          {/* Front Right Photo */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, rotate: 0 }}
-            whileInView={{ opacity: 1, y: 15, rotate: 8 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="z-10 w-24 sm:w-48 md:w-64 aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 cursor-pointer group"
-            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=80")}
-          >
-            <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=80" alt="Specialist" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-          </motion.div>
-
-          {/* Back Right Photo */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, rotate: 5 }}
-            whileInView={{ opacity: 1, y: -5, rotate: 15 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.7, delay: 0.25 }}
-            className="z-0 w-16 sm:w-32 md:w-48 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 cursor-pointer group"
-            onClick={() => onImageClick?.("https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80")}
-          >
-            <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80" alt="Lab" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-          </motion.div>
-        </div>
       </div>
 
       {/* Core Values - TWIN CARE Acronym */}
@@ -303,7 +241,7 @@ export default function AboutSection({
           <h3 className="font-display text-4xl md:text-5xl text-primary mb-4">
             Our Core Values
           </h3>
-          <p className="font-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
+          <p className="font-body text-base md:text-lg max-w-2xl mx-auto text-primary/70">
             Our core values form the very name of our hospital. They are the standard by which we measure every interaction, every decision, and every life we touch.
           </p>
         </motion.div>

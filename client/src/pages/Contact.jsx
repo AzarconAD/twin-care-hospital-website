@@ -75,12 +75,12 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="relative w-full min-h-screen bg-cream overflow-hidden">
+    <div className="relative w-full min-h-screen bg-cream">
       {/* Decorative background blobs — purely visual texture, sits behind everything */}
       <ContactBackgroundBlobs />
       {/* Page header */}
       <motion.div
-        className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 pt-32 lg:pt-40 pb-12 text-center"
+        className="relative z-0 max-w-3xl mx-auto px-4 sm:px-6 pt-24 lg:pt-28 pb-8 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -88,132 +88,147 @@ export default function ContactPage() {
         <p className="font-mono text-xs uppercase tracking-wide text-accent font-semibold mb-3">
           Get In Touch
         </p>
-        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-primary mb-5">
+        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight text-primary mb-3">
           We're here whenever you need us
         </h1>
-        <p className="font-body text-lg text-ink/70 leading-relaxed max-w-2xl mx-auto">
+        <p className="font-body text-lg text-primary/70 leading-relaxed max-w-2xl mx-auto">
           Find us, book a visit, or just send a message &mdash; whatever works for you.
         </p>
       </motion.div>
 
-      {/* SECTION 1 — Location */}
+      {/* SECTION 1 & 2 — Location and General Contact */}
       <motion.section
         ref={locationRef}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pb-20 scroll-mt-24"
+        className="relative z-0 max-w-5xl mx-auto px-4 sm:px-6 pb-20 scroll-mt-24"
       >
-        <div className="grid md:grid-cols-2 gap-8 items-stretch">
-          <div className="rounded-2xl overflow-hidden border border-border shadow-sm h-96 md:h-auto">
-            <iframe
-              title="Twin Care Hospital location"
-              src={MAP_EMBED_SRC}
-              width="100%"
-              height="100%"
-              style={{ border: 0, minHeight: "28rem" }}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
-
-          <div className="flex flex-col justify-center">
-            <div className="flex items-center gap-2 mb-4">
-              <MapPin size={20} className="text-primary" strokeWidth={2} />
-              <h2 className="font-display text-2xl text-primary">Find Us</h2>
+        <div className="grid md:grid-cols-2 gap-10 md:gap-12 items-stretch">
+          
+          {/* Left Column: Map & Details */}
+          <div className="flex flex-col gap-4">
+            <div className="rounded-2xl overflow-hidden border border-border shadow-sm h-48 md:h-64">
+              <iframe
+                title="Twin Care Hospital location"
+                src={MAP_EMBED_SRC}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </div>
-            <p className="font-body text-ink/80 mb-4 leading-relaxed">{HOSPITAL_ADDRESS}</p>
-
-            <div className="flex items-start gap-2 mb-6">
-              <Clock size={18} className="text-secondary mt-0.5" strokeWidth={2} />
-              <div className="font-body text-sm text-ink/70">
-                <p className="font-semibold text-ink mb-0.5">Hours</p>
-                <p>Emergency: Open 24/7</p>
-                <p>Outpatient: Mon&ndash;Sat, 8:00 AM &ndash; 6:00 PM</p>
+            
+            <div className="px-1">
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin size={20} className="text-accent" strokeWidth={2} />
+                <h2 className="font-display text-2xl text-primary">Find Us</h2>
               </div>
+              <p className="font-body text-primary/70 mb-3 leading-relaxed">{HOSPITAL_ADDRESS}</p>
+
+              <div className="flex flex-col gap-3 mb-4">
+                <div className="flex items-start gap-3">
+                  <Phone size={18} className="text-secondary mt-0.5" strokeWidth={2} />
+                  <p className="font-body text-sm text-ink/70">
+                    <span className="block font-semibold text-ink mb-0.5">Phone</span>
+                    (044) 123-4567
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Mail size={18} className="text-secondary mt-0.5" strokeWidth={2} />
+                  <p className="font-body text-sm text-ink/70">
+                    <span className="block font-semibold text-ink mb-0.5">Email</span>
+                    contact@twincarehospital.com
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Clock size={18} className="text-secondary mt-0.5" strokeWidth={2} />
+                  <div className="font-body text-sm text-ink/70">
+                    <p className="font-semibold text-ink mb-0.5">Hours</p>
+                    <p>Emergency: Open 24/7</p>
+                    <p>Outpatient: Mon&ndash;Sat, 8:00 AM &ndash; 6:00 PM</p>
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href={DIRECTIONS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-fill-popup inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-full font-body text-sm font-semibold transition-all duration-200 active:scale-95"
+              >
+                <MapPin size={16} />
+                Get Directions
+              </a>
+            </div>
+          </div>
+
+          {/* Right Column: Message Box */}
+          <div className="tc-calendar-wrapper h-full flex flex-col">
+            <div className="tc-calendar-container p-5 sm:p-6 relative z-10 flex-grow flex flex-col">
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <MessageSquare size={20} className="text-accent" strokeWidth={2} />
+                <h2 className="font-display text-2xl text-primary">Message Us</h2>
+              </div>
+              <p className="font-body text-sm text-primary/70">
+                General questions, feedback, or anything else.
+              </p>
             </div>
 
-            <a
-              href={DIRECTIONS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-primary text-white font-body text-sm font-medium px-5 py-2.5 rounded-full w-fit hover:bg-primary-dark transition-colors"
-            >
-              <MapPin size={16} />
-              Get Directions
-            </a>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* SECTION 2 — General Contact */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-        className="relative z-10 max-w-xl mx-auto px-4 sm:px-6 py-20"
-      >
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <MessageSquare size={20} className="text-accent" strokeWidth={2} />
-            <h2 className="font-display text-2xl text-primary">Send Us a Message</h2>
-          </div>
-          <p className="font-body text-sm text-ink/60">
-            General questions, feedback, or anything else &mdash; we read every message.
-          </p>
-        </div>
-
-        {contactStatus === "success" ? (
-          <div className="text-center py-8 px-6 bg-accent/10 rounded-2xl">
-            <p className="font-display text-lg text-accent mb-1">Message sent!</p>
-            <p className="font-body text-sm text-ink/70">We'll get back to you soon.</p>
-          </div>
-        ) : (
-          <form onSubmit={handleContactSubmit} className="space-y-4">
-            <input
-              type="text"
-              name="name"
-              placeholder="Your name"
-              required
-              value={contactForm.name}
-              onChange={handleContactChange}
-              className="w-full border border-border rounded-lg px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Your email"
-              required
-              value={contactForm.email}
-              onChange={handleContactChange}
-              className="w-full border border-border rounded-lg px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-            />
-            <textarea
-              name="message"
-              placeholder="Your message"
-              rows={4}
-              required
-              value={contactForm.message}
-              onChange={handleContactChange}
-              className="w-full border border-border rounded-lg px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-            />
-            {contactStatus === "error" && (
-              <p className="font-body text-sm text-accent">
-                Something went wrong &mdash; please try again.
-              </p>
+            {contactStatus === "success" ? (
+              <div className="text-center py-8 px-6 bg-accent/10 rounded-2xl my-auto">
+                <p className="font-display text-lg text-accent mb-1">Message sent!</p>
+                <p className="font-body text-sm text-ink/70">We'll get back to you soon.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleContactSubmit} className="space-y-4 flex-grow flex flex-col">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your name"
+                  required
+                  value={contactForm.name}
+                  onChange={handleContactChange}
+                  className="w-full border border-border rounded-lg px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Your email"
+                  required
+                  value={contactForm.email}
+                  onChange={handleContactChange}
+                  className="w-full border border-border rounded-lg px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+                <textarea
+                  name="message"
+                  placeholder="Your message"
+                  required
+                  value={contactForm.message}
+                  onChange={handleContactChange}
+                  className="w-full border border-border rounded-lg px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none flex-grow"
+                />
+                {contactStatus === "error" && (
+                  <p className="font-body text-sm text-accent">
+                    Something went wrong &mdash; please try again.
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  disabled={contactStatus === "loading"}
+                  className="btn-fill-popup w-full font-body text-sm font-semibold py-3 rounded-full transition-all duration-200 active:scale-95 disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
+                >
+                  <Send size={16} />
+                  {contactStatus === "loading" ? "Sending..." : "Send Message"}
+                </button>
+              </form>
             )}
-            <button
-              type="submit"
-              disabled={contactStatus === "loading"}
-              className="w-full bg-primary text-white font-body text-sm font-medium py-3 rounded-full hover:bg-primary-dark transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-            >
-              <Send size={16} />
-              {contactStatus === "loading" ? "Sending..." : "Send Message"}
-            </button>
-          </form>
-        )}
+            </div>
+          </div>
+        </div>
       </motion.section>
 
       {/* SECTION 3 — Appointment */}
@@ -224,19 +239,20 @@ export default function ContactPage() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-20 scroll-mt-32"
+        className="relative z-0 max-w-2xl mx-auto px-4 sm:px-6 pt-4 pb-20 scroll-mt-32"
       >
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Calendar size={20} className="text-secondary" strokeWidth={2} />
+            <h2 className="font-display text-2xl text-primary">Schedule an Appointment</h2>
+          </div>
+          <p className="font-body text-sm text-primary/70">
+            Pick a doctor and a preferred time &mdash; we'll confirm by phone or email.
+          </p>
+        </div>
+
         <div className="tc-calendar-wrapper">
           <div className="tc-calendar-container p-8 sm:p-10 relative z-10">
-          <div className="text-center mb-10">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <Calendar size={20} className="text-secondary" strokeWidth={2} />
-              <h2 className="font-display text-2xl text-primary">Schedule an Appointment</h2>
-            </div>
-            <p className="font-body text-sm text-ink/60">
-              Pick a doctor and a preferred time &mdash; we'll confirm by phone or email.
-            </p>
-          </div>
 
           {apptStatus === "success" ? (
             <div className="text-center py-10 px-6 bg-secondary/10 rounded-2xl">
