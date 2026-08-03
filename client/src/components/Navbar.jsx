@@ -94,7 +94,7 @@ export default function Navbar() {
             </li>
             <li>
               <button onClick={() => scrollToSection('about')} className={anchorClass(activeSection === 'about')}>
-                About
+                About Us
               </button>
             </li>
             <li>

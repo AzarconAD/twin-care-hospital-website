@@ -1,5 +1,6 @@
 import React from "react";
-import { HeartHandshake, ShieldCheck, Sparkles, Users, Compass, Award, Heart, Activity } from "lucide-react";
+import { HeartHandshake, ShieldCheck, Sparkles, Users, Compass, Award, Heart, Activity, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AboutBackgroundBlobs, AboutHeaderBlobs, AboutMissionBlobs, AboutMissionPanelBlobs } from "./bg-decorations";
 
@@ -8,41 +9,49 @@ const defaultValues = [
     icon: ShieldCheck,
     title: "Trust",
     text: "Building lasting confidence through honest, transparent care.",
+    img: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80",
   },
   {
     icon: Activity,
     title: "Wellness",
     text: "Focusing on complete health, not just the absence of illness.",
+    img: "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=600&q=80",
   },
   {
     icon: Award,
     title: "Integrity",
     text: "Doing the right thing, even when no one is watching.",
+    img: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80",
   },
   {
     icon: HeartHandshake,
     title: "Nurture",
     text: "Providing a supportive and healing environment for all.",
+    img: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80",
   },
   {
     icon: Heart,
     title: "Compassion",
     text: "Every patient is met as a person first, a case second.",
+    img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=600&q=80",
   },
   {
     icon: Compass,
     title: "Accessibility",
     text: "Quality care shouldn't depend on how far you can travel.",
+    img: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=600&q=80",
   },
   {
     icon: Users,
     title: "Respect",
     text: "Honoring the dignity and rights of every individual we serve.",
+    img: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80",
   },
   {
     icon: Sparkles,
     title: "Excellence",
     text: "We hold our care to a standard, not a minimum.",
+    img: "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=600&q=80",
   },
 ];
 
@@ -66,15 +75,38 @@ export default function AboutSection({
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8 }}
-          className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-8 border-white group cursor-pointer"
-          onClick={() => onImageClick?.("/hospital-bg.jpg")}
+          className="relative"
         >
-          <img 
-            src="/hospital-bg.jpg"
-            alt="Twin Care Hospital building"
-            className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none" />
+          <div 
+            className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 group cursor-pointer"
+            onClick={() => onImageClick?.("/hospital-bg.jpg")}
+          >
+            <img 
+              src="/hospital-bg.jpg"
+              alt="Twin Care Hospital building"
+              className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none" />
+          </div>
+          
+          {/* Floating Visit Us Box */}
+          <Link
+            to="/contact"
+            state={{ location: true }}
+            className="absolute -bottom-6 left-6 sm:left-10 bg-white border border-border rounded-xl shadow-xl p-4 flex items-center gap-4 max-w-[85%] hover:scale-105 transition-transform duration-200 z-20 group"
+          >
+            <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0 group-hover:bg-accent transition-colors">
+              <MapPin size={20} className="text-white" strokeWidth={1.75} />
+            </div>
+            <div>
+              <p className="font-mono text-xs uppercase tracking-wide font-semibold text-secondary mb-0.5 group-hover:text-accent transition-colors">
+                Visit Us
+              </p>
+              <p className="text-sm font-medium font-body leading-snug text-ink">
+                Find our location & directions
+              </p>
+            </div>
+          </Link>
         </motion.div>
 
         <motion.div 
@@ -94,9 +126,13 @@ export default function AboutSection({
             Two beginnings.<br />One standard of care.
           </h2>
           <p className="font-body text-base md:text-lg opacity-80 leading-relaxed text-ink/90">
-            Twin Care Hospital Incorporated grew out of two community clinics that shared a single
-            conviction: care should be close, honest, and unhurried. That conviction still shapes
-            everything we do today.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
+            ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
+            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+            Excepteur sint occaecat cupidatat non proident, 
+            sunt in culpa qui officia deserunt mollit anim id est laborum.
           </p>
         </motion.div>
       </div>
@@ -131,27 +167,46 @@ export default function AboutSection({
           <AboutMissionPanelBlobs />
 
           <div className="grid md:grid-cols-2 relative shadow-2xl shadow-ink/5 rounded-3xl overflow-hidden z-10">
+            {/* Mission Panel */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, amount: 0.2 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="p-12 md:p-16 bg-secondary/80 backdrop-blur-2xl text-white relative overflow-hidden group border border-white/20"
+              className="p-12 md:p-16 text-white relative overflow-hidden group border-r border-white/10"
             >
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -mr-20 -mt-20 transition-transform duration-700 group-hover:scale-150" />
-              <p className="font-mono text-base tracking-widest uppercase mb-4 opacity-90 font-bold">Mission</p>
-              <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{missionText}</p>
+              <img 
+                src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80" 
+                alt="Medical professionals" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-primary/60 mix-blend-multiply" />
+              <div className="absolute inset-0 bg-primary/40" />
+              <div className="relative z-10">
+                <h4 className="font-display text-4xl md:text-5xl font-bold mb-6">Our Mission</h4>
+                <p className="font-body text-xl leading-relaxed opacity-90">{missionText}</p>
+              </div>
             </motion.div>
+
+            {/* Vision Panel */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false, amount: 0.2 }}
               transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-              className="p-12 md:p-16 bg-primary/80 backdrop-blur-2xl text-white relative overflow-hidden group border border-white/20"
+              className="p-12 md:p-16 text-white relative overflow-hidden group"
             >
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -ml-20 -mb-20 transition-transform duration-700 group-hover:scale-150" />
-              <p className="font-mono text-base tracking-widest uppercase mb-4 opacity-90 font-bold">Vision</p>
-              <p className="font-display text-2xl md:text-3xl leading-relaxed relative z-10">{visionText}</p>
+              <img 
+                src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=800&q=80" 
+                alt="Surgeons operating" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-secondary/60 mix-blend-multiply" />
+              <div className="absolute inset-0 bg-secondary/40" />
+              <div className="relative z-10">
+                <h4 className="font-display text-4xl md:text-5xl font-bold mb-6">Our Vision</h4>
+                <p className="font-body text-xl leading-relaxed opacity-90">{visionText}</p>
+              </div>
             </motion.div>
 
           {/* Seam mark symbolizing the two founding clinics joining */}
@@ -177,7 +232,7 @@ export default function AboutSection({
             whileInView={{ opacity: 1, y: 10, rotate: -12 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="z-0 w-16 sm:w-32 md:w-56 aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0 cursor-pointer group"
+            className="z-0 w-16 sm:w-32 md:w-56 aspect-[3/4] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 cursor-pointer group"
             onClick={() => onImageClick?.("https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80")}
           >
             <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80" alt="Hospital care" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -189,7 +244,7 @@ export default function AboutSection({
             whileInView={{ opacity: 1, y: -10, rotate: -6 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="z-10 w-24 sm:w-48 md:w-64 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0 cursor-pointer group"
+            className="z-10 w-24 sm:w-48 md:w-64 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 cursor-pointer group"
             onClick={() => onImageClick?.("https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80")}
           >
             <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80" alt="Care team" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -201,7 +256,7 @@ export default function AboutSection({
             whileInView={{ opacity: 1, scale: 1, y: 0, rotate: 2 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7 }}
-            className="z-20 w-32 sm:w-64 md:w-80 aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-4 sm:border-8 border-white group flex-shrink-0 cursor-pointer"
+            className="z-20 w-32 sm:w-64 md:w-80 aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl group flex-shrink-0 cursor-pointer"
             onClick={() => onImageClick?.("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80")}
           >
             <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80" alt="Modern facility" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -213,7 +268,7 @@ export default function AboutSection({
             whileInView={{ opacity: 1, y: 15, rotate: 8 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="z-10 w-24 sm:w-48 md:w-64 aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0 cursor-pointer group"
+            className="z-10 w-24 sm:w-48 md:w-64 aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 cursor-pointer group"
             onClick={() => onImageClick?.("https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=80")}
           >
             <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=80" alt="Specialist" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -225,7 +280,7 @@ export default function AboutSection({
             whileInView={{ opacity: 1, y: -5, rotate: 15 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.7, delay: 0.25 }}
-            className="z-0 w-16 sm:w-32 md:w-48 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white flex-shrink-0 cursor-pointer group"
+            className="z-0 w-16 sm:w-32 md:w-48 aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl flex-shrink-0 cursor-pointer group"
             onClick={() => onImageClick?.("https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80")}
           >
             <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80" alt="Lab" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -246,7 +301,7 @@ export default function AboutSection({
             Our Guiding Principles
           </p>
           <h3 className="font-display text-4xl md:text-5xl text-primary mb-4">
-            The TWIN CARE Promise
+            Our Core Values
           </h3>
           <p className="font-body text-base md:text-lg max-w-2xl mx-auto opacity-70">
             Our core values form the very name of our hospital. They are the standard by which we measure every interaction, every decision, and every life we touch.
@@ -267,26 +322,37 @@ export default function AboutSection({
                 viewport={{ once: false, amount: 0.1 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 key={i}
-                className="group relative p-8 rounded-2xl bg-white border border-border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                className="group relative p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden text-white border border-white/10"
               >
+                {/* Background Image */}
+                <img 
+                  src={v.img} 
+                  alt={v.title} 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                />
+                
+                {/* Color Overlay (matching Mission/Vision treatment) */}
+                <div className={`absolute inset-0 mix-blend-multiply ${isTwin ? 'bg-secondary/60' : 'bg-primary/60'}`} />
+                <div className={`absolute inset-0 ${isTwin ? 'bg-secondary/40' : 'bg-primary/40'}`} />
+
                 {/* Subtle background letter watermark */}
-                <div className="absolute -right-4 -top-8 font-display text-[12rem] font-bold text-cream select-none pointer-events-none opacity-70 group-hover:text-primary/10 group-hover:opacity-100 transition-all duration-500">
+                <div className="absolute -right-4 -top-8 font-display text-[12rem] font-bold text-white select-none pointer-events-none opacity-5 group-hover:opacity-10 transition-all duration-500">
                   {firstLetter}
                 </div>
 
                 <div className="relative z-10">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 ${isTwin ? 'bg-secondary/10 text-secondary group-hover:bg-secondary group-hover:text-white' : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white'}`}>
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 bg-white/20 text-white group-hover:bg-white ${isTwin ? 'group-hover:text-secondary' : 'group-hover:text-primary'}`}>
                     <Icon size={24} strokeWidth={2} />
                   </div>
                   
-                  <h4 className="font-display text-2xl mb-3 text-ink flex items-baseline">
-                    <span className={`text-3xl font-bold mr-[1px] ${isTwin ? 'text-secondary' : 'text-primary'}`}>
+                  <h4 className="font-display text-2xl mb-3 text-white flex items-baseline">
+                    <span className="text-3xl font-bold mr-[1px] text-white">
                       {firstLetter}
                     </span>
-                    {restOfTitle}
+                    <span className="opacity-90">{restOfTitle}</span>
                   </h4>
                   
-                  <p className="font-body text-sm opacity-75 leading-relaxed">
+                  <p className="font-body text-sm opacity-90 leading-relaxed">
                     {v.text}
                   </p>
                 </div>

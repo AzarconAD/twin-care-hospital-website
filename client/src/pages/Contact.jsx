@@ -14,14 +14,17 @@ const DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${enc
 export default function ContactPage() {
   const location = useLocation();
   const appointmentRef = useRef(null);
+  const locationRef = useRef(null);
 
   useEffect(() => {
-    if (location.state?.appointment && appointmentRef.current) {
-      // Small delay to ensure layout is ready
-      setTimeout(() => {
+    // Small delay to ensure layout is ready
+    setTimeout(() => {
+      if (location.state?.appointment && appointmentRef.current) {
         appointmentRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
-    }
+      } else if (location.state?.location && locationRef.current) {
+        locationRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
   }, [location.state]);
 
   // --- Appointment form state (UI-only for now, no backend yet) ---
@@ -95,11 +98,12 @@ export default function ContactPage() {
 
       {/* SECTION 1 — Location */}
       <motion.section
+        ref={locationRef}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.6 }}
-        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pb-20"
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pb-20 scroll-mt-24"
       >
         <div className="grid md:grid-cols-2 gap-8 items-stretch">
           <div className="rounded-2xl overflow-hidden border border-border shadow-sm h-96 md:h-auto">
