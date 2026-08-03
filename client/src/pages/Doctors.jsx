@@ -20,6 +20,8 @@ const defaultDoctors = {
     name: "Dr. Ramon Villareal",
     specialty: "Emergency Medicine",
     bio: "Leads rapid assessment and treatment for urgent, high-risk conditions around the clock.",
+    // Swap with real photo later
+    photo: "/doctors/dr_ramon_villareal.jpg",
   },
   d2: {
     id: "d2",
@@ -27,6 +29,8 @@ const defaultDoctors = {
     name: "Dr. Carla Mendoza",
     specialty: "Trauma Surgery",
     bio: "Specializes in emergency surgical care for serious injuries and critical trauma cases.",
+    // Swap with real photo later
+    photo: "/doctors/dr_carla_mendoza.jpg",
   },
   d3: {
     id: "d3",
@@ -34,6 +38,8 @@ const defaultDoctors = {
     name: "Dr. Bea Santos",
     specialty: "Family & Wellness Medicine",
     bio: "Focuses on long-term health, preventive screening, and whole-family primary care.",
+    // Swap with real photo later
+    photo: "/doctors/dr_bea_santos.jpg",
   },
   d4: {
     id: "d4",
@@ -41,6 +47,8 @@ const defaultDoctors = {
     name: "Dr. Miguel Torres",
     specialty: "Pediatrics",
     bio: "Provides checkups, immunizations, and developmental care for infants through teens.",
+    // Swap with real photo later
+    photo: "/doctors/dr_miguel_torres.jpg",
   },
   d5: {
     id: "d5",
@@ -48,6 +56,8 @@ const defaultDoctors = {
     name: "Dr. Elena Cruz",
     specialty: "Cardiology",
     bio: "Diagnoses and manages heart conditions using on-site imaging and diagnostic testing.",
+    // Swap with real photo later
+    photo: "/doctors/dr_elena_cruz.jpg",
   },
   d6: {
     id: "d6",
@@ -55,6 +65,8 @@ const defaultDoctors = {
     name: "Dr. Paolo Reyes",
     specialty: "Radiology",
     bio: "Reads and interprets X-ray, ultrasound, and CT imaging to guide accurate diagnoses.",
+    // Swap with real photo later
+    photo: "/doctors/dr_paolo_reyes.jpg",
   },
 };
 
@@ -171,13 +183,21 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
               className="relative flex flex-col items-center pt-5 pb-4 px-5 rounded-t-2xl"
               style={{ background: `linear-gradient(135deg, ${catColor}18 0%, ${catColor}0d 100%)`, borderBottom: `1px solid ${catColor}22` }}
             >
-              {/* Avatar */}
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center mb-3 shadow-md ring-4 ring-white"
-                style={{ backgroundColor: catColor }}
-              >
-                <User size={24} color="#fff" strokeWidth={2} />
-              </div>
+              {/* Avatar — photo if available, icon fallback */}
+              {doctor.photo ? (
+                <img
+                  src={doctor.photo}
+                  alt={doctor.name}
+                  className="w-16 h-16 rounded-full object-cover mb-3 shadow-md ring-4 ring-white"
+                />
+              ) : (
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-3 shadow-md ring-4 ring-white"
+                  style={{ backgroundColor: catColor }}
+                >
+                  <User size={24} color="#fff" strokeWidth={2} />
+                </div>
+              )}
               {/* Category badge */}
               <span
                 className="font-mono text-[9px] uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2"

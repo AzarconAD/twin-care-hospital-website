@@ -40,3 +40,20 @@ Other placeholder photos (stock/picsum) are temporary — keep them easy to find
 - After finishing a task, summarize exactly what files were created/changed
 - Commits: small, frequent, format `TYPE - {file(s)}: {summary}` with bullet sub-points
 - Deployment steps — see `.agents/skills/deployment.md` (not needed until ready to ship)
+
+## Terminal / Shell
+
+This project's terminal is Windows PowerShell (version 5.1, the Windows default) — NOT bash, NOT
+cmd, and NOT PowerShell 7. This matters for command syntax:
+
+- Do NOT chain commands with `&&` (e.g. `git add . && git commit -m "..."`) — this is invalid
+  syntax in PowerShell 5.1 and will throw a ParserError every time.
+- Instead, run commands as separate lines/steps:
+```powershell
+  git add .
+  git commit -m "TYPE - {file(s)}: {summary}"
+```
+- If you genuinely need to chain two commands into one line, use `;` instead of `&&` — but be aware
+  `;` runs the second command regardless of whether the first succeeded (unlike `&&`, which stops
+  if the first command fails). For git add/commit this distinction rarely matters, but don't rely
+  on `;` for anything where a failed first command should block the second.
