@@ -77,7 +77,7 @@ export default function AboutSection({
           transition={{ duration: 0.8 }}
           className="relative main-container-wrapper"
         >
-          <div className="main-container relative z-10 p-1 sm:p-2">
+          <div className="main-container relative z-10 p-0">
             <div 
               className="relative rounded-[inherit] overflow-hidden shadow-2xl shadow-primary/10 group cursor-pointer"
               onClick={() => onImageClick?.("/hospital-bg.jpg")}
@@ -286,7 +286,7 @@ export default function AboutSection({
                   </div>
                   
                   <h4 className="font-display text-2xl mb-3 text-white flex items-baseline">
-                    <span className="text-3xl font-bold mr-[1px] text-white">
+                    <span className="text-3xl font-bold mr-[1px] text-accent drop-shadow-md">
                       {firstLetter}
                     </span>
                     <span className="opacity-90">{restOfTitle}</span>

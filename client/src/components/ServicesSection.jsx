@@ -257,25 +257,32 @@ export default function ServicesSection({ services = defaultServices, onImageCli
                       exit="exit"
                       viewport={{ once: false, amount: 0.2 }}
                       variants={cardVariants}
-                      className="flex-none w-72 sm:w-80 rounded-xl overflow-hidden border border-border bg-white"
+                      className="group flex-none w-72 sm:w-80 aspect-[3/4] rounded-3xl overflow-hidden relative cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500"
+                      onClick={() => onImageClick?.(service.photo)}
                     >
-                      <div 
-                        className="w-full aspect-[4/3] cursor-pointer group overflow-hidden"
-                        onClick={() => onImageClick?.(service.photo)}
-                      >
-                        <img
-                          src={service.photo}
-                          alt={service.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                      </div>
-                      <div className="p-5">
-                        <h3 className="font-display text-lg mb-2 text-ink">
+                      {/* Full background image */}
+                      <img
+                        src={service.photo}
+                        alt={service.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      
+                      {/* Gradient overlay for text legibility */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+                      
+                      {/* Inner border for premium glass feel */}
+                      <div className="absolute inset-0 border border-white/20 rounded-3xl z-10 pointer-events-none" />
+
+                      {/* Content anchored to bottom */}
+                      <div className="absolute inset-x-0 bottom-0 p-6 flex flex-col justify-end z-20">
+                        <h3 className="font-display text-2xl mb-2 text-white transform group-hover:-translate-y-2 transition-transform duration-500">
                           {service.title}
                         </h3>
-                        <p className="font-body text-sm opacity-70 leading-relaxed">
-                          {service.text}
-                        </p>
+                        <div className="overflow-hidden">
+                          <p className="font-body text-sm text-white/90 leading-relaxed transform translate-y-[120%] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-75">
+                            {service.text}
+                          </p>
+                        </div>
                       </div>
                     </motion.div>
                   );
