@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { NavLink, useNavigate, useLocation, Link } from 'react-router-dom'
+import { NavLink, useLocation, Link } from 'react-router-dom'
+import { useScrollToSection } from './ScrollLink'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
-  const navigate = useNavigate()
+  const scroll = useScrollToSection()
   const location = useLocation()
 
   useEffect(() => {
@@ -37,18 +38,7 @@ export default function Navbar() {
 
   function scrollToSection(sectionId) {
     setOpen(false) // close mobile menu if it's open
-
-    function doScroll() {
-      const el = document.getElementById(sectionId)
-      if (el) el.scrollIntoView({ behavior: 'smooth' })
-    }
-
-    if (location.pathname === '/') {
-      doScroll()
-    } else {
-      navigate('/')
-      setTimeout(doScroll, 100)
-    }
+    scroll(sectionId)
   }
 
   const linkClass = ({ isActive }) =>
