@@ -9,19 +9,27 @@ export default function Button({ to, variant = 'primary', children, ...props }) 
   }
   
   const { className: customClassName, ...restProps } = props
-  const className = `${base} ${styles[variant]} ${customClassName || ''}`.trim()
+  
+  let className = ''
+  if (variant === 'secondary') {
+    className = `${base} secondary-button ${customClassName || ''}`.trim()
+  } else {
+    className = `${base} ${styles[variant]} ${customClassName || ''}`.trim()
+  }
+
+  const content = variant === 'secondary' ? <span className="inline-flex items-center justify-center">{children}</span> : children
 
   if (to) {
     return (
       <Link to={to} className={className} {...restProps}>
-        {children}
+        {content}
       </Link>
     )
   }
 
   return (
     <button className={className} {...restProps}>
-      {children}
+      {content}
     </button>
   )
 }

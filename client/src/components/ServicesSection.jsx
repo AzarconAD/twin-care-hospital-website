@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { THEME_COLORS } from "../theme";
 import { ServicesBackgroundBlobs } from "./bg-decorations";
 import Button from "./Button";
@@ -224,7 +224,7 @@ export default function ServicesSection({ services = defaultServices, onImageCli
       </motion.div>
 
       {/* Carousel — infinite auto-scroll, pausable on hover, with arrow controls */}
-      <div className="relative z-10 pb-20">
+      <div className="relative z-10 pb-12">
         {filtered.length === 0 ? (
           <p className="font-body text-center opacity-60 py-10">
             No services in this category yet.
@@ -309,13 +309,14 @@ export default function ServicesSection({ services = defaultServices, onImageCli
           </div>
         )}
         
-        <div className="mt-12 flex justify-center pb-8">
+        <div className="mt-20 w-fit mx-auto flex flex-col sm:flex-row items-center justify-center gap-8 bg-white border border-border/50 rounded-2xl shadow-sm py-6 px-10">
+          <h3 className="font-display text-3xl font-semibold text-primary">Got Questions?</h3>
           <Button 
             to="/contact" 
-            variant="primary" 
-            className="!px-10 !py-4 text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:scale-105 transition-all duration-300"
+            variant="secondary"
+            className="!px-10 !py-4 text-lg"
           >
-            Message Us
+            Message Us <ArrowRight size={20} className="ml-1 -mr-2" strokeWidth={2.5} />
           </Button>
         </div>
       </div>
