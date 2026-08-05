@@ -49,6 +49,15 @@ If you're an AI coding agent working on this project, read `AGENTS.md` first —
 architecture, design system, and rules that supersede any older assumptions baked into this README
 or leftover comments elsewhere in the code.
 
+## Recent Updates
+
+- **Architecture Refactor**: Separated the single-page scroll layout into independent routes (`/`, `/about`, `/services`). Replaced `ScrollLink` and scroll spy logic with standard React Router `NavLink`s.
+- **News Section**: Added a dynamic News & Updates section to the Home page, connected to an interactive featured news card in the Hero component.
+- **Global Scaling**: Root font-size adjusted to `112.5%` for optimal proportional sizing.
+- **Styling**: Standardized descriptive text to blue (`text-primary/70`). Replaced hardcoded button colors with CSS variables synced to the Tailwind theme. Added `.btn-fill` and `.secondary-button` custom animated button classes.
+- **Images**: Replaced broken local doctor paths with reliable `picsum.photos` placeholders.
+- **Maintenance**: Cleaned up dead CSS classes and removed form debug logs.
+
 ## Git workflow (solo project)
 
 - Commit directly to `main` — small, frequent commits, no PR process needed since it's just one person

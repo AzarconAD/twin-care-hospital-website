@@ -12,15 +12,16 @@ Node.js + Express + MongoDB/Mongoose (Atlas). No TypeScript.
 MongoDB is in active use (Services, Doctors, Contact, future Admin) — disregard any older "no database" notes elsewhere.
 
 ## Site Structure
-- `/` — Home: Hero, About, Services stacked as one scrollable page (anchors `#home`, `#about`, `#services`)
+- `/` — Home: Hero, News
+- `/about` — own route, hospital overview/about
+- `/services` — own route, services and departments
 - `/doctors` — own route, doctor cards
 - `/contact` — own route, public contact form
 - `/admin/login`, `/admin/dashboard` — planned only. Do not build unless explicitly asked — see `.agents/skills/admin-auth.md`
 
 ## Navbar
 Sticky top; transparent at page top, solid after scroll. Uses real logo file.
-Home/About/Services links scroll to the matching section on `/` (navigate to `/` first if on another page).
-Doctors/Contact links are normal route navigation.
+All main navigation links use standard React Router routing (`NavLink` or `Link`).
 
 ## Design System
 Colors (functional, not decorative — e.g. Services uses these to color-code categories):
@@ -34,6 +35,10 @@ red `#E63946` · green `#10B981` · blue `#0544AB` · ink `#1A2E2E` · cream `#F
 Fonts: Fraunces (display/headings), Inter (body), IBM Plex Mono (labels/eyebrows).
 
 Match `AboutSection.jsx` / `ServicesSection.jsx` for spacing, card style, and Framer Motion pattern (`whileInView`, `viewport={{ once: true }}`).
+
+## UI Components & Helpers
+- **Buttons**: Custom animated buttons (`.btn-fill`, `.secondary-button`, `.main-button`) are defined in `index.css`. Use these for primary CTAs.
+- **Global Scale**: The site is scaled globally via `html { font-size: 112.5%; }` in `index.css`.
 
 ## Images
 `client/public/hospital-bg.jpg` is a real photo of the hospital — use as an actual photo (e.g. in a card), not a decorative background.
