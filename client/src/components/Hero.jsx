@@ -11,7 +11,7 @@ const trustPoints = [
   { icon: HeartHandshake, text: 'Compassionate Approach' },
 ];
 
-export default function Hero({ onImageClick }) {
+export default function Hero({ onImageClick, featuredNews }) {
   return (
     <section
       id="home"
@@ -84,25 +84,31 @@ export default function Hero({ onImageClick }) {
             Keep the same position/size; just swap the icon, label, and text,
             or replace the whole card with a small news carousel component.
           */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="absolute -bottom-6 left-4 sm:left-6 bg-white border border-border rounded-xl shadow-lg p-4 flex items-center gap-3 max-w-[85%]"
-          >
-            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
-              <HeartHandshake size={20} className="text-white" strokeWidth={1.75} />
-            </div>
-            <div>
-              <p className="font-mono text-xs uppercase tracking-wide font-semibold text-primary mb-0.5">
-                Latest Update
-              </p>
-              <p className="text-sm font-medium font-body leading-snug text-ink">
-                New Pediatric Wing Now Open
-              </p>
-            </div>
-          </motion.div>
+          {featuredNews && (
+            <motion.a
+              href="#news"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="absolute -bottom-6 left-4 sm:left-6 bg-white border border-border rounded-xl shadow-lg p-4 flex items-center gap-3 max-w-[85%] cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group"
+            >
+              <div className={`w-10 h-10 rounded-lg bg-${featuredNews.tagColor} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform`}>
+                <HeartHandshake size={20} className="text-white" strokeWidth={1.75} />
+              </div>
+              <div>
+                <p className={`font-mono text-[10px] uppercase tracking-wide font-semibold text-${featuredNews.tagColor} mb-0.5`}>
+                  {featuredNews.tag}
+                </p>
+                <p className="text-xs font-medium font-body leading-tight text-ink group-hover:text-primary transition-colors">
+                  {featuredNews.title}
+                </p>
+                <p className="text-[10px] font-body text-ink/50 group-hover:text-primary/70 transition-colors mt-0.5">
+                  Click to read more.
+                </p>
+              </div>
+            </motion.a>
+          )}
         </motion.div>
       </div>
     </section>
