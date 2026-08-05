@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import ScrollLink from './ScrollLink'
+
 
 export default function Footer() {
   return (
@@ -17,9 +17,9 @@ export default function Footer() {
           <div>
             <p className="font-mono text-xs uppercase tracking-wide text-secondary">Directory</p>
             <ul className="mt-2 space-y-1 text-sm">
-              <li><ScrollLink targetId="home" className="hover:text-accent">Home</ScrollLink></li>
-              <li><ScrollLink targetId="about" className="hover:text-accent">About</ScrollLink></li>
-              <li><ScrollLink targetId="services" className="hover:text-accent">Services</ScrollLink></li>
+              <li><Link to="/" className="hover:text-accent">Home</Link></li>
+              <li><Link to="/about" className="hover:text-accent">About</Link></li>
+              <li><Link to="/services" className="hover:text-accent">Services</Link></li>
               <li><Link to="/doctors" className="hover:text-accent">Doctors</Link></li>
               <li><Link to="/contact" className="hover:text-accent">Contact</Link></li>
             </ul>

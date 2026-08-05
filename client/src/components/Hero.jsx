@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Clock, HeartHandshake } from 'lucide-react';
 import Button from './Button';
@@ -32,9 +33,9 @@ export default function Hero({ onImageClick }) {
           </h1>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button to="/contact" variant="secondary" state={{ appointment: true }}>Book a Visit</Button>
-            <a href="#services" className="btn-fill font-body">
+            <Link to="/services" className="btn-fill font-body">
               See Our Services &rarr;
-            </a>
+            </Link>
           </div>
 
           {/* Trust strip */}

@@ -16,7 +16,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-size: 125%;
+    font-size: 112.5%;
   }
 
   /* Prevent horizontal scrollbar from decorative circles that extend
