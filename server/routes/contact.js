@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
     )
   }
 
-  res.status(200).json({ success: true })
+  res.status(201).json({ success: true })
 })
 
 export default router

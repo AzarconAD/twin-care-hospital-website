@@ -132,7 +132,7 @@ export default function ContactPage() {
                   <Phone size={18} className="text-secondary mt-0.5" strokeWidth={2} />
                   <p className="font-body text-sm text-ink/70">
                     <span className="block font-semibold text-ink mb-0.5">Phone</span>
-                    (044) 123-4567
+                    (+63) 912-345-6789
                   </p>
                 </div>
                 <div className="flex items-start gap-3">

@@ -52,3 +52,70 @@ export async function submitContact(formData) {
   }
   return res.json()
 }
+
+// ── Admin helpers ─────────────────────────────────────────────────────────────
+// All admin requests include credentials: 'include' so the browser sends
+// the session cookie on cross-origin requests (localhost:5173 → localhost:5000).
+// Without this option the cookie is silently dropped and auth never works.
+
+/**
+ * checkAdminSession()
+ * Checks whether the current browser session is authenticated.
+ * Returns: { authenticated: true } or { authenticated: false }
+ * Never throws — always returns a value.
+ */
+export async function checkAdminSession() {
+  const res = await fetch(`${API_BASE}/api/admin/me`, {
+    credentials: 'include',
+  })
+  if (!res.ok) return { authenticated: false }
+  return res.json()
+}
+
+/**
+ * adminLogin(username, password)
+ * Posts credentials to the login route.
+ * Returns: { success: true } on success.
+ * Throws an Error (with the server's message) on failure.
+ */
+export async function adminLogin(username, password) {
+  const res = await fetch(`${API_BASE}/api/admin/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ username, password }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Login failed.')
+  }
+  return res.json()
+}
+
+/**
+ * adminLogout()
+ * Destroys the session on the server and clears the cookie.
+ * Returns: { success: true }
+ */
+export async function adminLogout() {
+  const res = await fetch(`${API_BASE}/api/admin/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error('Logout failed.')
+  return res.json()
+}
+
+/**
+ * getContacts()
+ * Fetches all contact submissions (admin only).
+ * Returns: [{ _id, name, email, message, submittedAt }, ...]
+ * Throws if not authenticated or fetch fails.
+ */
+export async function getContacts() {
+  const res = await fetch(`${API_BASE}/api/admin/contacts`, {
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error(`Failed to fetch contacts (status ${res.status})`)
+  return res.json()
+}

@@ -48,7 +48,8 @@ Other placeholder photos (stock/picsum) are temporary — keep them easy to find
 - Stay within the given task/phase — no scope expansion
 - If a request conflicts with this file, ask before proceeding
 - After finishing a task, summarize exactly what files were created/changed
-- Commits: small, frequent, format `TYPE - {file(s)}: {summary}` with bullet sub-points
+- **DO NOT git commit unless the developer explicitly asks you to.**
+- Commits (when requested): small, frequent, format `TYPE - {file(s)}: {summary}` with bullet sub-points
 - Deployment steps — see `.agents/skills/deployment.md` (not needed until ready to ship)
 
 ## Terminal / Shell
