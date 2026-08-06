@@ -69,7 +69,7 @@ export default function AboutSection({
       {/* Decorative background blobs */}
       <AboutBackgroundBlobs />
       {/* Header with hospital photo */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-16 grid md:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-6 pb-14 grid md:grid-cols-2 gap-12 items-center">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -276,17 +276,17 @@ export default function AboutSection({
                 <div className={`absolute inset-0 ${isTwin ? 'bg-secondary/40' : 'bg-primary/40'}`} />
 
                 {/* Subtle background letter watermark */}
-                <div className="absolute -right-4 -top-8 font-display text-[12rem] font-bold text-white select-none pointer-events-none opacity-5 group-hover:opacity-10 transition-all duration-500">
+                <div className="absolute -right-4 -top-8 font-display text-[12rem] font-bold text-white select-none pointer-events-none opacity-20 group-hover:opacity-40 transition-all duration-500">
                   {firstLetter}
                 </div>
 
                 <div className="relative z-10">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 bg-white/20 text-white group-hover:bg-white ${isTwin ? 'group-hover:text-secondary' : 'group-hover:text-primary'}`}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 bg-white/20 text-accent group-hover:bg-white">
                     <Icon size={24} strokeWidth={2} />
                   </div>
                   
                   <h4 className="font-display text-2xl mb-3 text-white flex items-baseline">
-                    <span className="text-3xl font-bold mr-[1px] text-accent drop-shadow-md">
+                    <span className="text-3xl font-bold mr-[1px] text-white drop-shadow-md">
                       {firstLetter}
                     </span>
                     <span className="opacity-90">{restOfTitle}</span>

@@ -24,12 +24,12 @@ export default function Home() {
       })
   }, [])
 
-  const featuredNews = news.find((n) => n.featured) || (news.length > 0 ? news[0] : null);
+
 
   return (
     <div className="relative min-h-screen bg-cream">
       {/* ── #home: Hero ── */}
-      <Hero onImageClick={setLightboxImage} featuredNews={featuredNews} />
+      <Hero onImageClick={setLightboxImage} news={news} />
 
       {/* ── #news: News & Updates ── */}
       <NewsSection news={news} loading={newsLoading} error={newsError} />
