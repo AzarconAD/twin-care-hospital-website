@@ -178,9 +178,17 @@ export default function ContactPage() {
             </div>
 
             {contactStatus === "success" ? (
-              <div className="text-center py-8 px-6 bg-accent/10 rounded-2xl my-auto">
-                <p className="font-display text-lg text-accent mb-1">Message sent!</p>
-                <p className="font-body text-sm text-ink/70">We'll get back to you soon.</p>
+              <div className="text-center py-10 px-6 bg-secondary/10 rounded-2xl my-auto">
+                <p className="font-display text-xl text-secondary mb-2">Message sent!</p>
+                <p className="font-body text-sm text-ink/70">
+                  Check your email for the reply.
+                </p>
+                <button
+                  onClick={() => setContactStatus("idle")}
+                  className="mt-4 font-body text-sm text-primary underline"
+                >
+                  Send another message
+                </button>
               </div>
             ) : (
               <form onSubmit={handleContactSubmit} className="space-y-4 flex-grow flex flex-col">

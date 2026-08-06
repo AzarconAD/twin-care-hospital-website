@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { LogOut, Mail, User, MessageSquare, Clock, ShieldCheck, X } from 'lucide-react'
+import { LogOut, Mail, User, MessageSquare, Clock, ShieldCheck, X, Loader2 } from 'lucide-react'
 import { checkAdminSession, adminLogout, getContacts, replyToContact } from '../api/index.js'
 
 /**
@@ -42,6 +42,10 @@ export default function AdminDashboard() {
     setIsReplying(true)
     setReplyStatus(null)
     try {
+      // Artificial minimum delay so the loading animation is visible 
+      // even when the backend mock returns instantly
+      await new Promise(r => setTimeout(r, 600))
+      
       await replyToContact(selectedContact._id, replyMessage)
       setReplyStatus({ type: 'success', message: 'Reply sent successfully! (Check terminal if SMTP not configured)' })
       setContacts((prev) => prev.filter((c) => c._id !== selectedContact._id))
@@ -325,10 +329,19 @@ export default function AdminDashboard() {
                 </button>
                 <button
                   onClick={handleReply}
-                  disabled={isReplying || !replyMessage.trim()}
-                  className="px-4 py-2 bg-primary text-white rounded-lg font-body text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isReplying || !replyMessage.trim() || replyStatus?.type === 'success'}
+                  className="px-4 py-2 bg-primary text-white rounded-lg font-body text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px]"
                 >
-                  {isReplying ? 'Sending...' : 'Send Reply'}
+                  {isReplying ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 size={16} className="animate-spin" />
+                      Sending...
+                    </span>
+                  ) : replyStatus?.type === 'success' ? (
+                    'Sent!'
+                  ) : (
+                    'Send Reply'
+                  )}
                 </button>
               </div>
             </div>
