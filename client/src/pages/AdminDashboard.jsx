@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { LogOut, Mail, User, MessageSquare, Clock, ShieldCheck } from 'lucide-react'
-import { checkAdminSession, adminLogout, getContacts } from '../api/index.js'
+import { LogOut, Mail, User, MessageSquare, Clock, ShieldCheck, X } from 'lucide-react'
+import { checkAdminSession, adminLogout, getContacts, replyToContact } from '../api/index.js'
 
 /**
  * AdminDashboard
@@ -19,16 +19,52 @@ export default function AdminDashboard() {
   const [contacts, setContacts] = useState([])
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState(null)
+  const [selectedContact, setSelectedContact] = useState(null)
+  const [replyMessage, setReplyMessage] = useState('')
+  const [isReplying, setIsReplying] = useState(false)
+  const [replyStatus, setReplyStatus] = useState(null)
+  const [adminEmail, setAdminEmail] = useState('')
+
+  const openModal = (contact) => {
+    setSelectedContact(contact)
+    setReplyMessage('')
+    setReplyStatus(null)
+  }
+
+  const closeModal = () => {
+    setSelectedContact(null)
+    setReplyMessage('')
+    setReplyStatus(null)
+  }
+
+  const handleReply = async () => {
+    if (!replyMessage.trim() || !selectedContact) return
+    setIsReplying(true)
+    setReplyStatus(null)
+    try {
+      await replyToContact(selectedContact._id, replyMessage)
+      setReplyStatus({ type: 'success', message: 'Reply sent successfully! (Check terminal if SMTP not configured)' })
+      setContacts((prev) => prev.filter((c) => c._id !== selectedContact._id))
+      setTimeout(() => {
+        closeModal()
+      }, 2000)
+    } catch (err) {
+      setReplyStatus({ type: 'error', message: err.message })
+    } finally {
+      setIsReplying(false)
+    }
+  }
 
   useEffect(() => {
     // First check the session — if not authenticated, redirect immediately.
     // If authenticated, fetch the contacts list.
     checkAdminSession()
-      .then(({ authenticated }) => {
+      .then(({ authenticated, adminEmail }) => {
         if (!authenticated) {
           navigate('/admin/login', { replace: true })
           return
         }
+        setAdminEmail(adminEmail)
         return getContacts()
       })
       .then((data) => {
@@ -167,9 +203,6 @@ export default function AdminDashboard() {
                       <span className="flex items-center gap-1.5"><Mail size={12} /> Email</span>
                     </th>
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">
-                      <span className="flex items-center gap-1.5"><MessageSquare size={12} /> Message</span>
-                    </th>
-                    <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">
                       <span className="flex items-center gap-1.5"><Clock size={12} /> Submitted</span>
                     </th>
                   </tr>
@@ -178,17 +211,14 @@ export default function AdminDashboard() {
                   {contacts.map((c, i) => (
                     <tr
                       key={c._id}
-                      className={`border-b border-border last:border-b-0 hover:bg-cream/40 transition-colors ${i % 2 === 0 ? '' : 'bg-cream/20'}`}
+                      onClick={() => openModal(c)}
+                      className={`border-b border-border last:border-b-0 hover:bg-cream/40 transition-colors cursor-pointer ${i % 2 === 0 ? '' : 'bg-cream/20'}`}
                     >
                       <td className="px-5 py-4 font-body text-ink font-medium whitespace-nowrap">{c.name}</td>
                       <td className="px-5 py-4 font-body text-primary/70">
-                        <a href={`mailto:${c.email}`} className="hover:text-secondary transition-colors">
+                        <a href={`mailto:${c.email}`} onClick={(e) => e.stopPropagation()} className="hover:text-secondary transition-colors">
                           {c.email}
                         </a>
-                      </td>
-                      <td className="px-5 py-4 font-body text-ink/70 max-w-xs">
-                        {/* Truncate long messages in the table; full text is readable if the user copies */}
-                        <p className="line-clamp-2 leading-relaxed">{c.message}</p>
                       </td>
                       <td className="px-5 py-4 font-mono text-xs text-primary/50 whitespace-nowrap">
                         {formatDate(c.submittedAt)}
@@ -202,18 +232,22 @@ export default function AdminDashboard() {
             {/* Mobile card list */}
             <div className="sm:hidden divide-y divide-border">
               {contacts.map((c) => (
-                <div key={c._id} className="p-5 space-y-2">
+                <div 
+                  key={c._id} 
+                  onClick={() => openModal(c)}
+                  className="p-5 space-y-2 cursor-pointer hover:bg-cream/20 transition-colors"
+                >
                   <div className="flex items-center justify-between">
                     <span className="font-display text-base text-ink">{c.name}</span>
                     <span className="font-mono text-[10px] text-primary/40">{formatDate(c.submittedAt)}</span>
                   </div>
                   <a
                     href={`mailto:${c.email}`}
+                    onClick={(e) => e.stopPropagation()}
                     className="font-body text-sm text-secondary block"
                   >
                     {c.email}
                   </a>
-                  <p className="font-body text-sm text-ink/70 leading-relaxed">{c.message}</p>
                 </div>
               ))}
             </div>
@@ -227,6 +261,80 @@ export default function AdminDashboard() {
           </motion.div>
         )}
       </main>
+
+      {/* Message Modal */}
+      {selectedContact && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/50 backdrop-blur-sm"
+          onClick={closeModal}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+            className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-xl relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <button 
+              onClick={closeModal}
+              className="absolute top-5 right-5 text-primary/40 hover:text-primary transition-colors"
+            >
+              <X size={20} />
+            </button>
+            
+            <h3 className="font-display text-xl text-primary mb-1">Message from {selectedContact.name}</h3>
+            <p className="font-mono text-[10px] text-primary/40 mb-4">{formatDate(selectedContact.submittedAt)} • {selectedContact.email}</p>
+            
+            <div className="bg-cream/30 border border-border rounded-xl p-4 font-body text-ink/80 text-sm leading-relaxed max-h-[30vh] overflow-y-auto mb-2">
+              {selectedContact.message.split('\n').map((para, idx) => (
+                <p key={idx} className="mb-2 last:mb-0 break-words whitespace-pre-wrap">{para || '\u00A0'}</p>
+              ))}
+            </div>
+
+            {/* Reply Section */}
+            <div className="space-y-3 pt-4 border-t border-border">
+              <div className="flex items-center justify-between">
+                <h4 className="font-mono text-[10px] uppercase tracking-wider text-primary/60">Reply</h4>
+                {adminEmail && (
+                  <span className="font-mono text-[10px] text-primary/50">
+                    Replying as: <span className="font-medium text-primary/70">{adminEmail}</span>
+                  </span>
+                )}
+              </div>
+              <textarea
+                value={replyMessage}
+                onChange={(e) => setReplyMessage(e.target.value)}
+                placeholder="Write your response here..."
+                className="w-full bg-cream/20 border border-border rounded-xl p-3 font-body text-sm text-ink focus:outline-none focus:border-primary/30 transition-colors resize-none h-24"
+                disabled={isReplying}
+              />
+              
+              {replyStatus && (
+                <div className={`text-xs font-body p-2 rounded-lg ${replyStatus.type === 'error' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'}`}>
+                  {replyStatus.message}
+                </div>
+              )}
+              
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={closeModal}
+                  className="px-4 py-2 rounded-lg font-body text-sm text-primary/60 hover:text-primary transition-colors"
+                  disabled={isReplying}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleReply}
+                  disabled={isReplying || !replyMessage.trim()}
+                  className="px-4 py-2 bg-primary text-white rounded-lg font-body text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isReplying ? 'Sending...' : 'Send Reply'}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   )
 }

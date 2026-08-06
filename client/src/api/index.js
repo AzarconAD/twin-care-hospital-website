@@ -195,6 +195,24 @@ export async function getContacts() {
 }
 
 /**
+ * replyToContact(id, message)
+ * Sends a reply email to a contact.
+ */
+export async function replyToContact(id, message) {
+  const res = await fetch(`${API_BASE}/api/admin/contacts/${id}/reply`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ message }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to send reply.')
+  }
+  return res.json()
+}
+
+/**
  * getSchedule()
  * Fetches all schedule entries.
  */

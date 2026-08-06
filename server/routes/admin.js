@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import bcrypt from 'bcryptjs'
+import nodemailer from 'nodemailer'
 import Admin from '../models/Admin.js'
 import Contact from '../models/Contact.js'
 import Schedule from '../models/Schedule.js'
@@ -72,11 +73,14 @@ router.post('/logout', (req, res) => {
  * GET /api/admin/me
  *
  * Public route — used by the frontend to check auth state on page load.
- * Returns { authenticated: true } if a valid session exists, false otherwise.
+ * Returns { authenticated: true, adminEmail: string } if a valid session exists, false otherwise.
  * Never returns a 401 — always a 200 — so the frontend can branch on the value.
  */
 router.get('/me', (req, res) => {
-  res.json({ authenticated: !!req.session?.adminId })
+  res.json({ 
+    authenticated: !!req.session?.adminId,
+    adminEmail: process.env.ADMIN_EMAIL || 'admin@twincarehospital.com'
+  })
 })
 
 /**
@@ -92,6 +96,58 @@ router.get('/contacts', requireAuth, async (req, res) => {
   } catch (err) {
     console.error('Error fetching contacts:', err)
     res.status(500).json({ error: 'Failed to fetch contact submissions.' })
+  }
+})
+
+/**
+ * POST /api/admin/contacts/:id/reply
+ *
+ * Protected by requireAuth — replies to a contact submission via email.
+ */
+router.post('/contacts/:id/reply', requireAuth, async (req, res) => {
+  const { message } = req.body
+
+  if (!message) {
+    return res.status(400).json({ error: 'Reply message is required.' })
+  }
+
+  try {
+    const contact = await Contact.findById(req.params.id)
+    if (!contact) {
+      return res.status(404).json({ error: 'Contact not found.' })
+    }
+
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@twincarehospital.com'
+    
+    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT || 587,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS
+        }
+      })
+
+      await transporter.sendMail({
+        from: adminEmail,
+        to: contact.email,
+        subject: `Re: Your inquiry to Twin Care Hospital`,
+        text: message
+      })
+    } else {
+      console.log(`[Mock Email] Setup SMTP_HOST, SMTP_USER, SMTP_PASS in .env to send real emails.`)
+      console.log(`[Mock Email] To: ${contact.email}, From: ${adminEmail}`)
+      console.log(`[Mock Email] Message:\n${message}`)
+    }
+
+    // Automatically delete the submission after a successful reply
+    await Contact.findByIdAndDelete(req.params.id)
+
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Error replying to contact:', err)
+    res.status(500).json({ error: 'Failed to reply to contact.' })
   }
 })
 
