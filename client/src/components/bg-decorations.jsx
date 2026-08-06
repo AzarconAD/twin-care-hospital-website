@@ -103,3 +103,13 @@ export function DoctorsBackgroundBlobs() {
     </div>
   );
 }
+
+export function NewsBackgroundBlobs() {
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0">
+      <div className="absolute top-0 -left-20 w-[28rem] h-[28rem] rounded-full bg-primary/25 blur-3xl" aria-hidden="true" />
+      <div className="absolute bottom-0 -right-20 w-[30rem] h-[30rem] rounded-full bg-secondary/25 blur-3xl" aria-hidden="true" />
+      <div className="absolute top-1/3 left-1/4 w-[24rem] h-[24rem] rounded-full bg-accent/20 blur-3xl" aria-hidden="true" />
+    </div>
+  );
+}

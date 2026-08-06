@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
+import { NewsBackgroundBlobs } from "./bg-decorations";
 
 // tagColor rotates through the existing brand colors — same functional-color
 // pattern used for Services/Doctors categories, just without a filter system
@@ -35,8 +36,9 @@ export default function NewsSection({ news = [], loading = false, error = null }
   const rest = featured ? news.filter((n) => n._id !== featured._id).slice(0, 3) : [];
 
   return (
-    <section id="news" className="w-full py-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <section id="news" className="relative w-full py-20">
+      <NewsBackgroundBlobs />
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -76,13 +78,13 @@ export default function NewsSection({ news = [], loading = false, error = null }
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false, amount: 0.2 }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-2 rounded-2xl overflow-hidden border border-border shadow-sm"
+            className="lg:col-span-2 bg-white rounded-2xl overflow-hidden border border-border shadow-sm"
           >
-            <div className="aspect-[16/9]">
+            <div className="aspect-[16/9] pt-4 bg-[url('/news-bg-pattern.png')] bg-no-repeat bg-cover bg-center">
               <img
                 src={featured.image}
                 alt={featured.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </div>
             <div className="p-6 sm:p-8">
@@ -107,22 +109,24 @@ export default function NewsSection({ news = [], loading = false, error = null }
           </motion.article>
 
           {/* Smaller list — remaining news items, stacked */}
-          <div className="flex flex-col gap-5">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col gap-5"
+          >
             {rest.map((item, i) => (
-              <motion.article
+              <article
                 key={item._id}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
                 onClick={() => setSelectedNewsId(item._id)}
-                className="flex gap-4 rounded-xl border border-border p-3 bg-cream/40 cursor-pointer hover:bg-cream/80 hover:shadow-sm transition-all"
+                className="flex gap-4 rounded-xl border border-border p-3 bg-white cursor-pointer hover:bg-gray-50 hover:shadow-sm transition-all"
               >
-                <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
+                <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-50">
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <div className="min-w-0">
@@ -138,9 +142,9 @@ export default function NewsSection({ news = [], loading = false, error = null }
                     {formatDate(item.date)}
                   </span>
                 </div>
-              </motion.article>
+              </article>
             ))}
-          </div>
+          </motion.div>
         </div>
         )}
       </div>

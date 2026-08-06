@@ -46,24 +46,23 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-4">
+    <div className="min-h-screen bg-cream bg-[url('/news-bg-pattern.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         className="w-full max-w-sm"
       >
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary mb-4">
-            <Lock size={24} color="white" />
-          </div>
-          <h1 className="font-display text-3xl text-primary mb-1">Admin Login</h1>
-          <p className="font-body text-sm text-primary/60">Twin Care Hospital Dashboard</p>
-        </div>
-
         {/* Card */}
         <div className="bg-white border border-border rounded-2xl shadow-sm p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary mb-4">
+              <Lock size={24} color="white" />
+            </div>
+            <h1 className="font-display text-3xl text-primary mb-1">Admin Login</h1>
+            <p className="font-body text-sm text-primary/60">Twin Care Hospital Dashboard</p>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Username */}
             <div>
@@ -135,12 +134,12 @@ export default function AdminLogin() {
               {status === 'loading' ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
-        </div>
 
-        {/* Footer note */}
-        <p className="text-center font-body text-xs text-primary/40 mt-6">
-          This page is for hospital staff only.
-        </p>
+          {/* Footer note */}
+          <p className="text-center font-body text-xs text-primary/40 mt-6 pt-6 border-t border-border">
+            This page is for hospital staff only.
+          </p>
+        </div>
       </motion.div>
     </div>
   )
