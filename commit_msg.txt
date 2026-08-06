@@ -1,9 +1,0 @@
-FEAT - {backend, frontend}: Implement Admin Manage Doctors and Schedule feature
-
-* Backend: Created Schedule model and routes for managing doctor availability
-* Backend: Updated Doctor model to include postfix and photo URL
-* Backend: Added protected CRUD routes for Doctors (POST, PUT, DELETE) with server-side validation
-* Frontend: Created AdminDoctors panel with modal for creating, editing, and deleting doctors
-* Frontend: Added an interactive calendar UI for toggling doctor availability with batch saving
-* Frontend: Updated the public Doctors calendar to consume live data from the API
-* Frontend: Connected new frontend API methods to handle doctor and schedule data

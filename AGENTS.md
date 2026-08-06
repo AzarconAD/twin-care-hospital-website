@@ -17,7 +17,9 @@ MongoDB is in active use (Services, Doctors, Contact, future Admin) — disregar
 - `/services` — own route, services and departments
 - `/doctors` — own route, doctor cards
 - `/contact` — own route, public contact form
-- `/admin/login`, `/admin/dashboard` — planned only. Do not build unless explicitly asked — see `.agents/skills/admin-auth.md`
+- `/admin/login` — admin authentication
+- `/admin/dashboard` — protected contact submissions dashboard
+- `/admin/doctors` — protected doctor and schedule management
 
 ## Navbar
 Sticky top; transparent at page top, solid after scroll. Uses real logo file.

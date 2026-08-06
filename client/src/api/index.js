@@ -67,6 +67,46 @@ export async function deleteDoctor(id) {
   return data
 }
 
+export async function getNews() {
+  const res = await fetch(`${API_BASE}/api/news`)
+  if (!res.ok) throw new Error(`Failed to fetch news (status ${res.status})`)
+  return res.json()
+}
+
+export async function createNews(newsData) {
+  const res = await fetch(`${API_BASE}/api/news`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newsData),
+    credentials: 'include'
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Failed to create news')
+  return data
+}
+
+export async function updateNews(id, newsData) {
+  const res = await fetch(`${API_BASE}/api/news/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newsData),
+    credentials: 'include'
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Failed to update news')
+  return data
+}
+
+export async function deleteNews(id) {
+  const res = await fetch(`${API_BASE}/api/news/${id}`, {
+    method: 'DELETE',
+    credentials: 'include'
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Failed to delete news')
+  return data
+}
+
 /**
  * submitContact(formData)
  * Posts a contact inquiry to POST /api/contact.

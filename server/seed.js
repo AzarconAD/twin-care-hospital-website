@@ -22,6 +22,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import Service from './models/Service.js'
 import Doctor from './models/Doctor.js'
+import News from './models/News.js'
 
 dotenv.config()
 
@@ -130,6 +131,43 @@ const doctors = [
   },
 ]
 
+// ── Placeholder news ──────────────────────────────────────────────────────────
+const newsItems = [
+  {
+    tag: "Announcement",
+    tagColor: "primary",
+    date: "2026-07-28",
+    title: "New Pediatric Wing Now Open",
+    excerpt: "Twin Care's newest wing doubles our capacity for infant and adolescent care, with dedicated rooms designed around comfort for young patients and their families.",
+    image: "https://picsum.photos/seed/news-pedwing/900/600",
+    featured: true,
+  },
+  {
+    tag: "Event",
+    tagColor: "secondary",
+    date: "2026-07-15",
+    title: "Free Community Checkup Week",
+    excerpt: "Basic health screenings offered at no cost, open to all residents.",
+    image: "https://picsum.photos/seed/news-checkup/300/300",
+  },
+  {
+    tag: "Update",
+    tagColor: "accent",
+    date: "2026-07-02",
+    title: "Extended Outpatient Hours",
+    excerpt: "Outpatient services now open until 8 PM on weekdays.",
+    image: "https://picsum.photos/seed/news-hours/300/300",
+  },
+  {
+    tag: "Announcement",
+    tagColor: "primary",
+    date: "2026-06-20",
+    title: "New Cardiology Specialist Joins Our Team",
+    excerpt: "Dr. Elena Cruz now sees patients Tuesdays through Saturdays.",
+    image: "https://picsum.photos/seed/news-cardio/300/300",
+  },
+]
+
 // ── Main seed function ─────────────────────────────────────────────────────────
 async function seed() {
   try {
@@ -140,12 +178,14 @@ async function seed() {
     // We do this so re-running the seed doesn't create duplicates.
     await Service.deleteMany({})
     await Doctor.deleteMany({})
-    console.log('Cleared existing services and doctors.')
+    await News.deleteMany({})
+    console.log('Cleared existing services, doctors, and news.')
 
     // insertMany() inserts an array of documents in a single operation.
     await Service.insertMany(services)
     await Doctor.insertMany(doctors)
-    console.log(`Inserted ${services.length} services and ${doctors.length} doctors.`)
+    await News.insertMany(newsItems)
+    console.log(`Inserted ${services.length} services, ${doctors.length} doctors, and ${newsItems.length} news items.`)
 
     await mongoose.disconnect()
     console.log('Done. Database seeded successfully.')
