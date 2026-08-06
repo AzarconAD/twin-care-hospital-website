@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import ServicesSection from '../components/ServicesSection.jsx'
-import Lightbox from '../components/Lightbox.jsx'
+import ServicesSection from '../components/services/ServicesSection.jsx'
+import Lightbox from '../components/ui/Lightbox.jsx'
 import { getServices } from '../api/index.js'
 
 export default function Services() {

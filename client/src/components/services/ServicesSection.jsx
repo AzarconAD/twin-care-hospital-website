@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import { THEME_COLORS } from "../theme";
-import { ServicesBackgroundBlobs } from "./bg-decorations";
-import Button from "./Button";
+import { THEME_COLORS } from "../../theme";
+import { ServicesBackgroundBlobs } from "../ui/BG-Decorations";
+import Button from "../ui/Button";
 
 // Must roughly match the card's rendered width (w-72 = 288px) + the gap (gap-6 = 24px).
 // Used to move the carousel by "one card" when an arrow button is clicked.

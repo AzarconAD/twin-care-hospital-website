@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { LogOut, Calendar as CalendarIcon, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react'
+import AdminHeader from '../components/admin/AdminHeader.jsx'
+import DoctorEditModal from '../components/admin/DoctorEditModal.jsx'
+import AdminScheduleModal from '../components/admin/AdminScheduleModal.jsx'
 import { checkAdminSession, adminLogout, getDoctors, getSchedule, addScheduleEntry, removeScheduleEntry, updateScheduleEntry, createDoctor, updateDoctor, deleteDoctor } from '../api/index.js'
 
 export default function AdminDoctors() {
@@ -209,50 +212,7 @@ export default function AdminDoctors() {
   return (
     <div className="min-h-screen bg-cream">
       {/* Top bar */}
-      <header className="bg-white border-b border-border px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-              <ShieldCheck size={18} color="white" />
-            </div>
-            <div>
-              <h1 className="font-display text-lg text-primary leading-none">Admin Dashboard</h1>
-              <p className="font-mono text-[10px] uppercase tracking-wider text-primary/50 mt-0.5">
-                Twin Care Hospital
-              </p>
-            </div>
-          </div>
-          
-          <div className="hidden sm:flex items-center bg-cream rounded-lg p-1 border border-border">
-            <Link 
-              to="/admin/dashboard" 
-              className={`px-4 py-1.5 rounded-md font-body text-sm font-medium transition-colors ${location.pathname === '/admin/dashboard' ? 'bg-white shadow-sm text-primary' : 'text-primary/60 hover:text-primary'}`}
-            >
-              Submissions
-            </Link>
-            <Link 
-              to="/admin/doctors" 
-              className={`px-4 py-1.5 rounded-md font-body text-sm font-medium transition-colors ${location.pathname === '/admin/doctors' ? 'bg-white shadow-sm text-primary' : 'text-primary/60 hover:text-primary'}`}
-            >
-              Doctors
-            </Link>
-            <Link 
-              to="/admin/news" 
-              className={`px-4 py-1.5 rounded-md font-body text-sm font-medium transition-colors ${location.pathname === '/admin/news' ? 'bg-white shadow-sm text-primary' : 'text-primary/60 hover:text-primary'}`}
-            >
-              News
-            </Link>
-          </div>
-        </div>
-        
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 font-body text-sm text-primary/60 hover:text-accent transition-colors"
-        >
-          <LogOut size={16} />
-          Logout
-        </button>
-      </header>
+      <AdminHeader handleLogout={handleLogout} />
 
       {/* Main content */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
@@ -402,257 +362,30 @@ export default function AdminDoctors() {
         )}
       </main>
 
-      {/* Doctor Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col"
-          >
-            <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-white z-10">
-              <h3 className="font-display text-xl text-primary">
-                {editingDoctor ? 'Edit Doctor' : 'Create New Doctor'}
-              </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-primary/50 hover:text-primary transition-colors text-2xl leading-none">&times;</button>
-            </div>
-            
-            <form onSubmit={handleSaveDoctor} className="p-6 flex flex-col gap-5">
-              {formError && (
-                <div className="bg-accent/10 border border-accent/30 rounded-lg px-4 py-3 text-accent font-body text-sm">
-                  {formError}
-                </div>
-              )}
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Name *</label>
-                  <input required name="name" value={formData.name} onChange={handleFormChange} className="w-full p-2.5 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary" placeholder="e.g. Dr. Carla Mendoza" />
-                </div>
-                <div>
-                  <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Postfix</label>
-                  <input name="postfix" value={formData.postfix} onChange={handleFormChange} className="w-full p-2.5 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary" placeholder="e.g. MD, PhD" />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Specialty *</label>
-                  <input required name="specialty" value={formData.specialty} onChange={handleFormChange} className="w-full p-2.5 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary" placeholder="e.g. Cardiology" />
-                </div>
-                <div>
-                  <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Category *</label>
-                  <select required name="category" value={formData.category} onChange={handleFormChange} className="w-full p-2.5 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary bg-white">
-                    <option value="emergency">Emergency & Urgent Care</option>
-                    <option value="wellness">Wellness & Preventive Care</option>
-                    <option value="diagnostic">Diagnostic & Specialty Care</option>
-                  </select>
-                </div>
-              </div>
+      <DoctorEditModal 
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        editingDoctor={editingDoctor}
+        formData={formData}
+        setFormData={setFormData}
+        formError={formError}
+        formLoading={formLoading}
+        handleFormChange={handleFormChange}
+        handleSaveDoctor={handleSaveDoctor}
+        handleDeleteDoctor={handleDeleteDoctor}
+      />
 
-              <div>
-                <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Bio *</label>
-                <textarea required name="bio" value={formData.bio} onChange={handleFormChange} rows={3} className="w-full p-2.5 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary resize-none" placeholder="Short biography..." />
-              </div>
-
-              <div>
-                <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Photo</label>
-                <div className="flex items-start gap-4">
-                  <div className="flex-1">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="block w-full font-body text-sm text-primary/70
-                        file:mr-3 file:py-2 file:px-4
-                        file:rounded-lg file:border file:border-border
-                        file:text-xs file:font-semibold file:font-body
-                        file:bg-white file:text-primary
-                        hover:file:bg-cream cursor-pointer"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (!file) return
-                        // FileReader converts the picked file to a data URL so it can
-                        // be stored in the photo field and previewed immediately.
-                        const reader = new FileReader()
-                        reader.onload = (ev) => {
-                          setFormData(prev => ({ ...prev, photo: ev.target.result }))
-                        }
-                        reader.readAsDataURL(file)
-                      }}
-                    />
-                    <p className="font-body text-[11px] text-primary/40 mt-1.5">
-                      Image stored as a data URL. Swap for a hosted URL before production.
-                    </p>
-                  </div>
-
-                  {/* Live preview */}
-                  {formData.photo && (
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-secondary/20 shrink-0 bg-cream flex items-center justify-center">
-                      <img
-                        src={formData.photo}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                        onError={(e) => { e.target.style.display = 'none' }}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              <div className="mt-4 pt-5 border-t border-border flex items-center justify-between">
-                {editingDoctor ? (
-                  <button type="button" onClick={handleDeleteDoctor} disabled={formLoading} className="text-accent hover:text-accent/80 font-body text-sm font-semibold transition-colors disabled:opacity-50">
-                    Delete Doctor
-                  </button>
-                ) : <div></div>}
-                <div className="flex gap-3">
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg font-body text-sm text-primary/60 hover:text-primary transition-colors">
-                    Cancel
-                  </button>
-                  <button type="submit" disabled={formLoading} className="main-button px-5 py-2 rounded-lg font-body text-sm font-semibold disabled:opacity-50">
-                    {formLoading ? 'Saving...' : 'Save Doctor'}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Time Slot Modal */}
-      {scheduleModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col"
-          >
-            <div className="flex items-center justify-between p-5 border-b border-border bg-paper">
-              <div>
-                <h3 className="font-display text-xl text-primary">Schedule for {scheduleModalData.dateStr}</h3>
-              </div>
-              <button onClick={() => setScheduleModalOpen(false)} className="text-primary/50 hover:text-primary transition-colors text-2xl leading-none">&times;</button>
-            </div>
-            
-            <div className="p-6">
-              <label className="flex items-center gap-3 cursor-pointer mb-6 border border-border p-4 rounded-xl bg-cream/30 hover:bg-cream/50 transition-colors">
-                <input 
-                  type="checkbox" 
-                  className="w-5 h-5 rounded text-secondary focus:ring-secondary/20 cursor-pointer"
-                  checked={scheduleModalData.isAvailable}
-                  onChange={(e) => setScheduleModalData(prev => ({ ...prev, isAvailable: e.target.checked, timeSlots: e.target.checked ? prev.timeSlots : [] }))}
-                />
-                <span className="font-body font-medium text-ink">Doctor is available on this date</span>
-              </label>
-
-              {scheduleModalData.isAvailable && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
-                  <h4 className="font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-3">Available Time Slots</h4>
-                  
-                  <div className="flex flex-wrap gap-2 mb-5">
-                    {DEFAULT_TIME_SLOTS.map(time => {
-                      const isSelected = scheduleModalData.timeSlots.includes(time);
-                      return (
-                        <label 
-                          key={time} 
-                          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border cursor-pointer transition-colors text-sm font-mono ${isSelected ? 'bg-secondary/10 border-secondary text-secondary' : 'bg-white border-border text-ink/70 hover:border-border/80'}`}
-                        >
-                          <input 
-                            type="checkbox" 
-                            className="hidden"
-                            checked={isSelected}
-                            onChange={(e) => {
-                              setScheduleModalData(prev => ({
-                                ...prev,
-                                timeSlots: e.target.checked 
-                                  ? [...prev.timeSlots, time] 
-                                  : prev.timeSlots.filter(t => t !== time)
-                              }))
-                            }}
-                          />
-                          {time}
-                        </label>
-                      )
-                    })}
-                  </div>
-
-                  <div className="mb-2">
-                    <h4 className="font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-2">Custom Time Slot</h4>
-                    <div className="flex gap-2">
-                      <input 
-                        type="text" 
-                        value={customTime}
-                        onChange={(e) => setCustomTime(e.target.value)}
-                        placeholder="e.g. 05:30 PM"
-                        className="flex-1 p-2 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            if (customTime.trim() && !scheduleModalData.timeSlots.includes(customTime.trim())) {
-                              setScheduleModalData(prev => ({ ...prev, timeSlots: [...prev.timeSlots, customTime.trim()] }));
-                              setCustomTime('');
-                            }
-                          }
-                        }}
-                      />
-                      <button 
-                        type="button"
-                        onClick={() => {
-                          if (customTime.trim() && !scheduleModalData.timeSlots.includes(customTime.trim())) {
-                            setScheduleModalData(prev => ({ ...prev, timeSlots: [...prev.timeSlots, customTime.trim()] }));
-                            setCustomTime('');
-                          }
-                        }}
-                        className="px-4 py-2 bg-paper border border-border rounded-lg font-body text-sm text-primary hover:bg-border/30 transition-colors"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {scheduleModalData.timeSlots.filter(t => !DEFAULT_TIME_SLOTS.includes(t)).map(time => (
-                      <div key={time} className="flex items-center gap-1 px-3 py-1 bg-ink text-white rounded-lg text-sm font-mono">
-                        {time}
-                        <button 
-                          type="button"
-                          onClick={() => setScheduleModalData(prev => ({ ...prev, timeSlots: prev.timeSlots.filter(t => t !== time) }))}
-                          className="ml-1 text-white/50 hover:text-white"
-                        >×</button>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            <div className="p-5 border-t border-border flex items-center justify-between bg-paper">
-              <div>
-                {scheduleModalData.isAvailable && scheduleModalData.timeSlots.length === 0 && (
-                  <span className="font-body text-xs text-accent font-medium">
-                    * Please select at least one time slot
-                  </span>
-                )}
-              </div>
-              <div className="flex gap-3">
-                <button 
-                  onClick={() => setScheduleModalOpen(false)} 
-                  className="px-4 py-2 rounded-lg font-body text-sm text-primary/60 hover:text-primary transition-colors"
-                >
-                  Cancel
-                </button>
-                <button 
-                  onClick={handleApplyScheduleModal} 
-                  disabled={(scheduleModalData.isAvailable && scheduleModalData.timeSlots.length === 0) || isSaving}
-                  className="main-button px-6 py-2 rounded-lg font-body text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSaving ? 'Saving...' : 'Apply'}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
+      <AdminScheduleModal 
+        scheduleModalOpen={scheduleModalOpen}
+        setScheduleModalOpen={setScheduleModalOpen}
+        scheduleModalData={scheduleModalData}
+        setScheduleModalData={setScheduleModalData}
+        customTime={customTime}
+        setCustomTime={setCustomTime}
+        DEFAULT_TIME_SLOTS={DEFAULT_TIME_SLOTS}
+        isSaving={isSaving}
+        handleApplyScheduleModal={handleApplyScheduleModal}
+      />
     </div>
   )
 }

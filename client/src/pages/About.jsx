@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import AboutSection from '../components/AboutSection.jsx'
-import Lightbox from '../components/Lightbox.jsx'
+import AboutSection from '../components/about/AboutSection.jsx'
+import Lightbox from '../components/ui/Lightbox.jsx'
 
 export default function About() {
   const [lightboxImage, setLightboxImage] = useState(null)

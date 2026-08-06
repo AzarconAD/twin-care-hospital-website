@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin, Clock, Phone, Send, Calendar, User, Mail, MessageSquare } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Calendar, MessageSquare, Send, User } from "lucide-react";
+import ContactForm from "../components/contact/ContactForm";
+import AppointmentForm from "../components/contact/AppointmentForm";
 import { submitContact } from "../api/index.js";
-import { ContactBackgroundBlobs } from "../components/bg-decorations";
+import { ContactBackgroundBlobs } from "../components/ui/BG-Decorations";
 
 // Real hospital address — update the map/directions links below too if this changes.
 const HOSPITAL_ADDRESS = "Tapatan Road, Marungko, Angat, Bulacan, Philippines";
@@ -166,74 +168,13 @@ export default function ContactPage() {
 
           {/* Right Column: Message Box */}
           <div className="main-container-wrapper h-full flex flex-col">
-            <div className="main-container p-5 sm:p-6 relative z-10 flex-grow flex flex-col">
-            <div className="mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <MessageSquare size={20} className="text-accent" strokeWidth={2} />
-                <h2 className="font-display text-2xl text-primary">Message Us</h2>
-              </div>
-              <p className="font-body text-sm text-primary/70">
-                General questions, feedback, or anything else.
-              </p>
-            </div>
-
-            {contactStatus === "success" ? (
-              <div className="text-center py-10 px-6 bg-secondary/10 rounded-2xl my-auto">
-                <p className="font-display text-xl text-secondary mb-2">Message sent!</p>
-                <p className="font-body text-sm text-ink/70">
-                  Check your email for the reply.
-                </p>
-                <button
-                  onClick={() => setContactStatus("idle")}
-                  className="mt-4 font-body text-sm text-primary underline"
-                >
-                  Send another message
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleContactSubmit} className="space-y-4 flex-grow flex flex-col">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your name"
-                  required
-                  value={contactForm.name}
-                  onChange={handleContactChange}
-                  className="w-full border border-border rounded-lg px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your email"
-                  required
-                  value={contactForm.email}
-                  onChange={handleContactChange}
-                  className="w-full border border-border rounded-lg px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-                />
-                <textarea
-                  name="message"
-                  placeholder="Your message"
-                  required
-                  value={contactForm.message}
-                  onChange={handleContactChange}
-                  className="w-full border border-border rounded-lg px-4 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none flex-grow"
-                />
-                {contactStatus === "error" && (
-                  <p className="font-body text-sm text-accent">
-                    Something went wrong &mdash; please try again.
-                  </p>
-                )}
-                <button
-                  type="submit"
-                  disabled={contactStatus === "loading"}
-                  className="main-button w-full font-body text-sm font-semibold py-3 rounded-full transition-all duration-200 active:scale-95 disabled:opacity-60 flex items-center justify-center gap-2 mt-2"
-                >
-                  <Send size={16} />
-                  {contactStatus === "loading" ? "Sending..." : "Send Message"}
-                </button>
-              </form>
-            )}
-            </div>
+            <ContactForm 
+              contactForm={contactForm}
+              contactStatus={contactStatus}
+              handleContactChange={handleContactChange}
+              handleContactSubmit={handleContactSubmit}
+              setContactStatus={setContactStatus}
+            />
           </div>
         </div>
       </motion.section>
@@ -260,146 +201,13 @@ export default function ContactPage() {
 
         <div className="main-container-wrapper">
           <div className="main-container p-8 sm:p-10 relative z-10">
-
-          {apptStatus === "success" ? (
-            <div className="text-center py-10 px-6 bg-secondary/10 rounded-2xl">
-              <p className="font-display text-xl text-secondary mb-2">Request received!</p>
-              <p className="font-body text-sm text-ink/70">
-                We'll reach out shortly to confirm your appointment.
-              </p>
-              <button
-                onClick={() => setApptStatus("idle")}
-                className="mt-4 font-body text-sm text-primary underline"
-              >
-                Book another
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleApptSubmit} className="space-y-4">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="font-body text-xs font-medium text-ink/70 mb-1 block">
-                    Doctor
-                  </label>
-                  <input
-                    type="text"
-                    name="doctorName"
-                    required
-                    placeholder="Doctor's Name"
-                    value={apptForm.doctorName}
-                    onChange={handleApptChange}
-                    className="w-full border border-border rounded-lg px-3 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="font-body text-xs font-medium text-ink/70 mb-1 block">
-                      Date
-                    </label>
-                    <input
-                      type="date"
-                      name="date"
-                      required
-                      value={apptForm.date}
-                      onChange={handleApptChange}
-                      className="w-full border border-border rounded-lg px-3 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    />
-                  </div>
-                  <div>
-                    <label className="font-body text-xs font-medium text-ink/70 mb-1 block">
-                      Time
-                    </label>
-                    <input
-                      type="time"
-                      name="time"
-                      required
-                      value={apptForm.time}
-                      onChange={handleApptChange}
-                      className="w-full border border-border rounded-lg px-3 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="font-body text-xs font-medium text-ink/70 mb-1 block">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
-                    <input
-                      type="text"
-                      name="patientName"
-                      required
-                      placeholder="Your Name"
-                      value={apptForm.patientName}
-                      onChange={handleApptChange}
-                      className="w-full border border-border rounded-lg pl-9 pr-3 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="font-body text-xs font-medium text-ink/70 mb-1 block">
-                    Phone
-                  </label>
-                  <div className="relative">
-                    <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
-                    <input
-                      type="tel"
-                      name="phone"
-                      required
-                      placeholder="E.g. 0917 123 4567"
-                      value={apptForm.phone}
-                      onChange={handleApptChange}
-                      className="w-full border border-border rounded-lg pl-9 pr-3 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="font-body text-xs font-medium text-ink/70 mb-1 block">
-                  Email
-                </label>
-                <div className="relative">
-                  <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40" />
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    placeholder="E.g. juan@example.com"
-                    value={apptForm.email}
-                    onChange={handleApptChange}
-                    className="w-full border border-border rounded-lg pl-9 pr-3 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="font-body text-xs font-medium text-ink/70 mb-1 block">
-                  Reason for visit
-                </label>
-                <textarea
-                  name="notes"
-                  required
-                  placeholder="Briefly describe your symptoms or reason for visit"
-                  rows={3}
-                  value={apptForm.notes}
-                  onChange={handleApptChange}
-                  className="w-full border border-border rounded-lg px-3 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="main-button w-full font-body text-sm font-semibold py-3 rounded-full transition-all duration-200 active:scale-95"
-              >
-                Request Appointment
-              </button>
-            </form>
-          )}
+            <AppointmentForm 
+              apptForm={apptForm}
+              apptStatus={apptStatus}
+              handleApptChange={handleApptChange}
+              handleApptSubmit={handleApptSubmit}
+              setApptStatus={setApptStatus}
+            />
           </div>
         </div>
       </motion.section>

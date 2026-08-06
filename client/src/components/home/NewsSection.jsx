@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
-import { NewsBackgroundBlobs } from "./bg-decorations";
+
 
 // tagColor rotates through the existing brand colors — same functional-color
 // pattern used for Services/Doctors categories, just without a filter system
 // since news doesn't need one. Swap "image" paths once real photos exist.
 
-const tagClasses = {
-  primary: "bg-primary/10 text-primary",
-  secondary: "bg-secondary/10 text-secondary",
-  accent: "bg-accent/10 text-accent",
-};
+
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -21,34 +17,35 @@ function formatDate(dateStr) {
   });
 }
 
-export default function NewsSection({ news = [], loading = false, error = null }) {
-  const [selectedNewsId, setSelectedNewsId] = useState(null);
+export default function NewsSection({ news = [], loading = false, error = null, selectedNewsId, setSelectedNewsId }) {
 
   // Auto-select the featured news item when the news data loads
   useEffect(() => {
-    if (news.length > 0) {
+    if (news.length > 0 && !selectedNewsId) {
       const defaultFeatured = news.find((n) => n.featured) || news[0];
       setSelectedNewsId(defaultFeatured._id);
     }
-  }, [news]);
+  }, [news, selectedNewsId, setSelectedNewsId]);
 
   const featured = news.find((n) => n._id === selectedNewsId) || news.find((n) => n.featured) || news[0];
   const rest = featured ? news.filter((n) => n._id !== featured._id).slice(0, 3) : [];
 
   return (
-    <section id="news" className="relative w-full py-20">
-      <NewsBackgroundBlobs />
+    <section id="news" className="relative w-full py-20 bg-white scroll-mt-8">
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.5 }}
-          className="mb-12 text-center"
+          className="mb-10 text-left"
         >
-          <h2 className="font-display text-3xl sm:text-4xl text-primary">
+          <h2 className="font-mono text-2xl sm:text-3xl text-primary font-semibold tracking-tight mb-2">
             Latest News &amp; Updates
           </h2>
+          <p className="font-mono text-sm text-ink/60">
+            Read the latest from Twin Care
+          </p>
         </motion.div>
 
         {loading && (
@@ -90,7 +87,7 @@ export default function NewsSection({ news = [], loading = false, error = null }
             <div className="p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-3">
                 <span
-                  className={`font-mono text-[10px] uppercase tracking-wide font-semibold px-2.5 py-1 rounded-full ${tagClasses[featured.tagColor]}`}
+                  className="font-mono text-[10px] uppercase tracking-wide font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary"
                 >
                   {featured.tag}
                 </span>
@@ -116,6 +113,9 @@ export default function NewsSection({ news = [], loading = false, error = null }
             transition={{ duration: 0.6 }}
             className="flex flex-col gap-5"
           >
+            <h3 className="font-mono text-lg text-ink font-semibold tracking-tight -mb-1">
+              Related Posts
+            </h3>
             {rest.map((item, i) => (
               <article
                 key={item._id}
@@ -131,7 +131,7 @@ export default function NewsSection({ news = [], loading = false, error = null }
                 </div>
                 <div className="min-w-0">
                   <span
-                    className={`inline-block font-mono text-[9px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full mb-1.5 ${tagClasses[item.tagColor]}`}
+                    className="inline-block font-mono text-[9px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full mb-1.5 bg-primary/10 text-primary"
                   >
                     {item.tag}
                   </span>

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Clock, HeartHandshake, ChevronLeft, ChevronRight } from 'lucide-react';
-import Button from './Button';
-import { HeroBackgroundBlobs } from './bg-decorations';
+import Button from '../ui/Button';
+import { HeroBackgroundBlobs } from '../ui/BG-Decorations';
 
 const trustPoints = [
   { icon: Clock, text: '24/7 Emergency Care' },
@@ -11,7 +11,7 @@ const trustPoints = [
   { icon: HeartHandshake, text: 'Compassionate Approach' },
 ];
 
-export default function Hero({ onImageClick, news = [] }) {
+export default function Hero({ onImageClick, news = [], onSelectNews }) {
   const [newsIndex, setNewsIndex] = useState(0);
 
   useEffect(() => {
@@ -85,22 +85,18 @@ export default function Hero({ onImageClick, news = [] }) {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative h-64 sm:h-80 md:h-[400px] w-full"
         >
-          <div className="main-container-wrapper h-full">
-            <div className="main-container h-full relative z-10 p-0">
-              <div 
-                className="relative h-full w-full rounded-[inherit] overflow-hidden shadow-xl cursor-pointer group"
-                onClick={() => onImageClick?.(activeNews?.image || "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop")}
-              >
-                <motion.img
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  src={activeNews?.image || "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop"}
-                  alt={activeNews?.title || "Modern hospital facility"}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-            </div>
+          <div 
+            className="relative h-full w-full rounded-3xl overflow-hidden shadow-xl cursor-pointer group z-10 bg-[url('/news-bg-pattern.png')] bg-no-repeat bg-cover bg-center"
+            onClick={() => onImageClick?.(activeNews?.image || "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop")}
+          >
+            <motion.img
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              src={activeNews?.image || "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop"}
+              alt={activeNews?.title || "Modern hospital facility"}
+              className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+            />
           </div>
 
           {/*
@@ -113,17 +109,18 @@ export default function Hero({ onImageClick, news = [] }) {
           {activeNews && (
             <motion.a
               href="#news"
+              onClick={() => onSelectNews?.(activeNews._id)}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ duration: 0.4 }}
-              className="absolute -bottom-6 left-4 sm:left-6 bg-white border border-border rounded-xl shadow-lg p-4 flex items-center gap-3 max-w-[75%] cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group z-20"
+              className="absolute -bottom-12 left-4 sm:left-6 bg-white border border-border rounded-xl shadow-lg p-4 flex items-center gap-3 max-w-[75%] cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group z-20"
             >
-              <div className={`w-10 h-10 rounded-lg bg-${activeNews.tagColor} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform`}>
+              <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                 <HeartHandshake size={20} className="text-white" strokeWidth={1.75} />
               </div>
               <div className="min-w-0">
-                <p className={`font-mono text-[10px] uppercase tracking-wide font-semibold text-${activeNews.tagColor} mb-0.5 truncate`}>
+                <p className="font-mono text-[10px] uppercase tracking-wide font-semibold text-primary mb-0.5 truncate">
                   {activeNews.tag}
                 </p>
                 <p className="text-xs font-medium font-body leading-tight text-ink group-hover:text-primary transition-colors line-clamp-2">

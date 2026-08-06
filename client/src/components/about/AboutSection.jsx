@@ -2,7 +2,7 @@ import React from "react";
 import { HeartHandshake, ShieldCheck, Sparkles, Users, Compass, Award, Heart, Activity, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { AboutBackgroundBlobs, AboutHeaderBlobs, AboutMissionBlobs, AboutMissionPanelBlobs } from "./bg-decorations";
+import { AboutBackgroundBlobs, AboutHeaderBlobs, AboutMissionBlobs, AboutMissionPanelBlobs } from "../ui/BG-Decorations";
 
 const defaultValues = [
   {
@@ -281,7 +281,7 @@ export default function AboutSection({
                 </div>
 
                 <div className="relative z-10">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 bg-white/20 text-accent group-hover:bg-white">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 bg-accent text-white group-hover:bg-white group-hover:text-accent">
                     <Icon size={24} strokeWidth={2} />
                   </div>
                   

@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search, X, ArrowRight } from "lucide-react";
 import { THEME_COLORS } from "../theme";
-import { DoctorsBackgroundBlobs } from "../components/bg-decorations";
+import { DoctorsBackgroundBlobs } from "../components/ui/BG-Decorations";
 import { getDoctors, getSchedule } from "../api/index.js";
+import DailyScheduleModal from "../components/doctors/DailyScheduleModal";
+import DoctorsCalendar from "../components/doctors/DoctorsCalendar";
 
 const CATEGORIES = {
   all: { label: "All Doctors", color: THEME_COLORS.ink },
@@ -190,15 +192,8 @@ export default function DoctorsPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Calendar logic
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const firstDayOfMonth = new Date(year, month, 1).getDay();
-  
-  // Format dates for matching with schedule
-  const formatKey = (d) => `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
@@ -236,119 +231,7 @@ export default function DoctorsPage() {
     }
   });
 
-  // Daily Schedule Modal
-  const DailyScheduleModal = () => {
-    if (!selectedDate) return null;
-    
-    // Parse date for display
-    const [y, m, d] = selectedDate.split("-");
-    const dateObj = new Date(y, m - 1, d);
-    const dateLabel = dateObj.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-    
-    const docsForDay = scheduleByDate[selectedDate] || [];
 
-    return (
-      <AnimatePresence>
-        {selectedDate && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
-              onClick={() => setSelectedDate(null)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
-            >
-              {/* Header */}
-              <div className="px-6 py-5 border-b border-border flex items-center justify-between bg-paper">
-                <div>
-                  <h3 className="font-display text-xl sm:text-2xl text-ink">Schedule for {dateLabel}</h3>
-                  <p className="font-body text-sm text-ink/60 mt-1">{docsForDay.length} {docsForDay.length === 1 ? 'Doctor' : 'Doctors'} Available</p>
-                </div>
-                <button 
-                  onClick={() => setSelectedDate(null)}
-                  className="p-2 bg-white rounded-full text-ink/50 hover:text-ink border border-border hover:bg-paper transition-colors"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              
-              {/* Body */}
-              <div className="p-6 overflow-y-auto bg-white/50 space-y-6">
-                {docsForDay.length === 0 ? (
-                  <div className="text-center py-10">
-                    <p className="font-body text-ink/60">No doctors scheduled for this date.</p>
-                  </div>
-                ) : (
-                  docsForDay.map(doc => {
-                    const catColor = CATEGORIES[doc.category]?.color || THEME_COLORS.secondary;
-                    return (
-                      <div key={doc.id} className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
-                        <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center">
-                          {/* Avatar */}
-                          <div className="shrink-0">
-                            {doc.photo ? (
-                              <img src={doc.photo} alt={doc.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shadow-sm ring-4 ring-paper" />
-                            ) : (
-                              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-sm ring-4 ring-paper" style={{ backgroundColor: catColor }}>
-                                <User size={30} color="#fff" />
-                              </div>
-                            )}
-                          </div>
-                          
-                          {/* Info */}
-                          <div className="flex-1">
-                            <span className="inline-block px-2 py-0.5 rounded-full font-mono text-[10px] uppercase tracking-wider mb-2" style={{ backgroundColor: `${catColor}15`, color: catColor }}>
-                              {CATEGORIES[doc.category]?.label}
-                            </span>
-                            <h4 className="font-display text-lg text-ink leading-tight">{doc.name}{doc.postfix ? `, ${doc.postfix}` : ''}</h4>
-                            <p className="font-body text-sm text-ink/70 mt-0.5 mb-2">{doc.specialty}</p>
-                            <p className="font-body text-xs text-ink/60 line-clamp-2">{doc.bio}</p>
-                          </div>
-                        </div>
-                        
-                        {/* Time slots & Action */}
-                        <div className="bg-paper px-4 sm:px-5 py-4 border-t border-border flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-                          <div>
-                            <h5 className="font-mono text-[10px] uppercase tracking-widest text-ink/50 mb-3">Available Time Slots</h5>
-                            <div className="flex flex-wrap gap-2">
-                              {doc.timeSlots && doc.timeSlots.length > 0 ? doc.timeSlots.map(time => (
-                                <span 
-                                  key={time}
-                                  className="px-2.5 py-1 bg-white border border-border rounded-md font-mono text-[11px] text-ink/70"
-                                >
-                                  {time}
-                                </span>
-                              )) : (
-                                <span className="font-body text-xs text-ink/50 italic mb-1 block">Walk-in only</span>
-                              )}
-                            </div>
-                          </div>
-                          <Link
-                            to="/contact"
-                            state={{ appointment: true, doctorName: doc.name, date: selectedDate }}
-                            className="main-button shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
-                          >
-                            <CalendarIcon size={16} />
-                            Make an Appointment
-                          </Link>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-    );
-  };
 
   const today = new Date();
 
@@ -520,173 +403,25 @@ export default function DoctorsPage() {
               </div>
             )}
 
-            {/* Calendar Controls */}
-            <div className="flex items-center justify-between gap-4 p-5 border-b border-primary/15 relative z-10">
-              <h2 className="font-display text-2xl sm:text-3xl text-primary">
-                {MONTHS[month]} <span className="text-primary/60">{year}</span>
-              </h2>
-
-              <div className="flex gap-2">
-            <button 
-              onClick={prevMonth}
-              className="p-2 rounded-full hover:bg-white/60 border border-transparent hover:border-white transition-colors text-primary"
-              aria-label="Previous month"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button 
-              onClick={nextMonth}
-              className="p-2 rounded-full hover:bg-white/60 border border-transparent hover:border-white transition-colors text-primary"
-              aria-label="Next month"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
-
-        {/* Desktop Calendar Grid (>640px) */}
-        <div className="hidden sm:block relative z-10">
-          <div className="grid grid-cols-7 border-b border-primary/15 bg-secondary/10">
-            {WEEKDAYS.map(day => (
-              <div key={day} className="py-3 text-center font-mono text-xs uppercase text-secondary font-semibold tracking-wider border-r last:border-r-0 border-primary/15">
-                {day}
-              </div>
-            ))}
-          </div>
-          
-          <div className="grid grid-cols-7 auto-rows-fr">
-            {/* Empty padding cells for start of month */}
-            {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-              <div key={`pad-start-${i}`} className="min-h-[120px] p-2 border-r border-b border-primary/15 bg-transparent last:border-r-0"></div>
-            ))}
-            
-            {/* Actual days */}
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const day = i + 1;
-              const dateKey = formatKey(day);
-              const docsToday = scheduleByDate[dateKey] || [];
-              const isToday = todayISO === dateKey;
-              
-              return (
-                <div 
-                  key={day} 
-                  onClick={() => setSelectedDate(dateKey)}
-                  className={`min-h-[120px] p-2 border-r border-b border-primary/15 relative transition-colors duration-200 cursor-pointer group ${isToday ? 'bg-secondary/10' : 'bg-transparent hover:bg-white/60'}`}
-                >
-                  <div className={`font-mono text-sm mb-3 w-7 h-7 flex items-center justify-center rounded-full transition-colors ${isToday ? 'bg-secondary text-white' : 'text-primary/70 group-hover:text-primary'}`}>
-                    {day}
-                  </div>
-                  
-                  {docsToday.length > 0 && (
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center pl-1">
-                        {docsToday.slice(0, 3).map((doc, idx) => {
-                          const catColor = CATEGORIES[doc.category]?.color || THEME_COLORS.secondary;
-                          return (
-                            <div key={doc.id} className="relative transition-transform group-hover:-translate-y-0.5 duration-200" style={{ zIndex: 10 - idx, marginLeft: idx > 0 ? '-8px' : '0' }}>
-                              {doc.photo ? (
-                                <img src={doc.photo} alt={doc.name} className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm" title={doc.name} />
-                              ) : (
-                                <div className="w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow-sm" style={{ backgroundColor: catColor }} title={doc.name}>
-                                  <User size={14} color="#fff" />
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                        {docsToday.length > 3 && (
-                          <div className="w-8 h-8 rounded-full bg-paper border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-mono text-ink/70 z-0 -ml-2 transition-transform group-hover:-translate-y-0.5 duration-200">
-                            +{docsToday.length - 3}
-                          </div>
-                        )}
-                      </div>
-                      <span className="font-body text-[10px] text-ink/50 pl-1 group-hover:text-ink/80 transition-colors">{docsToday.length} available</span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-            
-            {/* Empty padding cells for end of month */}
-            {Array.from({ length: (7 - ((firstDayOfMonth + daysInMonth) % 7)) % 7 }).map((_, i) => (
-              <div key={`pad-end-${i}`} className="min-h-[120px] p-2 border-r border-b border-primary/15 bg-transparent"></div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile Agenda List (<640px) */}
-        <div className="sm:hidden overflow-hidden flex flex-col divide-y divide-primary/15 relative z-10">
-          {Array.from({ length: daysInMonth }).map((_, i) => {
-            const day = i + 1;
-            const dateKey = formatKey(day);
-            const docsToday = scheduleByDate[dateKey] || [];
-            const dayOfWeek = WEEKDAYS[new Date(year, month, day).getDay()];
-            const isToday = todayISO === dateKey;
-            
-            // Skip rendering days with no doctors if a category is filtered, 
-            // unless it's 'all' where we might want to see empty days to know there's no availability.
-            if (docsToday.length === 0 && activeCategory !== "all") return null;
-
-            return (
-              <div 
-                key={day} 
-                onClick={() => setSelectedDate(dateKey)}
-                className={`p-5 cursor-pointer active:bg-white/40 transition-colors ${isToday ? 'bg-secondary/10' : ''}`}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`font-mono text-lg font-medium w-10 h-10 flex items-center justify-center rounded-full ${isToday ? 'bg-secondary text-white' : 'bg-white/80 text-primary'}`}>
-                      {day}
-                    </div>
-                    <div className="font-mono text-sm font-semibold text-primary/70 uppercase tracking-wider">
-                      {dayOfWeek}
-                    </div>
-                  </div>
-                  {docsToday.length > 0 && (
-                    <span className="font-body text-xs text-ink/60 bg-white px-2 py-1 rounded-md border border-border">{docsToday.length} Available</span>
-                  )}
-                </div>
-                
-                {docsToday.length === 0 ? (
-                  <p className="font-body text-sm text-primary/40 italic ml-13">No available doctors.</p>
-                ) : (
-                  <div className="flex items-center -space-x-2 pl-2">
-                    {docsToday.slice(0, 5).map((doc, idx) => {
-                      const catColor = CATEGORIES[doc.category]?.color || THEME_COLORS.secondary;
-                      return (
-                        <div key={doc.id} className="relative" style={{ zIndex: 10 - idx }}>
-                          {doc.photo ? (
-                            <img src={doc.photo} alt={doc.name} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-white shadow-sm" style={{ backgroundColor: catColor }}>
-                              <User size={16} color="#fff" />
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                    {docsToday.length > 5 && (
-                      <div className="w-10 h-10 rounded-full bg-paper border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-mono text-ink/70 z-0">
-                        +{docsToday.length - 5}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-          
-          {/* Handle case where ALL days are empty due to filter in mobile view */}
-          {activeCategory !== "all" && Object.keys(scheduleByDate).length === 0 && (
-             <div className="p-8 text-center font-body text-primary/60">
-               No doctors found for this category in {MONTHS[month]}.
-             </div>
-          )}
-        </div>
+            <DoctorsCalendar 
+              currentDate={currentDate}
+              prevMonth={prevMonth}
+              nextMonth={nextMonth}
+              scheduleByDate={scheduleByDate}
+              setSelectedDate={setSelectedDate}
+              activeCategory={activeCategory}
+              todayISO={todayISO}
+              CATEGORIES={CATEGORIES}
+            />
           </div>
         </div>
       </div>
-      <DailyScheduleModal />
+      <DailyScheduleModal 
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+        scheduleByDate={scheduleByDate}
+        CATEGORIES={CATEGORIES}
+      />
     </div>
   );
 }

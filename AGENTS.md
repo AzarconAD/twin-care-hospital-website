@@ -32,6 +32,9 @@ Fonts: Fraunces (display/headings), Inter (body), IBM Plex Mono (labels/eyebrows
 
 Match `AboutSection.jsx` / `ServicesSection.jsx` for spacing, card style, and Framer Motion pattern (`whileInView`, `viewport={{ once: true }}`).
 
+## Architecture & Components
+- **Container vs Presentational**: Follow a strict separation of concerns. Page files (e.g., `Doctors.jsx`, `Contact.jsx`) should act as containers focusing on state management, routing, and data fetching. All complex UI logic, forms, modals, and markup must be extracted into modular, presentational components inside `client/src/components/`. Do not build massive monolith pages.
+
 ## UI Components & Helpers
 - **Buttons**: Custom animated buttons (`.btn-fill`, `.secondary-button`, `.main-button`) are defined in `index.css`. Use these for primary CTAs.
 - **Global Scale**: The site is scaled globally via `html { font-size: 112.5%; }` in `index.css`.
