@@ -9,6 +9,7 @@ import Doctors from './pages/Doctors.jsx'
 import Contact from './pages/Contact.jsx'
 import AdminLogin from './pages/AdminLogin.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
+import AdminDoctors from './pages/AdminDoctors.jsx'
 
 /**
  * PublicLayout
@@ -48,6 +49,7 @@ export default function App() {
         {/* Admin routes — standalone, no Navbar or Footer */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/doctors" element={<AdminDoctors />} />
       </Routes>
     </>
   )

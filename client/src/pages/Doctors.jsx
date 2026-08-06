@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search } from "lucide-react";
 import { THEME_COLORS } from "../theme";
 import { DoctorsBackgroundBlobs } from "../components/bg-decorations";
-import { getDoctors } from "../api/index.js";
+import { getDoctors, getSchedule } from "../api/index.js";
 
 const CATEGORIES = {
   all: { label: "All Doctors", color: THEME_COLORS.ink },
@@ -112,17 +112,14 @@ const generateSampleSchedule = (ids = DEFAULT_IDS) => {
   return schedule;
 };
 
-// Converts the flat array returned by the API into the { id: {...} } dict
-// shape that the calendar and popup logic already expects.
-// Each doctor gets a temporary "d<index>" id (the real _id is also stored).
 function buildDoctorDict(apiDoctors) {
   const dict = {};
-  apiDoctors.forEach((doc, i) => {
-    const id = `d${i + 1}`;
-    dict[id] = {
-      id,
+  apiDoctors.forEach((doc) => {
+    dict[doc._id] = {
+      id: doc._id,
       _id: doc._id,           // keep the real Mongo ID in case we need it later
       name: doc.name,
+      postfix: doc.postfix || '',
       specialty: doc.specialty,
       bio: doc.bio,
       category: doc.category,
@@ -146,16 +143,15 @@ export default function DoctorsPage() {
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
 
-  // Fetch doctors from the Express API once on mount.
-  // On success: convert the array to a dict and regenerate the schedule.
-  // On failure: fall back to the hardcoded defaultDoctors already in state.
+  // Fetch doctors and schedule from the Express API once on mount.
+  // On success: convert the array to a dict and update state.
+  // On failure: fall back to the hardcoded defaultDoctors and defaultSchedule already in state.
   useEffect(() => {
-    getDoctors()
-      .then((data) => {
-        const dict = buildDoctorDict(data);
+    Promise.all([getDoctors(), getSchedule()])
+      .then(([docsData, schedData]) => {
+        const dict = buildDoctorDict(docsData);
         setDoctors(dict);
-        // Regenerate schedule using the IDs that now exist in the new dict
-        setSchedule(generateSampleSchedule(Object.keys(dict)));
+        setSchedule(schedData);
       })
       .catch((err) => {
         setError(err.message);
@@ -264,7 +260,9 @@ export default function DoctorsPage() {
               >
                 {CATEGORIES[doctor.category].label}
               </span>
-              <h4 className="font-display text-base leading-tight text-ink text-center">{doctor.name}</h4>
+              <h4 className="font-display text-base leading-tight text-ink text-center">
+                {doctor.name}{doctor.postfix ? `, ${doctor.postfix}` : ''}
+              </h4>
               <p className="font-mono text-[10px] uppercase tracking-wide mt-0.5 text-ink/60">{doctor.specialty}</p>
             </div>
 
@@ -531,7 +529,9 @@ export default function DoctorsPage() {
                                 <User size={14} color={THEME_COLORS.white} strokeWidth={2} />
                               </div>
                               <div>
-                                <h4 className="font-display text-base text-ink leading-none mb-1">{doc.name}</h4>
+                                <h4 className="font-display text-base text-ink leading-none mb-1">
+                                  {doc.name}{doc.postfix ? `, ${doc.postfix}` : ''}
+                                </h4>
                                 <p className="font-mono text-[9px] uppercase tracking-wider" style={{ color: catColor }}>
                                   {CATEGORIES[doc.category].label}
                                 </p>

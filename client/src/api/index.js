@@ -33,6 +33,40 @@ export async function getDoctors() {
   return res.json()
 }
 
+export async function createDoctor(doctorData) {
+  const res = await fetch(`${API_BASE}/api/admin/doctors`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(doctorData),
+    credentials: 'include'
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Failed to create doctor')
+  return data
+}
+
+export async function updateDoctor(id, doctorData) {
+  const res = await fetch(`${API_BASE}/api/admin/doctors/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(doctorData),
+    credentials: 'include'
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Failed to update doctor')
+  return data
+}
+
+export async function deleteDoctor(id) {
+  const res = await fetch(`${API_BASE}/api/admin/doctors/${id}`, {
+    method: 'DELETE',
+    credentials: 'include'
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Failed to delete doctor')
+  return data
+}
+
 /**
  * submitContact(formData)
  * Posts a contact inquiry to POST /api/contact.
@@ -117,5 +151,49 @@ export async function getContacts() {
     credentials: 'include',
   })
   if (!res.ok) throw new Error(`Failed to fetch contacts (status ${res.status})`)
+  return res.json()
+}
+
+/**
+ * getSchedule()
+ * Fetches all schedule entries.
+ */
+export async function getSchedule() {
+  const res = await fetch(`${API_BASE}/api/schedule`)
+  if (!res.ok) throw new Error(`Failed to fetch schedule (status ${res.status})`)
+  return res.json()
+}
+
+/**
+ * addScheduleEntry(doctorId, date)
+ * Adds a new schedule entry.
+ */
+export async function addScheduleEntry(doctorId, date) {
+  const res = await fetch(`${API_BASE}/api/admin/schedule`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ doctorId, date }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to add schedule entry.')
+  }
+  return res.json()
+}
+
+/**
+ * removeScheduleEntry(id)
+ * Removes a schedule entry.
+ */
+export async function removeScheduleEntry(id) {
+  const res = await fetch(`${API_BASE}/api/admin/schedule/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to remove schedule entry.')
+  }
   return res.json()
 }

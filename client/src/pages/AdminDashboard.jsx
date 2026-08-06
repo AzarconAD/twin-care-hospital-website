@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { LogOut, Mail, User, MessageSquare, Clock, ShieldCheck } from 'lucide-react'
 import { checkAdminSession, adminLogout, getContacts } from '../api/index.js'
@@ -14,6 +14,7 @@ import { checkAdminSession, adminLogout, getContacts } from '../api/index.js'
  */
 export default function AdminDashboard() {
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [contacts, setContacts] = useState([])
   const [loading, setLoading]   = useState(true)
@@ -61,15 +62,32 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-cream">
       {/* Top bar */}
       <header className="bg-white border-b border-border px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-            <ShieldCheck size={18} color="white" />
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
+              <ShieldCheck size={18} color="white" />
+            </div>
+            <div>
+              <h1 className="font-display text-lg text-primary leading-none">Admin Dashboard</h1>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-primary/50 mt-0.5">
+                Twin Care Hospital
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-display text-lg text-primary leading-none">Admin Dashboard</h1>
-            <p className="font-mono text-[10px] uppercase tracking-wider text-primary/50 mt-0.5">
-              Twin Care Hospital
-            </p>
+          
+          <div className="hidden sm:flex items-center bg-cream rounded-lg p-1 border border-border">
+            <Link 
+              to="/admin/dashboard" 
+              className={`px-4 py-1.5 rounded-md font-body text-sm font-medium transition-colors ${location.pathname === '/admin/dashboard' ? 'bg-white shadow-sm text-primary' : 'text-primary/60 hover:text-primary'}`}
+            >
+              Submissions
+            </Link>
+            <Link 
+              to="/admin/doctors" 
+              className={`px-4 py-1.5 rounded-md font-body text-sm font-medium transition-colors ${location.pathname === '/admin/doctors' ? 'bg-white shadow-sm text-primary' : 'text-primary/60 hover:text-primary'}`}
+            >
+              Doctors
+            </Link>
           </div>
         </div>
         <button

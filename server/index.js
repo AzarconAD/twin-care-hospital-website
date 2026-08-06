@@ -8,6 +8,7 @@ import contactRoute from './routes/contact.js'
 import servicesRoute from './routes/services.js'
 import doctorsRoute from './routes/doctors.js'
 import adminRoute from './routes/admin.js'
+import scheduleRoute from './routes/schedule.js'
 
 // Load .env variables (MONGODB_URI, PORT, SMTP_EMAIL, etc.) before anything else
 dotenv.config()
@@ -65,6 +66,7 @@ app.get('/', (req, res) => {
 app.use('/api/contact', contactRoute)
 app.use('/api/services', servicesRoute)
 app.use('/api/doctors', doctorsRoute)
+app.use('/api/schedule', scheduleRoute)
 app.use('/api/admin', adminRoute)
 
 // ── Start server ──────────────────────────────────────────────────────────────

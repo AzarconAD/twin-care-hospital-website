@@ -15,9 +15,11 @@ import mongoose from 'mongoose'
 const doctorSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
+    postfix: { type: String, trim: true }, // e.g. "MD, PhD"
     specialty: { type: String, required: true, trim: true },
     schedule: { type: String, trim: true }, // Kept from previous schema
     bio: { type: String, required: true, trim: true },
+    photo: { type: String, trim: true }, // URL to profile picture
     category: {
       type: String,
       required: true,

@@ -2,7 +2,9 @@ import { Router } from 'express'
 import bcrypt from 'bcryptjs'
 import Admin from '../models/Admin.js'
 import Contact from '../models/Contact.js'
+import Schedule from '../models/Schedule.js'
 import { requireAuth } from '../middleware/requireAuth.js'
+import Doctor from '../models/Doctor.js'
 
 const router = Router()
 
@@ -90,6 +92,133 @@ router.get('/contacts', requireAuth, async (req, res) => {
   } catch (err) {
     console.error('Error fetching contacts:', err)
     res.status(500).json({ error: 'Failed to fetch contact submissions.' })
+  }
+})
+
+/**
+ * POST /api/admin/schedule
+ *
+ * Protected by requireAuth — adds one availability entry for a doctor.
+ */
+router.post('/schedule', requireAuth, async (req, res) => {
+  const { doctorId, date } = req.body
+
+  if (!doctorId || !date) {
+    return res.status(400).json({ error: 'doctorId and date are required.' })
+  }
+
+  try {
+    const newSchedule = new Schedule({ doctorId, date })
+    await newSchedule.save()
+    res.status(201).json(newSchedule)
+  } catch (err) {
+    console.error('Error adding schedule entry:', err)
+    // Handle duplicate key error (11000) gracefully
+    if (err.code === 11000) {
+      return res.status(400).json({ error: 'Schedule entry already exists for this date.' })
+    }
+    res.status(500).json({ error: 'Failed to add schedule entry.' })
+  }
+})
+
+/**
+ * DELETE /api/admin/schedule/:id
+ *
+ * Protected by requireAuth — removes one availability entry by its MongoDB _id.
+ */
+router.delete('/schedule/:id', requireAuth, async (req, res) => {
+  try {
+    const deletedSchedule = await Schedule.findByIdAndDelete(req.params.id)
+    if (!deletedSchedule) {
+      return res.status(404).json({ error: 'Schedule entry not found.' })
+    }
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Error deleting schedule entry:', err)
+    res.status(500).json({ error: 'Failed to delete schedule entry.' })
+  }
+})
+
+/**
+ * POST /api/admin/doctors
+ *
+ * Protected by requireAuth — creates a new doctor.
+ */
+router.post('/doctors', requireAuth, async (req, res) => {
+  const { name, postfix, specialty, bio, photo, category } = req.body
+
+  if (!name || !specialty || !bio || !category) {
+    return res.status(400).json({ error: 'Name, specialty, bio, and category are required.' })
+  }
+
+  const validCategories = ["emergency", "wellness", "diagnostic"]
+  if (!validCategories.includes(category)) {
+    return res.status(400).json({ error: 'Invalid category.' })
+  }
+
+  try {
+    const newDoctor = new Doctor({ name, postfix, specialty, bio, photo, category })
+    await newDoctor.save()
+    res.status(201).json(newDoctor)
+  } catch (err) {
+    console.error('Error creating doctor:', err)
+    res.status(500).json({ error: 'Failed to create doctor.' })
+  }
+})
+
+/**
+ * PUT /api/admin/doctors/:id
+ *
+ * Protected by requireAuth — updates an existing doctor.
+ */
+router.put('/doctors/:id', requireAuth, async (req, res) => {
+  const { name, postfix, specialty, bio, photo, category } = req.body
+
+  if (!name || !specialty || !bio || !category) {
+    return res.status(400).json({ error: 'Name, specialty, bio, and category are required.' })
+  }
+
+  const validCategories = ["emergency", "wellness", "diagnostic"]
+  if (!validCategories.includes(category)) {
+    return res.status(400).json({ error: 'Invalid category.' })
+  }
+
+  try {
+    const updatedDoctor = await Doctor.findByIdAndUpdate(
+      req.params.id,
+      { name, postfix, specialty, bio, photo, category },
+      { new: true, runValidators: true }
+    )
+    if (!updatedDoctor) {
+      return res.status(404).json({ error: 'Doctor not found.' })
+    }
+    res.json(updatedDoctor)
+  } catch (err) {
+    console.error('Error updating doctor:', err)
+    res.status(500).json({ error: 'Failed to update doctor.' })
+  }
+})
+
+/**
+ * DELETE /api/admin/doctors/:id
+ *
+ * Protected by requireAuth — deletes a doctor AND all their schedule entries.
+ */
+router.delete('/doctors/:id', requireAuth, async (req, res) => {
+  try {
+    // 1. Cascade delete schedule entries
+    await Schedule.deleteMany({ doctorId: req.params.id })
+    
+    // 2. Delete the doctor
+    const deletedDoctor = await Doctor.findByIdAndDelete(req.params.id)
+    if (!deletedDoctor) {
+      return res.status(404).json({ error: 'Doctor not found.' })
+    }
+    
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Error deleting doctor:', err)
+    res.status(500).json({ error: 'Failed to delete doctor.' })
   }
 })
 
