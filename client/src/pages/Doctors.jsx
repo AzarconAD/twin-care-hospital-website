@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search } from "lucide-react";
 import { THEME_COLORS } from "../theme";
 import { DoctorsBackgroundBlobs } from "../components/bg-decorations";
+import { getDoctors } from "../api/index.js";
 
 const CATEGORIES = {
   all: { label: "All Doctors", color: THEME_COLORS.ink },
@@ -70,41 +71,99 @@ const defaultDoctors = {
   },
 };
 
-// Generate a plausible schedule for the current month
-const generateSampleSchedule = () => {
+// Generate a plausible schedule for the current month.
+// Accepts an optional array of doctor IDs — defaults to the hardcoded set
+// so it still works before the API responds. After the fetch, called again
+// with the real IDs from the API.
+const DEFAULT_IDS = ["d1", "d2", "d3", "d4", "d5", "d6"];
+
+const generateSampleSchedule = (ids = DEFAULT_IDS) => {
+  if (ids.length === 0) return [];
   const schedule = [];
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  
+
+  // Six weekday-pattern "slots" that repeat cyclically across however many doctors we have.
+  // Each slot is a function(dayOfWeek) => boolean that decides if a doctor works that day.
+  const patterns = [
+    (d) => d !== 0,                           // Mon–Sat
+    (d) => d % 2 === 0,                       // Tue, Thu, Sat (even days)
+    (d) => d >= 1 && d <= 5,                  // Mon–Fri
+    (d) => [1, 3, 5].includes(d),             // Mon, Wed, Fri
+    (d) => [2, 4].includes(d),                // Tue, Thu
+    (d) => d >= 3 && d <= 6,                  // Wed–Sat
+  ];
+
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    const dateObj = new Date(year, month, day);
-    const dayOfWeek = dateObj.getDay(); // 0 is Sunday, 6 is Saturday
-    
-    // Emergency doctors available mostly every day
-    if (dayOfWeek !== 0) schedule.push({ doctorId: "d1", date: dateStr }); // Mon-Sat
-    if (dayOfWeek % 2 === 0) schedule.push({ doctorId: "d2", date: dateStr }); // Tue, Thu, Sat
-    
-    // Wellness doctors
-    if (dayOfWeek >= 1 && dayOfWeek <= 5) schedule.push({ doctorId: "d3", date: dateStr }); // Mon-Fri
-    if ([1, 3, 5].includes(dayOfWeek)) schedule.push({ doctorId: "d4", date: dateStr }); // Mon, Wed, Fri
-    
-    // Diagnostic doctors
-    if ([2, 4].includes(dayOfWeek)) schedule.push({ doctorId: "d5", date: dateStr }); // Tue, Thu
-    if (dayOfWeek >= 3 && dayOfWeek <= 6) schedule.push({ doctorId: "d6", date: dateStr }); // Wed-Sat
+    const dayOfWeek = new Date(year, month, day).getDay(); // 0 = Sun, 6 = Sat
+
+    ids.forEach((doctorId, i) => {
+      // Assign each doctor a pattern by cycling through the patterns array
+      const pattern = patterns[i % patterns.length];
+      if (pattern(dayOfWeek)) {
+        schedule.push({ doctorId, date: dateStr });
+      }
+    });
   }
-  
+
   return schedule;
 };
+
+// Converts the flat array returned by the API into the { id: {...} } dict
+// shape that the calendar and popup logic already expects.
+// Each doctor gets a temporary "d<index>" id (the real _id is also stored).
+function buildDoctorDict(apiDoctors) {
+  const dict = {};
+  apiDoctors.forEach((doc, i) => {
+    const id = `d${i + 1}`;
+    dict[id] = {
+      id,
+      _id: doc._id,           // keep the real Mongo ID in case we need it later
+      name: doc.name,
+      specialty: doc.specialty,
+      bio: doc.bio,
+      category: doc.category,
+      photo: doc.photo || null, // photo is optional — fallback avatar shown if missing
+    };
+  });
+  return dict;
+}
 
 const defaultSchedule = generateSampleSchedule();
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-export default function DoctorsPage({ doctors = defaultDoctors, schedule = defaultSchedule }) {
+export default function DoctorsPage() {
+  // ── API state ────────────────────────────────────────────────────────────────
+  // doctors is a dict: { d1: { id, name, specialty, ... }, d2: ... }
+  // schedule is generated from the doctors dict on the fly via generateSampleSchedule
+  const [doctors, setDoctors]   = useState(defaultDoctors);
+  const [schedule, setSchedule] = useState(defaultSchedule);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
+
+  // Fetch doctors from the Express API once on mount.
+  // On success: convert the array to a dict and regenerate the schedule.
+  // On failure: fall back to the hardcoded defaultDoctors already in state.
+  useEffect(() => {
+    getDoctors()
+      .then((data) => {
+        const dict = buildDoctorDict(data);
+        setDoctors(dict);
+        // Regenerate schedule using the IDs that now exist in the new dict
+        setSchedule(generateSampleSchedule(Object.keys(dict)));
+      })
+      .catch((err) => {
+        setError(err.message);
+        // Keep hardcoded data visible so the page isn’t blank on error
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   const calendarRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState("all");
   const [currentDate, setCurrentDate] = useState(() => {
@@ -251,10 +310,30 @@ export default function DoctorsPage({ doctors = defaultDoctors, schedule = defau
       .map((entry) => entry.doctorId)
   ).size;
 
+  // ── Loading state ──────────────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <div className="relative min-h-screen bg-cream flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-primary/60">
+          <div className="w-10 h-10 rounded-full border-4 border-primary/20 border-t-secondary animate-spin" />
+          <p className="font-mono text-sm uppercase tracking-widest">Loading doctors…</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full min-h-screen bg-cream text-primary overflow-hidden">
       {/* Decorative background blobs */}
       <DoctorsBackgroundBlobs />
+
+      {/* Error banner — shown if the API failed but we still render with fallback data */}
+      {error && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-accent/10 border border-accent/30 text-accent rounded-xl px-5 py-3 text-sm font-body shadow-md">
+          ⚠️ Couldn’t reach the server — showing placeholder data. ({error})
+        </div>
+      )}
+
       <style>{`
         .tc-tab { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
         .tc-doctor-pill { transition: transform 0.1s ease, box-shadow 0.1s ease; }
