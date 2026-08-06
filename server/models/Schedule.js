@@ -16,6 +16,10 @@ const scheduleSchema = new mongoose.Schema(
       type: String, 
       required: true 
     }, // "YYYY-MM-DD", matches the frontend's date format
+    timeSlots: {
+      type: [String],
+      default: []
+    }
   },
   { timestamps: true }
 )

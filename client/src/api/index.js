@@ -223,19 +223,37 @@ export async function getSchedule() {
 }
 
 /**
- * addScheduleEntry(doctorId, date)
- * Adds a new schedule entry.
+ * addScheduleEntry(doctorId, date, timeSlots)
+ * Adds a new schedule entry with timeSlots.
  */
-export async function addScheduleEntry(doctorId, date) {
+export async function addScheduleEntry(doctorId, date, timeSlots = []) {
   const res = await fetch(`${API_BASE}/api/admin/schedule`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
-    body: JSON.stringify({ doctorId, date }),
+    body: JSON.stringify({ doctorId, date, timeSlots }),
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw new Error(err.error || 'Failed to add schedule entry.')
+  }
+  return res.json()
+}
+
+/**
+ * updateScheduleEntry(id, timeSlots)
+ * Updates an existing schedule entry's timeSlots.
+ */
+export async function updateScheduleEntry(id, timeSlots) {
+  const res = await fetch(`${API_BASE}/api/admin/schedule/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ timeSlots }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to update schedule entry.')
   }
   return res.json()
 }

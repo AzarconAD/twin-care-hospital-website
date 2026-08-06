@@ -157,14 +157,18 @@ router.post('/contacts/:id/reply', requireAuth, async (req, res) => {
  * Protected by requireAuth — adds one availability entry for a doctor.
  */
 router.post('/schedule', requireAuth, async (req, res) => {
-  const { doctorId, date } = req.body
+  const { doctorId, date, timeSlots } = req.body
 
   if (!doctorId || !date) {
     return res.status(400).json({ error: 'doctorId and date are required.' })
   }
 
   try {
-    const newSchedule = new Schedule({ doctorId, date })
+    const newSchedule = new Schedule({ 
+      doctorId, 
+      date, 
+      timeSlots: timeSlots || [] 
+    })
     await newSchedule.save()
     res.status(201).json(newSchedule)
   } catch (err) {
@@ -174,6 +178,30 @@ router.post('/schedule', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'Schedule entry already exists for this date.' })
     }
     res.status(500).json({ error: 'Failed to add schedule entry.' })
+  }
+})
+
+/**
+ * PUT /api/admin/schedule/:id
+ *
+ * Protected by requireAuth — updates an existing availability entry (e.g. modifying time slots).
+ */
+router.put('/schedule/:id', requireAuth, async (req, res) => {
+  const { timeSlots } = req.body
+
+  try {
+    const updatedSchedule = await Schedule.findByIdAndUpdate(
+      req.params.id,
+      { timeSlots: timeSlots || [] },
+      { new: true, runValidators: true }
+    )
+    if (!updatedSchedule) {
+      return res.status(404).json({ error: 'Schedule entry not found.' })
+    }
+    res.json(updatedSchedule)
+  } catch (err) {
+    console.error('Error updating schedule entry:', err)
+    res.status(500).json({ error: 'Failed to update schedule entry.' })
   }
 })
 

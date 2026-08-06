@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { LogOut, Calendar as CalendarIcon, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react'
-import { checkAdminSession, adminLogout, getDoctors, getSchedule, addScheduleEntry, removeScheduleEntry, createDoctor, updateDoctor, deleteDoctor } from '../api/index.js'
+import { checkAdminSession, adminLogout, getDoctors, getSchedule, addScheduleEntry, removeScheduleEntry, updateScheduleEntry, createDoctor, updateDoctor, deleteDoctor } from '../api/index.js'
 
 export default function AdminDoctors() {
   const navigate = useNavigate()
@@ -24,6 +24,12 @@ export default function AdminDoctors() {
   })
   const [formLoading, setFormLoading] = useState(false)
   const [formError, setFormError] = useState(null)
+  
+  // Schedule Modal state
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false)
+  const [scheduleModalData, setScheduleModalData] = useState({ dateStr: '', isAvailable: false, timeSlots: [] })
+  const [customTime, setCustomTime] = useState('')
+  const DEFAULT_TIME_SLOTS = ["08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM"]
   
   const [currentDate, setCurrentDate] = useState(() => {
     const today = new Date();
@@ -71,16 +77,37 @@ export default function AdminDoctors() {
     navigate('/admin/login', { replace: true })
   }
 
-  const handleToggleDay = (day) => {
+  const handleDayClick = (day) => {
     if (!selectedDoctorId) return;
     const dateStr = `${year}-${pad(month + 1)}-${pad(day)}`;
     
-    const exists = localSchedule.some(s => s.doctorId === selectedDoctorId && s.date === dateStr);
-    if (exists) {
-      setLocalSchedule(prev => prev.filter(s => !(s.doctorId === selectedDoctorId && s.date === dateStr)));
+    const existing = localSchedule.find(s => s.doctorId === selectedDoctorId && s.date === dateStr);
+    
+    setScheduleModalData({
+      dateStr,
+      isAvailable: !!existing,
+      timeSlots: existing?.timeSlots || []
+    });
+    setCustomTime('');
+    setScheduleModalOpen(true);
+  };
+
+  const handleApplyScheduleModal = () => {
+    const { dateStr, isAvailable, timeSlots } = scheduleModalData;
+    
+    if (isAvailable) {
+      setLocalSchedule(prev => {
+        const exists = prev.some(s => s.doctorId === selectedDoctorId && s.date === dateStr);
+        if (exists) {
+          return prev.map(s => (s.doctorId === selectedDoctorId && s.date === dateStr) ? { ...s, timeSlots } : s);
+        } else {
+          return [...prev, { doctorId: selectedDoctorId, date: dateStr, timeSlots }];
+        }
+      });
     } else {
-      setLocalSchedule(prev => [...prev, { doctorId: selectedDoctorId, date: dateStr }]);
+      setLocalSchedule(prev => prev.filter(s => !(s.doctorId === selectedDoctorId && s.date === dateStr)));
     }
+    setScheduleModalOpen(false);
   };
 
   const handleSave = async () => {
@@ -88,12 +115,28 @@ export default function AdminDoctors() {
     try {
       const toAdd = localSchedule.filter(ls => !schedule.some(s => s.doctorId === ls.doctorId && s.date === ls.date))
       const toRemove = schedule.filter(s => !localSchedule.some(ls => ls.doctorId === s.doctorId && ls.date === s.date))
+      const toUpdate = localSchedule.filter(ls => {
+        const existing = schedule.find(s => s.doctorId === ls.doctorId && s.date === ls.date)
+        if (!existing) return false
+        const existingSlots = existing.timeSlots || []
+        const localSlots = ls.timeSlots || []
+        if (existingSlots.length !== localSlots.length) return true
+        const sortedExisting = [...existingSlots].sort()
+        const sortedLocal = [...localSlots].sort()
+        return sortedExisting.some((v, i) => v !== sortedLocal[i])
+      })
       
       for (const rem of toRemove) {
         if (rem._id) await removeScheduleEntry(rem._id)
       }
       for (const add of toAdd) {
-        await addScheduleEntry(add.doctorId, add.date)
+        await addScheduleEntry(add.doctorId, add.date, add.timeSlots)
+      }
+      for (const upd of toUpdate) {
+        const existing = schedule.find(s => s.doctorId === upd.doctorId && s.date === upd.date)
+        if (existing && existing._id) {
+          await updateScheduleEntry(existing._id, upd.timeSlots)
+        }
       }
       
       const freshSchedule = await getSchedule()
@@ -108,9 +151,21 @@ export default function AdminDoctors() {
   }
 
   // Determine if there are unsaved changes
-  const hasChanges = 
-    localSchedule.filter(ls => !schedule.some(s => s.doctorId === ls.doctorId && s.date === ls.date)).length > 0 ||
-    schedule.filter(s => !localSchedule.some(ls => ls.doctorId === s.doctorId && ls.date === s.date)).length > 0;
+  const hasChanges = () => {
+      const toAdd = localSchedule.filter(ls => !schedule.some(s => s.doctorId === ls.doctorId && s.date === ls.date))
+      const toRemove = schedule.filter(s => !localSchedule.some(ls => ls.doctorId === s.doctorId && ls.date === s.date))
+      const toUpdate = localSchedule.filter(ls => {
+        const existing = schedule.find(s => s.doctorId === ls.doctorId && s.date === ls.date)
+        if (!existing) return false
+        const existingSlots = existing.timeSlots || []
+        const localSlots = ls.timeSlots || []
+        if (existingSlots.length !== localSlots.length) return true
+        const sortedExisting = [...existingSlots].sort()
+        const sortedLocal = [...localSlots].sort()
+        return sortedExisting.some((v, i) => v !== sortedLocal[i])
+      })
+      return toAdd.length > 0 || toRemove.length > 0 || toUpdate.length > 0;
+  }
 
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
@@ -311,7 +366,7 @@ export default function AdminDoctors() {
                 <div className="flex items-center justify-between p-4 bg-cream/60 border-b border-border flex-wrap gap-4">
                   <h3 className="font-display text-xl text-primary flex items-center gap-4">
                     <span>{MONTHS[month]} {year}</span>
-                    {hasChanges && (
+                    {hasChanges() && (
                       <button 
                         onClick={handleSave}
                         disabled={isSaving}
@@ -347,23 +402,29 @@ export default function AdminDoctors() {
                   {Array.from({ length: daysInMonth }).map((_, i) => {
                     const day = i + 1;
                     const dateStr = `${year}-${pad(month + 1)}-${pad(day)}`;
-                    const isAvailable = localSchedule.some(s => s.doctorId === selectedDoctorId && s.date === dateStr);
+                    const existingSchedule = localSchedule.find(s => s.doctorId === selectedDoctorId && s.date === dateStr);
+                    const isAvailable = !!existingSchedule;
                     const selectedDoctor = doctors.find(d => d._id === selectedDoctorId);
                     const doctorName = selectedDoctor ? selectedDoctor.name : 'Available';
                     
                     return (
                       <div 
                         key={day} 
-                        onClick={() => handleToggleDay(day)}
-                        className={`min-h-[80px] p-2 border-b border-r border-border/50 cursor-pointer transition-colors relative flex flex-col items-center justify-center gap-2 ${isAvailable ? 'bg-secondary/10 hover:bg-secondary/20' : 'bg-transparent hover:bg-cream'}`}
+                        onClick={() => handleDayClick(day)}
+                        className={`min-h-[80px] p-2 border-b border-r border-border/50 cursor-pointer transition-colors relative flex flex-col items-center justify-center gap-1 ${isAvailable ? 'bg-secondary/10 hover:bg-secondary/20' : 'bg-transparent hover:bg-cream'}`}
                       >
                         <span className={`font-mono text-sm w-7 h-7 flex items-center justify-center rounded-full ${isAvailable ? 'bg-secondary text-white' : 'text-primary/70'}`}>
                           {day}
                         </span>
                         {isAvailable && (
-                          <span className="font-mono text-[9px] uppercase tracking-wider text-secondary text-center px-1 leading-tight">
-                            {doctorName}
-                          </span>
+                          <>
+                            <span className="font-mono text-[9px] uppercase tracking-wider text-secondary text-center px-1 leading-tight line-clamp-1">
+                              {doctorName}
+                            </span>
+                            <span className="font-body text-[10px] text-secondary/70">
+                              {existingSchedule.timeSlots?.length || 0} slots
+                            </span>
+                          </>
                         )}
                       </div>
                     );
@@ -460,6 +521,131 @@ export default function AdminDoctors() {
                 </div>
               </div>
             </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Time Slot Modal */}
+      {scheduleModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col"
+          >
+            <div className="flex items-center justify-between p-5 border-b border-border bg-paper">
+              <div>
+                <h3 className="font-display text-xl text-primary">Schedule for {scheduleModalData.dateStr}</h3>
+              </div>
+              <button onClick={() => setScheduleModalOpen(false)} className="text-primary/50 hover:text-primary transition-colors text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div className="p-6">
+              <label className="flex items-center gap-3 cursor-pointer mb-6 border border-border p-4 rounded-xl bg-cream/30 hover:bg-cream/50 transition-colors">
+                <input 
+                  type="checkbox" 
+                  className="w-5 h-5 rounded text-secondary focus:ring-secondary/20 cursor-pointer"
+                  checked={scheduleModalData.isAvailable}
+                  onChange={(e) => setScheduleModalData(prev => ({ ...prev, isAvailable: e.target.checked, timeSlots: e.target.checked ? prev.timeSlots : [] }))}
+                />
+                <span className="font-body font-medium text-ink">Doctor is available on this date</span>
+              </label>
+
+              {scheduleModalData.isAvailable && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
+                  <h4 className="font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-3">Available Time Slots</h4>
+                  
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    {DEFAULT_TIME_SLOTS.map(time => {
+                      const isSelected = scheduleModalData.timeSlots.includes(time);
+                      return (
+                        <label 
+                          key={time} 
+                          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border cursor-pointer transition-colors text-sm font-mono ${isSelected ? 'bg-secondary/10 border-secondary text-secondary' : 'bg-white border-border text-ink/70 hover:border-border/80'}`}
+                        >
+                          <input 
+                            type="checkbox" 
+                            className="hidden"
+                            checked={isSelected}
+                            onChange={(e) => {
+                              setScheduleModalData(prev => ({
+                                ...prev,
+                                timeSlots: e.target.checked 
+                                  ? [...prev.timeSlots, time] 
+                                  : prev.timeSlots.filter(t => t !== time)
+                              }))
+                            }}
+                          />
+                          {time}
+                        </label>
+                      )
+                    })}
+                  </div>
+
+                  <div className="mb-2">
+                    <h4 className="font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-2">Custom Time Slot</h4>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={customTime}
+                        onChange={(e) => setCustomTime(e.target.value)}
+                        placeholder="e.g. 05:30 PM"
+                        className="flex-1 p-2 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (customTime.trim() && !scheduleModalData.timeSlots.includes(customTime.trim())) {
+                              setScheduleModalData(prev => ({ ...prev, timeSlots: [...prev.timeSlots, customTime.trim()] }));
+                              setCustomTime('');
+                            }
+                          }
+                        }}
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          if (customTime.trim() && !scheduleModalData.timeSlots.includes(customTime.trim())) {
+                            setScheduleModalData(prev => ({ ...prev, timeSlots: [...prev.timeSlots, customTime.trim()] }));
+                            setCustomTime('');
+                          }
+                        }}
+                        className="px-4 py-2 bg-paper border border-border rounded-lg font-body text-sm text-primary hover:bg-border/30 transition-colors"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {scheduleModalData.timeSlots.filter(t => !DEFAULT_TIME_SLOTS.includes(t)).map(time => (
+                      <div key={time} className="flex items-center gap-1 px-3 py-1 bg-ink text-white rounded-lg text-sm font-mono">
+                        {time}
+                        <button 
+                          type="button"
+                          onClick={() => setScheduleModalData(prev => ({ ...prev, timeSlots: prev.timeSlots.filter(t => t !== time) }))}
+                          className="ml-1 text-white/50 hover:text-white"
+                        >×</button>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            <div className="p-5 border-t border-border flex justify-end gap-3 bg-paper">
+              <button 
+                onClick={() => setScheduleModalOpen(false)} 
+                className="px-4 py-2 rounded-lg font-body text-sm text-primary/60 hover:text-primary transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleApplyScheduleModal} 
+                className="main-button px-6 py-2 rounded-lg font-body text-sm font-semibold"
+              >
+                Apply
+              </button>
+            </div>
           </motion.div>
         </div>
       )}
