@@ -12,18 +12,12 @@ Node.js + Express + MongoDB/Mongoose (Atlas). No TypeScript.
 MongoDB is in active use (Services, Doctors, Contact, future Admin) — disregard any older "no database" notes elsewhere.
 
 ## Site Structure
-- `/` — Home: Hero, News
-- `/about` — own route, hospital overview/about
-- `/services` — own route, services and departments
-- `/doctors` — own route, doctor cards
-- `/contact` — own route, public contact form
-- `/admin/login` — admin authentication
-- `/admin/dashboard` — protected contact submissions dashboard
-- `/admin/doctors` — protected doctor and schedule management
+- **Public:** `/` (Hero+News) · `/about` (overview + TWIN CARE values) · `/services` (live DB) · `/doctors` (monthly schedule calendar, daily schedule modal, live DB) · `/contact` (Location + Appointment[UI-only] + General Contact[live DB])
+- **Admin (session auth):** `/admin/login` · `/admin/dashboard` (submissions) · `/admin/doctors` (CRUD + schedule) · `/admin/news` (CRUD)
 
 ## Navbar
 Sticky top; transparent at page top, solid after scroll. Uses real logo file.
-All main navigation links use standard React Router routing (`NavLink` or `Link`).
+All navigation links (Home, About, Services, Doctors, Contact) use standard React Router navigation (`<Link>` or `<NavLink>`) to their respective pages.
 
 ## Design System
 Colors (functional, not decorative — e.g. Services uses these to color-code categories):

@@ -55,7 +55,7 @@ or leftover comments elsewhere in the code.
 - **News Section**: Added a dynamic News & Updates section to the Home page, connected to an interactive featured news card in the Hero component.
 - **Global Scaling**: Root font-size adjusted to `112.5%` for optimal proportional sizing.
 - **Styling**: Standardized descriptive text to blue (`text-primary/70`). Replaced hardcoded button colors with CSS variables synced to the Tailwind theme. Added `.btn-fill` and `.secondary-button` custom animated button classes.
-- **Images**: Replaced broken local doctor paths with reliable `picsum.photos` placeholders.
+- **Scroll Navigation**: *Deprecated.* We previously used a single-page architecture with `ScrollLink`, but the site has since been refactored to use standard, separate routes for each page.
 - **Maintenance**: Cleaned up dead CSS classes and removed form debug logs.
 
 ## Git workflow (solo project)
@@ -88,10 +88,15 @@ instead. `client/public/hospital-bg.jpg` is a real photo of the hospital buildin
   the live Render URL
 
 ## Pages
+**Public Routes:**
+- `/` — Hero + News Section
+- `/about` — Overview + TWIN CARE Core Values
+- `/services` — Services and Departments (Live DB)
+- `/doctors` — Monthly schedule calendar, daily schedule modal with time slots (Live DB)
+- `/contact` — Location info, General Contact (Live DB), and Appointment form (UI only)
 
-| Page | Status |
-|---|---|
-| Home (Hero + About + Services) | Built, placeholder content/photos |
-| Doctors | Built, placeholder avatars/bios |
-| Contact | UI built; backend wiring (save to MongoDB) pending |
-| Admin login/dashboard | Not yet built — planned last, once Contact backend is solid |
+**Admin Routes (Session Auth):**
+- `/admin/login` — Admin authentication
+- `/admin/dashboard` — Submissions dashboard
+- `/admin/doctors` — Doctor CRUD and schedule management
+- `/admin/news` — News CRUD management
