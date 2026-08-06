@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search, X } from "lucide-react";
+import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search, X, ArrowRight } from "lucide-react";
 import { THEME_COLORS } from "../theme";
 import { DoctorsBackgroundBlobs } from "../components/bg-decorations";
 import { getDoctors, getSchedule } from "../api/index.js";
@@ -312,23 +312,31 @@ export default function DoctorsPage() {
                           </div>
                         </div>
                         
-                        {/* Time slots */}
-                        <div className="bg-paper px-4 sm:px-5 py-4 border-t border-border">
-                          <h5 className="font-mono text-[10px] uppercase tracking-widest text-ink/50 mb-3">Available Time Slots</h5>
-                          <div className="flex flex-wrap gap-2">
-                            {doc.timeSlots && doc.timeSlots.length > 0 ? doc.timeSlots.map(time => (
-                              <Link 
-                                key={time}
-                                to="/contact"
-                                state={{ appointment: true, doctorName: doc.name, date: selectedDate, time }}
-                                className="px-3 py-1.5 bg-white border border-primary/20 rounded-lg font-mono text-xs text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors duration-200"
-                              >
-                                {time}
-                              </Link>
-                            )) : (
-                              <span className="font-body text-xs text-ink/50 italic">Walk-in only</span>
-                            )}
+                        {/* Time slots & Action */}
+                        <div className="bg-paper px-4 sm:px-5 py-4 border-t border-border flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                          <div>
+                            <h5 className="font-mono text-[10px] uppercase tracking-widest text-ink/50 mb-3">Available Time Slots</h5>
+                            <div className="flex flex-wrap gap-2">
+                              {doc.timeSlots && doc.timeSlots.length > 0 ? doc.timeSlots.map(time => (
+                                <span 
+                                  key={time}
+                                  className="px-2.5 py-1 bg-white border border-border rounded-md font-mono text-[11px] text-ink/70"
+                                >
+                                  {time}
+                                </span>
+                              )) : (
+                                <span className="font-body text-xs text-ink/50 italic mb-1 block">Walk-in only</span>
+                              )}
+                            </div>
                           </div>
+                          <Link
+                            to="/contact"
+                            state={{ appointment: true, doctorName: doc.name, date: selectedDate }}
+                            className="main-button shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
+                          >
+                            <CalendarIcon size={16} />
+                            Make an Appointment
+                          </Link>
                         </div>
                       </div>
                     );
@@ -353,7 +361,22 @@ export default function DoctorsPage() {
     day: "numeric",
   });
 
-  const availableTodayCount = (scheduleByDate[todayISO] || []).length;
+  const unfilteredTodayDocs = [];
+  schedule.filter(entry => entry.date === todayISO).forEach(entry => {
+    const doc = doctors[entry.doctorId];
+    if (doc && (activeCategory === "all" || doc.category === activeCategory)) {
+      const existingIdx = unfilteredTodayDocs.findIndex(d => d.id === entry.doctorId);
+      if (existingIdx >= 0) {
+        const existingSlots = unfilteredTodayDocs[existingIdx].timeSlots || [];
+        const newSlots = entry.timeSlots || [];
+        unfilteredTodayDocs[existingIdx].timeSlots = Array.from(new Set([...existingSlots, ...newSlots]));
+      } else {
+        unfilteredTodayDocs.push({ ...doc, timeSlots: entry.timeSlots });
+      }
+    }
+  });
+
+  const availableTodayCount = unfilteredTodayDocs.length;
 
   // ── Loading state ──────────────────────────────────────────────────────────
   if (loading) {
@@ -466,7 +489,7 @@ export default function DoctorsPage() {
                 
                 <div className="flex flex-col sm:items-end gap-3 w-full sm:w-auto">
                   <div className="flex items-center -space-x-3">
-                    {scheduleByDate[todayISO]?.slice(0, 4).map((doc, i) => (
+                    {unfilteredTodayDocs.slice(0, 4).map((doc, i) => (
                       <div key={doc.id} className="relative z-10" style={{ zIndex: 10 - i }}>
                         {doc.photo ? (
                           <img src={doc.photo} alt={doc.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-white shadow-sm" />
@@ -477,17 +500,21 @@ export default function DoctorsPage() {
                         )}
                       </div>
                     ))}
-                    {scheduleByDate[todayISO]?.length > 4 && (
+                    {unfilteredTodayDocs.length > 4 && (
                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-paper border-2 border-white shadow-sm flex items-center justify-center text-xs font-mono text-ink/70 z-0">
-                        +{scheduleByDate[todayISO].length - 4}
+                        +{unfilteredTodayDocs.length - 4}
                       </div>
                     )}
                   </div>
                   <button 
-                    onClick={() => setSelectedDate(todayISO)}
-                    className="btn-fill-popup w-full sm:w-auto text-sm px-6 py-2.5 rounded-xl font-body font-semibold"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedDate(todayISO);
+                    }}
+                    className="btn-fill-popup w-full sm:w-auto text-sm px-6 py-2.5 rounded-xl font-body font-semibold flex items-center justify-center gap-2"
                   >
                     View Today's Schedule
+                    <ArrowRight size={16} />
                   </button>
                 </div>
               </div>

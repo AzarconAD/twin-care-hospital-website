@@ -417,14 +417,24 @@ export default function AdminDoctors() {
                           {day}
                         </span>
                         {isAvailable && (
-                          <>
-                            <span className="font-mono text-[9px] uppercase tracking-wider text-secondary text-center px-1 leading-tight line-clamp-1">
+                          <div className="flex flex-col w-full px-1 items-center gap-1 mt-1">
+                            <span className="font-mono text-[9px] uppercase tracking-wider text-secondary text-center leading-tight">
                               {doctorName}
                             </span>
-                            <span className="font-body text-[10px] text-secondary/70">
-                              {existingSchedule.timeSlots?.length || 0} slots
-                            </span>
-                          </>
+                            <div className="flex flex-col w-full gap-0.5 items-center">
+                              {existingSchedule.timeSlots?.length > 0 ? (
+                                existingSchedule.timeSlots.map((time, idx) => (
+                                  <span key={idx} className="font-body text-[8px] bg-secondary/20 text-secondary px-1 py-0.5 rounded-sm whitespace-nowrap w-full text-center">
+                                    {time}
+                                  </span>
+                                ))
+                              ) : (
+                                <span className="font-body text-[8px] bg-accent/10 text-accent px-1 py-0.5 rounded-sm whitespace-nowrap w-full text-center">
+                                  No slots
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         )}
                       </div>
                     );
@@ -632,19 +642,29 @@ export default function AdminDoctors() {
               )}
             </div>
 
-            <div className="p-5 border-t border-border flex justify-end gap-3 bg-paper">
-              <button 
-                onClick={() => setScheduleModalOpen(false)} 
-                className="px-4 py-2 rounded-lg font-body text-sm text-primary/60 hover:text-primary transition-colors"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleApplyScheduleModal} 
-                className="main-button px-6 py-2 rounded-lg font-body text-sm font-semibold"
-              >
-                Apply
-              </button>
+            <div className="p-5 border-t border-border flex items-center justify-between bg-paper">
+              <div>
+                {scheduleModalData.isAvailable && scheduleModalData.timeSlots.length === 0 && (
+                  <span className="font-body text-xs text-accent font-medium">
+                    * Please select at least one time slot
+                  </span>
+                )}
+              </div>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setScheduleModalOpen(false)} 
+                  className="px-4 py-2 rounded-lg font-body text-sm text-primary/60 hover:text-primary transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleApplyScheduleModal} 
+                  disabled={scheduleModalData.isAvailable && scheduleModalData.timeSlots.length === 0}
+                  className="main-button px-6 py-2 rounded-lg font-body text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Apply
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>

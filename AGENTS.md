@@ -51,7 +51,7 @@ Other placeholder photos (stock/picsum) are temporary — keep them easy to find
 - If a request conflicts with this file, ask before proceeding
 - After finishing a task, summarize exactly what files were created/changed
 - **DO NOT git commit unless the developer explicitly asks you to.**
-- Commits (when requested): small, frequent, format `TYPE - {file(s)}: {summary}` with bullet sub-points
+- Commits (when requested): small, frequent, format `TYPE - {file(s)}: {summary}` with bullet sub-points. **Always update `context.md` (Changelog section) with the changes made alongside the commit.**
 - Deployment steps — see `.agents/skills/deployment.md` (not needed until ready to ship)
 
 ## Terminal / Shell
