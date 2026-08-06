@@ -31,8 +31,11 @@ app.use(cors({
   credentials: true,
 }))
 
-// Parse incoming JSON request bodies so req.body works in route handlers
-app.use(express.json())
+// Parse incoming JSON request bodies so req.body works in route handlers.
+// Limit raised to 10 MB — base64-encoded photo data URLs can easily exceed
+// the default 100 KB limit, causing Express to return an HTML error page
+// instead of JSON (the "Unexpected token '<'" error).
+app.use(express.json({ limit: '10mb' }))
 
 // ── Session middleware ────────────────────────────────────────────────────────
 // Sessions are stored in MongoDB (not the default in-memory store) so they

@@ -66,11 +66,11 @@ export default function Hero({ onImageClick, featuredNews }) {
             <div className="main-container h-full relative z-10 p-0">
               <div 
                 className="relative h-full w-full rounded-[inherit] overflow-hidden shadow-xl cursor-pointer group"
-                onClick={() => onImageClick?.("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop")}
+                onClick={() => onImageClick?.(featuredNews?.image || "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop")}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop"
-                  alt="Modern hospital facility"
+                  src={featuredNews?.image || "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop"}
+                  alt={featuredNews?.title || "Modern hospital facility"}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>

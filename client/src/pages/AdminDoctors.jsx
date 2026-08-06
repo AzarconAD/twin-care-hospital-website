@@ -92,80 +92,41 @@ export default function AdminDoctors() {
     setScheduleModalOpen(true);
   };
 
-  const handleApplyScheduleModal = () => {
+  const handleApplyScheduleModal = async () => {
     const { dateStr, isAvailable, timeSlots } = scheduleModalData;
-    
-    if (isAvailable) {
-      setLocalSchedule(prev => {
-        const exists = prev.some(s => s.doctorId === selectedDoctorId && s.date === dateStr);
-        if (exists) {
-          return prev.map(s => (s.doctorId === selectedDoctorId && s.date === dateStr) ? { ...s, timeSlots } : s);
-        } else {
-          return [...prev, { doctorId: selectedDoctorId, date: dateStr, timeSlots }];
-        }
-      });
-    } else {
-      setLocalSchedule(prev => prev.filter(s => !(s.doctorId === selectedDoctorId && s.date === dateStr)));
-    }
-    setScheduleModalOpen(false);
-  };
+    const existing = schedule.find(s => s.doctorId === selectedDoctorId && s.date === dateStr);
 
-  const handleSave = async () => {
-    setIsSaving(true)
+    setIsSaving(true);
     try {
-      const toAdd = localSchedule.filter(ls => !schedule.some(s => s.doctorId === ls.doctorId && s.date === ls.date))
-      const toRemove = schedule.filter(s => !localSchedule.some(ls => ls.doctorId === s.doctorId && ls.date === s.date))
-      const toUpdate = localSchedule.filter(ls => {
-        const existing = schedule.find(s => s.doctorId === ls.doctorId && s.date === ls.date)
-        if (!existing) return false
-        const existingSlots = existing.timeSlots || []
-        const localSlots = ls.timeSlots || []
-        if (existingSlots.length !== localSlots.length) return true
-        const sortedExisting = [...existingSlots].sort()
-        const sortedLocal = [...localSlots].sort()
-        return sortedExisting.some((v, i) => v !== sortedLocal[i])
-      })
-      
-      for (const rem of toRemove) {
-        if (rem._id) await removeScheduleEntry(rem._id)
-      }
-      for (const add of toAdd) {
-        await addScheduleEntry(add.doctorId, add.date, add.timeSlots)
-      }
-      for (const upd of toUpdate) {
-        const existing = schedule.find(s => s.doctorId === upd.doctorId && s.date === upd.date)
-        if (existing && existing._id) {
-          await updateScheduleEntry(existing._id, upd.timeSlots)
+      if (isAvailable) {
+        if (existing) {
+          const existingSlots = existing.timeSlots || [];
+          const sortedExisting = [...existingSlots].sort();
+          const sortedLocal = [...timeSlots].sort();
+          const hasChanged = existingSlots.length !== timeSlots.length || sortedExisting.some((v, i) => v !== sortedLocal[i]);
+          
+          if (hasChanged) {
+            await updateScheduleEntry(existing._id, timeSlots);
+          }
+        } else {
+          await addScheduleEntry(selectedDoctorId, dateStr, timeSlots);
+        }
+      } else {
+        if (existing) {
+          await removeScheduleEntry(existing._id);
         }
       }
-      
-      const freshSchedule = await getSchedule()
-      setSchedule(freshSchedule)
-      setLocalSchedule(freshSchedule)
-      alert("Schedule saved successfully!")
-    } catch (err) {
-      alert(`Failed to save schedule: ${err.message}`)
-    } finally {
-      setIsSaving(false)
-    }
-  }
 
-  // Determine if there are unsaved changes
-  const hasChanges = () => {
-      const toAdd = localSchedule.filter(ls => !schedule.some(s => s.doctorId === ls.doctorId && s.date === ls.date))
-      const toRemove = schedule.filter(s => !localSchedule.some(ls => ls.doctorId === s.doctorId && ls.date === s.date))
-      const toUpdate = localSchedule.filter(ls => {
-        const existing = schedule.find(s => s.doctorId === ls.doctorId && s.date === ls.date)
-        if (!existing) return false
-        const existingSlots = existing.timeSlots || []
-        const localSlots = ls.timeSlots || []
-        if (existingSlots.length !== localSlots.length) return true
-        const sortedExisting = [...existingSlots].sort()
-        const sortedLocal = [...localSlots].sort()
-        return sortedExisting.some((v, i) => v !== sortedLocal[i])
-      })
-      return toAdd.length > 0 || toRemove.length > 0 || toUpdate.length > 0;
-  }
+      const freshSchedule = await getSchedule();
+      setSchedule(freshSchedule);
+      setLocalSchedule(freshSchedule);
+      setScheduleModalOpen(false);
+    } catch (err) {
+      alert(`Failed to save schedule: ${err.message}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
@@ -366,15 +327,6 @@ export default function AdminDoctors() {
                 <div className="flex items-center justify-between p-4 bg-cream/60 border-b border-border flex-wrap gap-4">
                   <h3 className="font-display text-xl text-primary flex items-center gap-4">
                     <span>{MONTHS[month]} {year}</span>
-                    {hasChanges() && (
-                      <button 
-                        onClick={handleSave}
-                        disabled={isSaving}
-                        className="main-button px-4 py-1.5 rounded-lg text-sm font-semibold disabled:opacity-50"
-                      >
-                        {isSaving ? 'Saving...' : 'Save Changes'}
-                      </button>
-                    )}
                   </h3>
                   <div className="flex gap-2">
                     <button onClick={prevMonth} className="p-2 rounded-lg hover:bg-white border border-transparent hover:border-border transition-colors text-primary">
@@ -504,12 +456,44 @@ export default function AdminDoctors() {
               </div>
 
               <div>
-                <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Photo URL</label>
+                <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Photo</label>
                 <div className="flex items-start gap-4">
-                  <input name="photo" value={formData.photo} onChange={handleFormChange} className="flex-1 p-2.5 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary" placeholder="https://..." />
+                  <div className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="block w-full font-body text-sm text-primary/70
+                        file:mr-3 file:py-2 file:px-4
+                        file:rounded-lg file:border file:border-border
+                        file:text-xs file:font-semibold file:font-body
+                        file:bg-white file:text-primary
+                        hover:file:bg-cream cursor-pointer"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (!file) return
+                        // FileReader converts the picked file to a data URL so it can
+                        // be stored in the photo field and previewed immediately.
+                        const reader = new FileReader()
+                        reader.onload = (ev) => {
+                          setFormData(prev => ({ ...prev, photo: ev.target.result }))
+                        }
+                        reader.readAsDataURL(file)
+                      }}
+                    />
+                    <p className="font-body text-[11px] text-primary/40 mt-1.5">
+                      Image stored as a data URL. Swap for a hosted URL before production.
+                    </p>
+                  </div>
+
+                  {/* Live preview */}
                   {formData.photo && (
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-secondary/20 shrink-0 bg-cream flex items-center justify-center">
-                      <img src={formData.photo} alt="Preview" className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none' }} />
+                      <img
+                        src={formData.photo}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.target.style.display = 'none' }}
+                      />
                     </div>
                   )}
                 </div>
@@ -659,10 +643,10 @@ export default function AdminDoctors() {
                 </button>
                 <button 
                   onClick={handleApplyScheduleModal} 
-                  disabled={scheduleModalData.isAvailable && scheduleModalData.timeSlots.length === 0}
+                  disabled={(scheduleModalData.isAvailable && scheduleModalData.timeSlots.length === 0) || isSaving}
                   className="main-button px-6 py-2 rounded-lg font-body text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Apply
+                  {isSaving ? 'Saving...' : 'Apply'}
                 </button>
               </div>
             </div>

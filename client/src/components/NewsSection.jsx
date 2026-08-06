@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
 
@@ -21,8 +21,17 @@ function formatDate(dateStr) {
 }
 
 export default function NewsSection({ news = [], loading = false, error = null }) {
-  // Use _id from MongoDB instead of id
-  const featured = news.find((n) => n.featured) || news[0];
+  const [selectedNewsId, setSelectedNewsId] = useState(null);
+
+  // Auto-select the featured news item when the news data loads
+  useEffect(() => {
+    if (news.length > 0) {
+      const defaultFeatured = news.find((n) => n.featured) || news[0];
+      setSelectedNewsId(defaultFeatured._id);
+    }
+  }, [news]);
+
+  const featured = news.find((n) => n._id === selectedNewsId) || news.find((n) => n.featured) || news[0];
   const rest = featured ? news.filter((n) => n._id !== featured._id).slice(0, 3) : [];
 
   return (
@@ -106,7 +115,8 @@ export default function NewsSection({ news = [], loading = false, error = null }
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, amount: 0.2 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="flex gap-4 rounded-xl border border-border p-3 bg-cream/40"
+                onClick={() => setSelectedNewsId(item._id)}
+                className="flex gap-4 rounded-xl border border-border p-3 bg-cream/40 cursor-pointer hover:bg-cream/80 hover:shadow-sm transition-all"
               >
                 <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
                   <img

@@ -20,6 +20,8 @@ export default function AdminNews() {
   })
   const [formLoading, setFormLoading] = useState(false)
   const [formError, setFormError] = useState(null)
+  // 'url' = text input, 'upload' = local file picker
+  const [photoMode, setPhotoMode] = useState('url')
 
   useEffect(() => {
     checkAdminSession()
@@ -55,6 +57,7 @@ export default function AdminNews() {
       title: '', tag: 'Announcement', tagColor: 'primary', date: today, excerpt: '', image: '', featured: false
     })
     setFormError(null)
+    setPhotoMode('url')
     setIsModalOpen(true)
   }
 
@@ -72,6 +75,7 @@ export default function AdminNews() {
       featured: item.featured || false
     })
     setFormError(null)
+    setPhotoMode('url')
     setIsModalOpen(true)
   }
 
@@ -354,10 +358,69 @@ export default function AdminNews() {
               </div>
 
               <div>
-                <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Image URL *</label>
+                <label className="block font-mono text-[10px] uppercase tracking-wider text-primary/50 mb-1.5">Image *</label>
+
+                {/* Mode toggle */}
+                <div className="flex items-center bg-cream rounded-lg p-0.5 border border-border w-fit mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setPhotoMode('url')}
+                    className={`px-3 py-1.5 rounded-md font-body text-xs font-medium transition-colors ${
+                      photoMode === 'url' ? 'bg-white shadow-sm text-primary' : 'text-primary/50 hover:text-primary'
+                    }`}
+                  >
+                    URL
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPhotoMode('upload')}
+                    className={`px-3 py-1.5 rounded-md font-body text-xs font-medium transition-colors ${
+                      photoMode === 'upload' ? 'bg-white shadow-sm text-primary' : 'text-primary/50 hover:text-primary'
+                    }`}
+                  >
+                    Upload file
+                  </button>
+                </div>
+
                 <div className="flex flex-col sm:flex-row items-start gap-4">
-                  <input required name="image" value={formData.image} onChange={handleFormChange} className="w-full sm:flex-1 p-2.5 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary" placeholder="https://..." />
-                  <div className="w-32 h-20 rounded-lg overflow-hidden border border-border shrink-0 bg-cream flex items-center justify-center relative shadow-inner">
+                  {photoMode === 'url' ? (
+                    <input
+                      required
+                      name="image"
+                      value={formData.image}
+                      onChange={handleFormChange}
+                      className="w-full sm:flex-1 p-2.5 border border-border rounded-lg font-body text-sm focus:outline-none focus:border-secondary"
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  ) : (
+                    <div className="w-full sm:flex-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="block w-full font-body text-sm text-primary/70
+                          file:mr-3 file:py-2 file:px-4
+                          file:rounded-lg file:border file:border-border
+                          file:text-xs file:font-semibold file:font-body
+                          file:bg-white file:text-primary
+                          hover:file:bg-cream cursor-pointer"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (!file) return
+                          const reader = new FileReader()
+                          reader.onload = (ev) => {
+                            setFormData(prev => ({ ...prev, image: ev.target.result }))
+                          }
+                          reader.readAsDataURL(file)
+                        }}
+                      />
+                      <p className="font-body text-[11px] text-primary/40 mt-1.5">
+                        Image stored as a data URL. Swap for a hosted URL before production.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Live preview — same for both modes */}
+                  <div className="w-32 h-20 rounded-lg overflow-hidden border border-border shrink-0 bg-cream flex items-center justify-center shadow-inner">
                     {formData.image ? (
                       <img src={formData.image} alt="Preview" className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none' }} />
                     ) : (
