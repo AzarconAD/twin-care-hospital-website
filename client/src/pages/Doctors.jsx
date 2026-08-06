@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search } from "lucide-react";
+import { User, ChevronLeft, ChevronRight, Calendar as CalendarIcon, ChevronDown, Search, X } from "lucide-react";
 import { THEME_COLORS } from "../theme";
 import { DoctorsBackgroundBlobs } from "../components/bg-decorations";
 import { getDoctors, getSchedule } from "../api/index.js";
@@ -104,7 +104,16 @@ const generateSampleSchedule = (ids = DEFAULT_IDS) => {
       // Assign each doctor a pattern by cycling through the patterns array
       const pattern = patterns[i % patterns.length];
       if (pattern(dayOfWeek)) {
-        schedule.push({ doctorId, date: dateStr });
+        // Generate some sample time slots
+        let timeSlots = [];
+        if (i % 3 === 0) {
+          timeSlots = ["08:00 AM", "09:30 AM", "11:00 AM", "01:30 PM", "03:00 PM"];
+        } else if (i % 3 === 1) {
+          timeSlots = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "04:00 PM"];
+        } else {
+          timeSlots = ["10:30 AM", "01:00 PM", "02:30 PM", "04:30 PM"];
+        }
+        schedule.push({ doctorId, date: dateStr, timeSlots });
       }
     });
   }
@@ -151,7 +160,14 @@ export default function DoctorsPage() {
       .then(([docsData, schedData]) => {
         const dict = buildDoctorDict(docsData);
         setDoctors(dict);
-        setSchedule(schedData);
+        
+        // Ensure API schedule data has timeSlots for backward compatibility
+        const enrichedSched = schedData.map(entry => {
+          if (entry.timeSlots && entry.timeSlots.length > 0) return entry;
+          // Fallback time slots if API doesn't provide them yet
+          return { ...entry, timeSlots: ["09:00 AM", "11:00 AM", "02:00 PM", "04:00 PM"] };
+        });
+        setSchedule(enrichedSched);
       })
       .catch((err) => {
         setError(err.message);
@@ -167,10 +183,7 @@ export default function DoctorsPage() {
     return new Date(today.getFullYear(), today.getMonth(), 1);
   });
   
-  // Mobile accordion state: tracks which doctor's detail is open on which day
-  // Format: "YYYY-MM-DD-doctorId"
-  const [openMobileDetail, setOpenMobileDetail] = useState(null);
-  const [openDesktopPopup, setOpenDesktopPopup] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -210,82 +223,120 @@ export default function DoctorsPage() {
   filteredSchedule.forEach(entry => {
     if (!scheduleByDate[entry.date]) scheduleByDate[entry.date] = [];
     if (doctors[entry.doctorId]) {
-      scheduleByDate[entry.date].push(doctors[entry.doctorId]);
+      const existingIdx = scheduleByDate[entry.date].findIndex(d => d.id === entry.doctorId);
+      if (existingIdx >= 0) {
+        // Merge time slots if duplicate doctor entries exist on the same day
+        const existingDocs = scheduleByDate[entry.date];
+        const existingSlots = existingDocs[existingIdx].timeSlots || [];
+        const newSlots = entry.timeSlots || [];
+        existingDocs[existingIdx].timeSlots = Array.from(new Set([...existingSlots, ...newSlots]));
+      } else {
+        scheduleByDate[entry.date].push({ ...doctors[entry.doctorId], timeSlots: entry.timeSlots });
+      }
     }
   });
 
-  const toggleMobileDetail = (id) => {
-    setOpenMobileDetail(prev => prev === id ? null : id);
-  };
+  // Daily Schedule Modal
+  const DailyScheduleModal = () => {
+    if (!selectedDate) return null;
+    
+    // Parse date for display
+    const [y, m, d] = selectedDate.split("-");
+    const dateObj = new Date(y, m - 1, d);
+    const dateLabel = dateObj.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+    
+    const docsForDay = scheduleByDate[selectedDate] || [];
 
-  // Helper for hover popover (Desktop) — fully Framer Motion animated
-  const DoctorPopup = ({ doctor, isVisible }) => {
-    const catColor = THEME_COLORS.secondary;
     return (
       <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            key="popup"
-            initial={{ opacity: 0, y: 8, x: "-50%", scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-            exit={{ opacity: 0, y: 6, x: "-50%", scale: 0.97, transition: { duration: 0.25 } }}
-            transition={{ type: "spring", stiffness: 320, damping: 24 }}
-            className="absolute bottom-full left-1/2 mb-2 w-72 rounded-2xl shadow-2xl border border-white/60 z-50 cursor-default backdrop-blur-md"
-            style={{ filter: "drop-shadow(0 8px 32px rgba(5,68,171,0.13))" }}
-          >
-            {/* Gradient header band */}
-            <div
-              className="relative flex flex-col items-center pt-5 pb-4 px-5 rounded-t-2xl"
-              style={{ background: `linear-gradient(135deg, ${catColor}18 0%, ${catColor}0d 100%)`, borderBottom: `1px solid ${catColor}22` }}
-            >
-              {/* Avatar — photo if available, icon fallback */}
-              {doctor.photo ? (
-                <img
-                  src={doctor.photo}
-                  alt={doctor.name}
-                  className="w-16 h-16 rounded-full object-cover mb-3 shadow-md ring-4 ring-white"
-                />
-              ) : (
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center mb-3 shadow-md ring-4 ring-white"
-                  style={{ backgroundColor: catColor }}
-                >
-                  <User size={24} color="#fff" strokeWidth={2} />
-                </div>
-              )}
-              {/* Category badge */}
-              <span
-                className="font-mono text-[9px] uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2"
-                style={{ backgroundColor: `${catColor}22`, color: catColor }}
-              >
-                {CATEGORIES[doctor.category].label}
-              </span>
-              <h4 className="font-display text-base leading-tight text-ink text-center">
-                {doctor.name}{doctor.postfix ? `, ${doctor.postfix}` : ''}
-              </h4>
-              <p className="font-mono text-[10px] uppercase tracking-wide mt-0.5 text-ink/60">{doctor.specialty}</p>
-            </div>
-
-            {/* Body */}
-            <div className="bg-white/80 px-5 pt-3 pb-4 rounded-b-2xl">
-              <p className="font-body text-xs text-ink/65 leading-relaxed text-center mb-4">
-                {doctor.bio}
-              </p>
-              <Link
-                to="/contact"
-                state={{ appointment: true, doctorName: doctor.name }}
-                className="main-button flex items-center justify-center gap-2 w-full py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
-              >
-                <CalendarIcon size={16} />
-                Make an Appointment
-              </Link>
-            </div>
-
-            {/* Caret */}
-            <div
-              className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-b border-r border-border rotate-45"
+        {selectedDate && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
+              onClick={() => setSelectedDate(null)}
             />
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+            >
+              {/* Header */}
+              <div className="px-6 py-5 border-b border-border flex items-center justify-between bg-paper">
+                <div>
+                  <h3 className="font-display text-xl sm:text-2xl text-ink">Schedule for {dateLabel}</h3>
+                  <p className="font-body text-sm text-ink/60 mt-1">{docsForDay.length} {docsForDay.length === 1 ? 'Doctor' : 'Doctors'} Available</p>
+                </div>
+                <button 
+                  onClick={() => setSelectedDate(null)}
+                  className="p-2 bg-white rounded-full text-ink/50 hover:text-ink border border-border hover:bg-paper transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              {/* Body */}
+              <div className="p-6 overflow-y-auto bg-white/50 space-y-6">
+                {docsForDay.length === 0 ? (
+                  <div className="text-center py-10">
+                    <p className="font-body text-ink/60">No doctors scheduled for this date.</p>
+                  </div>
+                ) : (
+                  docsForDay.map(doc => {
+                    const catColor = CATEGORIES[doc.category]?.color || THEME_COLORS.secondary;
+                    return (
+                      <div key={doc.id} className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm">
+                        <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center">
+                          {/* Avatar */}
+                          <div className="shrink-0">
+                            {doc.photo ? (
+                              <img src={doc.photo} alt={doc.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shadow-sm ring-4 ring-paper" />
+                            ) : (
+                              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-sm ring-4 ring-paper" style={{ backgroundColor: catColor }}>
+                                <User size={30} color="#fff" />
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Info */}
+                          <div className="flex-1">
+                            <span className="inline-block px-2 py-0.5 rounded-full font-mono text-[10px] uppercase tracking-wider mb-2" style={{ backgroundColor: `${catColor}15`, color: catColor }}>
+                              {CATEGORIES[doc.category]?.label}
+                            </span>
+                            <h4 className="font-display text-lg text-ink leading-tight">{doc.name}{doc.postfix ? `, ${doc.postfix}` : ''}</h4>
+                            <p className="font-body text-sm text-ink/70 mt-0.5 mb-2">{doc.specialty}</p>
+                            <p className="font-body text-xs text-ink/60 line-clamp-2">{doc.bio}</p>
+                          </div>
+                        </div>
+                        
+                        {/* Time slots */}
+                        <div className="bg-paper px-4 sm:px-5 py-4 border-t border-border">
+                          <h5 className="font-mono text-[10px] uppercase tracking-widest text-ink/50 mb-3">Available Time Slots</h5>
+                          <div className="flex flex-wrap gap-2">
+                            {doc.timeSlots && doc.timeSlots.length > 0 ? doc.timeSlots.map(time => (
+                              <Link 
+                                key={time}
+                                to="/contact"
+                                state={{ appointment: true, doctorName: doc.name, date: selectedDate, time }}
+                                className="px-3 py-1.5 bg-white border border-primary/20 rounded-lg font-mono text-xs text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors duration-200"
+                              >
+                                {time}
+                              </Link>
+                            )) : (
+                              <span className="font-body text-xs text-ink/50 italic">Walk-in only</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     );
@@ -302,11 +353,7 @@ export default function DoctorsPage() {
     day: "numeric",
   });
 
-  const availableTodayCount = new Set(
-    schedule
-      .filter((entry) => entry.date === todayISO)
-      .map((entry) => entry.doctorId)
-  ).size;
+  const availableTodayCount = (scheduleByDate[todayISO] || []).length;
 
   // ── Loading state ──────────────────────────────────────────────────────────
   if (loading) {
@@ -402,6 +449,50 @@ export default function DoctorsPage() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pb-24 scroll-mt-24" ref={calendarRef}>
         <div className="main-container-wrapper">
           <div className="main-container">
+            {/* Available Today Banner */}
+            {availableTodayCount > 0 && (
+              <div className="bg-secondary/5 border-b border-primary/15 p-5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-40"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+                    </span>
+                    <h3 className="font-mono text-xs uppercase tracking-widest text-secondary font-semibold">Available Today</h3>
+                  </div>
+                  <h2 className="font-display text-2xl text-ink">See a specialist today.</h2>
+                  <p className="font-body text-sm text-ink/60 mt-1">{availableTodayCount} doctors are currently accepting appointments.</p>
+                </div>
+                
+                <div className="flex flex-col sm:items-end gap-3 w-full sm:w-auto">
+                  <div className="flex items-center -space-x-3">
+                    {scheduleByDate[todayISO]?.slice(0, 4).map((doc, i) => (
+                      <div key={doc.id} className="relative z-10" style={{ zIndex: 10 - i }}>
+                        {doc.photo ? (
+                          <img src={doc.photo} alt={doc.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-white shadow-sm" />
+                        ) : (
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 border-white shadow-sm" style={{ backgroundColor: THEME_COLORS.secondary }}>
+                            <User size={18} color="#fff" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {scheduleByDate[todayISO]?.length > 4 && (
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-paper border-2 border-white shadow-sm flex items-center justify-center text-xs font-mono text-ink/70 z-0">
+                        +{scheduleByDate[todayISO].length - 4}
+                      </div>
+                    )}
+                  </div>
+                  <button 
+                    onClick={() => setSelectedDate(todayISO)}
+                    className="btn-fill-popup w-full sm:w-auto text-sm px-6 py-2.5 rounded-xl font-body font-semibold"
+                  >
+                    View Today's Schedule
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Calendar Controls */}
             <div className="flex items-center justify-between gap-4 p-5 border-b border-primary/15 relative z-10">
               <h2 className="font-display text-2xl sm:text-3xl text-primary">
@@ -447,29 +538,44 @@ export default function DoctorsPage() {
               const day = i + 1;
               const dateKey = formatKey(day);
               const docsToday = scheduleByDate[dateKey] || [];
-              const isToday = new Date().toDateString() === new Date(year, month, day).toDateString();
+              const isToday = todayISO === dateKey;
               
               return (
-                <div key={day} className={`min-h-[120px] p-2 border-r border-b border-primary/15 relative hover:z-40 transition-colors duration-300 hover:bg-white/40 ${isToday ? 'bg-secondary/15' : 'bg-transparent'}`}>
-                  <div className={`font-mono text-sm mb-2 w-7 h-7 flex items-center justify-center rounded-full ${isToday ? 'bg-secondary text-white' : 'text-primary/70'}`}>
+                <div 
+                  key={day} 
+                  onClick={() => setSelectedDate(dateKey)}
+                  className={`min-h-[120px] p-2 border-r border-b border-primary/15 relative transition-colors duration-200 cursor-pointer group ${isToday ? 'bg-secondary/10' : 'bg-transparent hover:bg-white/60'}`}
+                >
+                  <div className={`font-mono text-sm mb-3 w-7 h-7 flex items-center justify-center rounded-full transition-colors ${isToday ? 'bg-secondary text-white' : 'text-primary/70 group-hover:text-primary'}`}>
                     {day}
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    {docsToday.map(doc => (
-                      <div key={doc.id} className="relative tc-doctor-pill">
-                        <div 
-                          onClick={() => setOpenDesktopPopup(prev => prev === `${dateKey}-${doc.id}` ? null : `${dateKey}-${doc.id}`)}
-                          className="flex items-center gap-1.5 p-1.5 px-2 rounded-md border border-primary/15 cursor-pointer bg-white/70 hover:bg-white shadow-sm transition-colors"
-                        >
-                          <span className="font-body text-xs font-medium truncate text-ink/90">
-                            {doc.name}
-                          </span>
-                        </div>
-                        {/* Animated Popup */}
-                        <DoctorPopup doctor={doc} isVisible={openDesktopPopup === `${dateKey}-${doc.id}`} />
+                  
+                  {docsToday.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center pl-1">
+                        {docsToday.slice(0, 3).map((doc, idx) => {
+                          const catColor = CATEGORIES[doc.category]?.color || THEME_COLORS.secondary;
+                          return (
+                            <div key={doc.id} className="relative transition-transform group-hover:-translate-y-0.5 duration-200" style={{ zIndex: 10 - idx, marginLeft: idx > 0 ? '-8px' : '0' }}>
+                              {doc.photo ? (
+                                <img src={doc.photo} alt={doc.name} className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm" title={doc.name} />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow-sm" style={{ backgroundColor: catColor }} title={doc.name}>
+                                  <User size={14} color="#fff" />
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                        {docsToday.length > 3 && (
+                          <div className="w-8 h-8 rounded-full bg-paper border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-mono text-ink/70 z-0 -ml-2 transition-transform group-hover:-translate-y-0.5 duration-200">
+                            +{docsToday.length - 3}
+                          </div>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                      <span className="font-body text-[10px] text-ink/50 pl-1 group-hover:text-ink/80 transition-colors">{docsToday.length} available</span>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -488,87 +594,55 @@ export default function DoctorsPage() {
             const dateKey = formatKey(day);
             const docsToday = scheduleByDate[dateKey] || [];
             const dayOfWeek = WEEKDAYS[new Date(year, month, day).getDay()];
-            const isToday = new Date().toDateString() === new Date(year, month, day).toDateString();
+            const isToday = todayISO === dateKey;
             
             // Skip rendering days with no doctors if a category is filtered, 
             // unless it's 'all' where we might want to see empty days to know there's no availability.
             if (docsToday.length === 0 && activeCategory !== "all") return null;
 
             return (
-              <div key={day} className={`p-4 ${isToday ? 'bg-secondary/15' : ''}`}>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className={`font-mono text-lg font-medium w-9 h-9 flex items-center justify-center rounded-full ${isToday ? 'bg-secondary text-white' : 'bg-white/50 text-primary'}`}>
-                    {day}
+              <div 
+                key={day} 
+                onClick={() => setSelectedDate(dateKey)}
+                className={`p-5 cursor-pointer active:bg-white/40 transition-colors ${isToday ? 'bg-secondary/10' : ''}`}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`font-mono text-lg font-medium w-10 h-10 flex items-center justify-center rounded-full ${isToday ? 'bg-secondary text-white' : 'bg-white/80 text-primary'}`}>
+                      {day}
+                    </div>
+                    <div className="font-mono text-sm font-semibold text-primary/70 uppercase tracking-wider">
+                      {dayOfWeek}
+                    </div>
                   </div>
-                  <div className="font-mono text-sm font-semibold text-primary/70 uppercase tracking-wider">
-                    {dayOfWeek}
-                  </div>
+                  {docsToday.length > 0 && (
+                    <span className="font-body text-xs text-ink/60 bg-white px-2 py-1 rounded-md border border-border">{docsToday.length} Available</span>
+                  )}
                 </div>
                 
                 {docsToday.length === 0 ? (
-                  <p className="font-body text-sm text-primary/40 italic ml-12">No available doctors.</p>
+                  <p className="font-body text-sm text-primary/40 italic ml-13">No available doctors.</p>
                 ) : (
-                  <div className="flex flex-col gap-3 ml-12">
-                    {docsToday.map(doc => {
-                      const accordionId = `${dateKey}-${doc.id}`;
-                      const isOpen = openMobileDetail === accordionId;
-                      const catColor = CATEGORIES[doc.category].color;
-                      
+                  <div className="flex items-center -space-x-2 pl-2">
+                    {docsToday.slice(0, 5).map((doc, idx) => {
+                      const catColor = CATEGORIES[doc.category]?.color || THEME_COLORS.secondary;
                       return (
-                        <div key={doc.id} className="border border-primary/15 rounded-lg overflow-hidden bg-white/60 shadow-sm">
-                          {/* Accordion Header */}
-                          <button 
-                            onClick={() => toggleMobileDetail(accordionId)}
-                            className="w-full flex items-center justify-between p-3 text-left transition-colors hover:bg-white"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div 
-                                className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-                                style={{ backgroundColor: catColor }}
-                              >
-                                <User size={14} color={THEME_COLORS.white} strokeWidth={2} />
-                              </div>
-                              <div>
-                                <h4 className="font-display text-base text-ink leading-none mb-1">
-                                  {doc.name}{doc.postfix ? `, ${doc.postfix}` : ''}
-                                </h4>
-                                <p className="font-mono text-[9px] uppercase tracking-wider" style={{ color: catColor }}>
-                                  {CATEGORIES[doc.category].label}
-                                </p>
-                              </div>
+                        <div key={doc.id} className="relative" style={{ zIndex: 10 - idx }}>
+                          {doc.photo ? (
+                            <img src={doc.photo} alt={doc.name} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-white shadow-sm" style={{ backgroundColor: catColor }}>
+                              <User size={16} color="#fff" />
                             </div>
-                            <ChevronDown 
-                              size={18} 
-                              className={`text-primary/40 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
-                            />
-                          </button>
-                          
-                          {/* Accordion Body */}
-                          <AnimatePresence>
-                            {isOpen && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="overflow-hidden"
-                              >
-                                <div className="p-4 pt-0 border-t border-border/50 bg-cream/30">
-                                  <div className="mt-3">
-                                    <p className="font-body text-sm font-semibold mb-1 text-ink/90">
-                                      {doc.specialty}
-                                    </p>
-                                    <p className="font-body text-sm text-ink/70 leading-relaxed">
-                                      {doc.bio}
-                                    </p>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
+                          )}
                         </div>
                       );
                     })}
+                    {docsToday.length > 5 && (
+                      <div className="w-10 h-10 rounded-full bg-paper border-2 border-white shadow-sm flex items-center justify-center text-[10px] font-mono text-ink/70 z-0">
+                        +{docsToday.length - 5}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -585,6 +659,7 @@ export default function DoctorsPage() {
           </div>
         </div>
       </div>
+      <DailyScheduleModal />
     </div>
   );
 }
