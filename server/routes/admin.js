@@ -119,13 +119,12 @@ router.post('/contacts/:id/reply', requireAuth, async (req, res) => {
 
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@twincarehospital.com'
     
-    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD) {
       const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT || 587,
+        service: 'gmail',
         auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS
+          user: process.env.SMTP_EMAIL,
+          pass: process.env.SMTP_PASSWORD
         }
       })
 
@@ -136,7 +135,7 @@ router.post('/contacts/:id/reply', requireAuth, async (req, res) => {
         text: message
       })
     } else {
-      console.log(`[Mock Email] Setup SMTP_HOST, SMTP_USER, SMTP_PASS in .env to send real emails.`)
+      console.log(`[Mock Email] Setup SMTP_EMAIL and SMTP_PASSWORD in .env to send real emails.`)
       console.log(`[Mock Email] To: ${contact.email}, From: ${adminEmail}`)
       console.log(`[Mock Email] Message:\n${message}`)
     }

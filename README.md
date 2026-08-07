@@ -1,102 +1,83 @@
 # Twin Care Hospital Inc. — Website
 
-Informational website for Twin Care Hospital Incorporated, built as a solo internship side project.
+An informational and operational web platform for Twin Care Hospital Incorporated, built as a solo internship side project. 
 
-**Stack:**
-- Frontend: React (Vite) + Tailwind CSS + React Router + Framer Motion
-- Backend: Node.js + Express + MongoDB (via Mongoose), hosted on MongoDB Atlas
+## 🎯 Purpose of the Website
+The goal of this project is to provide a modern, fast, and user-friendly digital presence for Twin Care Hospital. It serves two main purposes:
+1. **Public-Facing Portal**: Allows patients and visitors to learn about the hospital's core values, browse medical services, check real-time doctor availability (schedules), and submit contact inquiries.
+2. **Admin Dashboard**: A secure, authenticated backend for hospital staff to manage the website's content dynamically. Admins can update doctor profiles, schedule doctor availabilities, manage news announcements, and reply directly to patient contact inquiries via email.
 
-## Project structure
+---
 
-twincare-hospital/
-├── client/ React + Tailwind app (everything visitors see)
-└── server/ Express API (Services, Doctors, Contact, and later Admin auth)
+## 🏗️ How the Code Works (Architecture)
 
+This is a full-stack application separated into two distinct apps:
 
-Two separate apps on purpose — the client deploys to Vercel and the server to Render, independently.
+### Frontend (`/client`)
+- **Stack**: React (Vite), Tailwind CSS, React Router, Framer Motion.
+- **Architecture**: Strictly follows the **Container/Presentational pattern**. 
+  - `client/src/pages/`: Act as "Containers". They handle routing, data fetching (from the API), and state management.
+  - `client/src/components/`: Act as "Presentational" UI components. They are grouped by domain (e.g., `/home`, `/admin`, `/doctors`) and handle purely visual rendering and animations. 
+- **Styling**: Tailwind CSS is used alongside custom CSS variables (`index.css`) mapped to a cohesive design system (Newsreader and Roboto fonts, specific brand colors).
 
-## Getting started
+### Backend (`/server`)
+- **Stack**: Node.js, Express, MongoDB (Atlas), Mongoose.
+- **Architecture**: A standard RESTful API.
+  - `models/`: Mongoose schemas defining the database structure (Services, Doctors, Schedules, Contacts, News, Admin).
+  - `routes/`: Express routers handling CRUD operations. Public routes allow fetching data, while Admin routes are protected by session-based authentication (`requireAuth` middleware).
+  - **Email Integration**: Uses `nodemailer` to allow admins to reply to patient inquiries directly from the dashboard.
 
-### 1. Frontend (client)
+---
 
-```bash
-cd client
-npm install
-npm run dev
-```
+## 🚀 Getting Started (Local Development)
 
-Opens at `http://localhost:5173`.
+The client and server run completely independently.
 
-### 2. Backend (server)
-
+### 1. Backend API (Server)
 ```bash
 cd server
 npm install
 cp .env.example .env
 ```
-
-Fill in `.env` with a real `MONGODB_URI` from your MongoDB Atlas cluster (see comments in `.env.example`), then:
-
+1. Fill in `.env` with a real `MONGODB_URI` from your MongoDB Atlas cluster.
+2. (Optional) Add Gmail SMTP credentials to test the email reply feature.
 ```bash
 npm run dev
 ```
+*Runs at `http://localhost:5000`.*
 
-Runs at `http://localhost:5000`. The frontend calls this locally at `http://localhost:5000/api/...` while developing.
+### 2. Frontend (Client)
+```bash
+cd client
+npm install
+npm run dev
+```
+*Opens at `http://localhost:5173`. It automatically proxies API requests to the local server.*
 
-## AI agent context
+---
 
-If you're an AI coding agent working on this project, read `AGENTS.md` first — it has the current
-architecture, design system, and rules that supersede any older assumptions baked into this README
-or leftover comments elsewhere in the code.
+## 🗺️ How the Website Works (Features & Routes)
 
-## Recent Updates
+### Public Pages
+- **`/` (Home)**: Features a dynamic Hero section and live News/Updates fetched from the database.
+- **`/about`**: Details the hospital's history and the "TWIN CARE" core values.
+- **`/services`**: Displays available medical departments and services (Live DB).
+- **`/doctors`**: Features a monthly calendar and daily schedule modal to view doctor availability (Live DB).
+- **`/contact`**: Contains location info, an appointment booking form (UI-only), and a general contact form that saves to the database.
 
-- **Architecture Refactor**: Separated the single-page scroll layout into independent routes (`/`, `/about`, `/services`). Replaced `ScrollLink` and scroll spy logic with standard React Router `NavLink`s.
-- **News Section**: Added a dynamic News & Updates section to the Home page, connected to an interactive featured news card in the Hero component.
-- **Global Scaling**: Root font-size adjusted to `112.5%` for optimal proportional sizing.
-- **Styling**: Standardized descriptive text to blue (`text-primary/70`). Replaced hardcoded button colors with CSS variables synced to the Tailwind theme. Added `.btn-fill` and `.secondary-button` custom animated button classes.
-- **Scroll Navigation**: *Deprecated.* We previously used a single-page architecture with `ScrollLink`, but the site has since been refactored to use standard, separate routes for each page.
-- **Maintenance**: Cleaned up dead CSS classes and removed form debug logs.
+### Admin Dashboard (Protected)
+- **`/admin/login`**: Secure session-based authentication.
+- **`/admin/dashboard`**: View and reply to patient contact submissions (sends real emails via SMTP).
+- **`/admin/doctors`**: Full CRUD management for doctor profiles and a scheduling tool to mark doctor availability.
+- **`/admin/news`**: Content management for the homepage news feed, including live image previews.
 
-## Git workflow (solo project)
+---
 
-- Commit directly to `main` — small, frequent commits, no PR process needed since it's just one person
-- Commit message format: `TYPE - {file(s)}: {summary}`, with bullet sub-points for individual changes
-- Use a separate branch only before a risky change you might want to revert easily
+## 🤖 AI Agent Context
+If you're an AI coding assistant, do **not** rely on this README for your operational rules. You must read `AGENTS.md` and `CHANGELOG.md` upon initialization for the strict architectural rules, design system tokens, and recent project history.
 
-## Design system
-
-- Colors: red `#E63946`, green `#10B981`, blue `#0544AB`, plus neutral ink/paper/white/border — used
-  functionally (e.g. Services categories), not just decoratively
-- Fonts: Fraunces (headings), Inter (body), IBM Plex Mono (small labels)
-- See `AboutSection.jsx` or `ServicesSection.jsx` for the reference implementation of both
-
-## Placeholder content
-
-Real hospital content (logo, doctor bios, exact services, address, hours) isn't fully in yet.
-Placeholder data currently lives directly inside each component as a `default...` array/prop
-(e.g. `defaultServices` in `ServicesSection.jsx`, `defaultDoctors` in `Doctors.jsx`) — edit those
-arrays directly, or once Phase 5 (backend integration) is done, this data will come from MongoDB
-instead. `client/public/hospital-bg.jpg` is a real photo of the hospital building, already in use.
-
-## Deployment (once ready)
-
-- **Frontend:** deploy `client/` to Vercel (auto-deploys from GitHub on push to `main`)
-- **Backend:** deploy `server/` to Render. Set the same env vars from `.env.example` in its dashboard
-- **Database:** MongoDB Atlas (already cloud-hosted, no separate deployment step)
-- After deploying the backend, update the API base URL the frontend calls from `localhost:5000` to
-  the live Render URL
-
-## Pages
-**Public Routes:**
-- `/` — Hero + News Section
-- `/about` — Overview + TWIN CARE Core Values
-- `/services` — Services and Departments (Live DB)
-- `/doctors` — Monthly schedule calendar, daily schedule modal with time slots (Live DB)
-- `/contact` — Location info, General Contact (Live DB), and Appointment form (UI only)
-
-**Admin Routes (Session Auth):**
-- `/admin/login` — Admin authentication
-- `/admin/dashboard` — Submissions dashboard
-- `/admin/doctors` — Doctor CRUD and schedule management
-- `/admin/news` — News CRUD management
+## 🚢 Deployment
+- **Frontend**: Deploys to Vercel (auto-deploys from GitHub on push to `main`).
+- **Backend**: Deploys to Render. Requires setting the environment variables from `.env`.
+- **Database**: Hosted on MongoDB Atlas.
+*(Note: After deploying the backend, ensure the frontend's API base URL is updated to the live Render URL).*

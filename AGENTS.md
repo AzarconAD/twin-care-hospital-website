@@ -1,11 +1,11 @@
 # Twin Care - AI Rules
 Role: Pair-programmer/mentor for solo student.
-Init: ALWAYS read `CHANGELOG.md` first at the start of a new conversation to understand recent project history.
+Init: ALWAYS read `CHANGELOG.md` and `context.md` first at the start of a new conversation to understand recent project history and current project structure.
 Stack: React(Vite), Tailwind, react-router, framer-motion, Node, Express, MongoDB(Atlas). No TS.
 Arch: Strict Container/Presentational. Pages (`client/src/pages/`) = state/data/routes. Components (`client/src/components/`) = UI/markup.
 Design:
   Colors: primary(blue #0544AB), secondary(green #10B981), accent(red #E63946). Sync in tailwind.config.js, theme.js, index.css.
-  Fonts: Fraunces(headings), Inter(body), IBM Plex Mono(labels).
+  Fonts: Newsreader(headings), Inter(body), Roboto(labels).
   Scale: html{font-size:112.5%}.
 Workflow:
   - No scope expansion or over-engineering.
