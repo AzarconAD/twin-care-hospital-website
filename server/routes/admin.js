@@ -6,6 +6,7 @@ import Contact from '../models/Contact.js'
 import Schedule from '../models/Schedule.js'
 import { requireAuth } from '../middleware/requireAuth.js'
 import Doctor from '../models/Doctor.js'
+import Appointment from '../models/Appointment.js'
 
 const router = Router()
 
@@ -302,6 +303,54 @@ router.delete('/doctors/:id', requireAuth, async (req, res) => {
   } catch (err) {
     console.error('Error deleting doctor:', err)
     res.status(500).json({ error: 'Failed to delete doctor.' })
+  }
+})
+
+/**
+ * GET /api/admin/appointments
+ *
+ * Protected by requireAuth — returns all appointments, newest first.
+ * Supports optional ?status= filtering.
+ */
+router.get('/appointments', requireAuth, async (req, res) => {
+  try {
+    const query = {}
+    if (req.query.status) {
+      query.status = req.query.status
+    }
+    const appointments = await Appointment.find(query).sort({ createdAt: -1 })
+    res.json(appointments)
+  } catch (err) {
+    console.error('Error fetching appointments:', err)
+    res.status(500).json({ error: 'Failed to fetch appointments.' })
+  }
+})
+
+/**
+ * PATCH /api/admin/appointments/:id/status
+ *
+ * Protected by requireAuth — updates the status of an appointment.
+ */
+router.patch('/appointments/:id/status', requireAuth, async (req, res) => {
+  const { status } = req.body
+
+  if (!["pending", "confirmed", "cancelled"].includes(status)) {
+    return res.status(400).json({ error: 'Invalid status. Must be pending, confirmed, or cancelled.' })
+  }
+
+  try {
+    const appointment = await Appointment.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true, runValidators: true }
+    )
+    if (!appointment) {
+      return res.status(404).json({ error: 'Appointment not found.' })
+    }
+    res.json(appointment)
+  } catch (err) {
+    console.error('Error updating appointment status:', err)
+    res.status(500).json({ error: 'Failed to update appointment status.' })
   }
 })
 

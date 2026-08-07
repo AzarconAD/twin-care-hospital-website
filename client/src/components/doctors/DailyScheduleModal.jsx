@@ -90,12 +90,14 @@ export default function DailyScheduleModal({
                           <h5 className="font-mono text-[10px] uppercase tracking-widest text-ink/50 mb-3">Available Time Slots</h5>
                           <div className="flex flex-wrap gap-2">
                             {doc.timeSlots && doc.timeSlots.length > 0 ? doc.timeSlots.map(time => (
-                              <span 
+                              <Link 
                                 key={time}
-                                className="px-2.5 py-1 bg-white border border-border rounded-md font-mono text-[11px] text-ink/70"
+                                to="/contact"
+                                state={{ appointment: true, doctorId: doc.id, date: selectedDate, time }}
+                                className="px-2.5 py-1 bg-white border border-border rounded-md font-mono text-[11px] text-ink/70 hover:border-primary/50 hover:text-primary transition-colors"
                               >
                                 {time}
-                              </span>
+                              </Link>
                             )) : (
                               <span className="font-body text-xs text-ink/50 italic mb-1 block">Walk-in only</span>
                             )}
@@ -103,7 +105,7 @@ export default function DailyScheduleModal({
                         </div>
                         <Link
                           to="/contact"
-                          state={{ appointment: true, doctorName: doc.name, date: selectedDate }}
+                          state={{ appointment: true, doctorId: doc.id, date: selectedDate }}
                           className="main-button shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
                         >
                           <CalendarIcon size={16} />

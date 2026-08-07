@@ -10,6 +10,7 @@ import doctorsRoute from './routes/doctors.js'
 import adminRoute from './routes/admin.js'
 import scheduleRoute from './routes/schedule.js'
 import newsRoute from './routes/news.js'
+import appointmentsRoute from './routes/appointments.js'
 
 // Load .env variables (MONGODB_URI, PORT, SMTP_EMAIL, etc.) before anything else
 dotenv.config()
@@ -73,6 +74,7 @@ app.use('/api/doctors', doctorsRoute)
 app.use('/api/schedule', scheduleRoute)
 app.use('/api/admin', adminRoute)
 app.use('/api/news', newsRoute)
+app.use('/api/appointments', appointmentsRoute)
 
 // ── Start server ──────────────────────────────────────────────────────────────
 // Connect to MongoDB FIRST, then start listening for HTTP requests.

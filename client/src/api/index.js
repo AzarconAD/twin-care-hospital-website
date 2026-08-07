@@ -127,6 +127,26 @@ export async function submitContact(formData) {
   return res.json()
 }
 
+/**
+ * submitAppointment(formData)
+ * Posts an appointment request to POST /api/appointments.
+ * formData: { doctorId, date, time, patientName, email, phone, notes }
+ * Returns: the created appointment document
+ * Throws an Error if the request fails.
+ */
+export async function submitAppointment(formData) {
+  const res = await fetch(`${API_BASE}/api/appointments`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to submit appointment request.')
+  }
+  return res.json()
+}
+
 // ── Admin helpers ─────────────────────────────────────────────────────────────
 // All admin requests include credentials: 'include' so the browser sends
 // the session cookie on cross-origin requests (localhost:5173 → localhost:5000).
@@ -270,6 +290,36 @@ export async function removeScheduleEntry(id) {
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw new Error(err.error || 'Failed to remove schedule entry.')
+  }
+  return res.json()
+}
+
+/**
+ * getAppointments()
+ * Fetches all appointments (admin only).
+ */
+export async function getAppointments() {
+  const res = await fetch(`${API_BASE}/api/admin/appointments`, {
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error(`Failed to fetch appointments (status ${res.status})`)
+  return res.json()
+}
+
+/**
+ * updateAppointmentStatus(id, status)
+ * Updates the status of an appointment.
+ */
+export async function updateAppointmentStatus(id, status) {
+  const res = await fetch(`${API_BASE}/api/admin/appointments/${id}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ status }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to update appointment status.')
   }
   return res.json()
 }

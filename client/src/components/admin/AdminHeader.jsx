@@ -34,6 +34,12 @@ export default function AdminHeader({ handleLogout }) {
             Doctors
           </Link>
           <Link 
+            to="/admin/appointments" 
+            className={`px-4 py-1.5 rounded-md font-body text-sm font-medium transition-colors ${location.pathname === '/admin/appointments' ? 'bg-white shadow-sm text-primary' : 'text-primary/60 hover:text-primary'}`}
+          >
+            Appointments
+          </Link>
+          <Link 
             to="/admin/news" 
             className={`px-4 py-1.5 rounded-md font-body text-sm font-medium transition-colors ${location.pathname === '/admin/news' ? 'bg-white shadow-sm text-primary' : 'text-primary/60 hover:text-primary'}`}
           >

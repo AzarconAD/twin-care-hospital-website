@@ -6,8 +6,36 @@ export default function AppointmentForm({
   apptStatus,
   handleApptChange,
   handleApptSubmit,
-  setApptStatus
+  setApptStatus,
+  doctors
 }) {
+  if (apptStatus === "loading") {
+    return (
+      <div className="text-center py-10 px-6 bg-paper rounded-2xl flex flex-col items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mb-4"></div>
+        <p className="font-display text-xl text-primary mb-2">Submitting request...</p>
+        <p className="font-body text-sm text-ink/70">Please don't close this window.</p>
+      </div>
+    );
+  }
+
+  if (apptStatus === "error") {
+    return (
+      <div className="text-center py-10 px-6 bg-accent/10 rounded-2xl border border-accent/20">
+        <p className="font-display text-xl text-accent mb-2">Something went wrong</p>
+        <p className="font-body text-sm text-ink/70">
+          We couldn't submit your appointment request. Please try again later or call us directly.
+        </p>
+        <button
+          onClick={() => setApptStatus("idle")}
+          className="mt-4 font-body text-sm text-primary underline"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
+
   if (apptStatus === "success") {
     return (
       <div className="text-center py-10 px-6 bg-secondary/10 rounded-2xl">
@@ -32,15 +60,20 @@ export default function AppointmentForm({
           <label className="font-body text-xs font-medium text-ink/70 mb-1 block">
             Doctor
           </label>
-          <input
-            type="text"
-            name="doctorName"
+          <select
+            name="doctorId"
             required
-            placeholder="Doctor's Name"
-            value={apptForm.doctorName}
+            value={apptForm.doctorId}
             onChange={handleApptChange}
-            className="w-full border border-border rounded-lg px-3 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
-          />
+            className="w-full border border-border rounded-lg px-3 py-2.5 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white"
+          >
+            <option value="" disabled>Select a doctor</option>
+            {doctors && doctors.map(doc => (
+              <option key={doc._id} value={doc._id}>
+                {doc.name} {doc.postfix ? `, ${doc.postfix}` : ''} — {doc.specialty}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="grid grid-cols-2 gap-3">

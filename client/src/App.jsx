@@ -10,6 +10,7 @@ import Contact from './pages/Contact.jsx'
 import AdminLogin from './pages/AdminLogin.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
 import AdminDoctors from './pages/AdminDoctors.jsx'
+import AdminAppointments from './pages/AdminAppointments.jsx'
 import AdminNews from './pages/AdminNews.jsx'
 
 /**
@@ -51,6 +52,7 @@ export default function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/doctors" element={<AdminDoctors />} />
+        <Route path="/admin/appointments" element={<AdminAppointments />} />
         <Route path="/admin/news" element={<AdminNews />} />
       </Routes>
     </>

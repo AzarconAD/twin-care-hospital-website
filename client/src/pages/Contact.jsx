@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Clock, Calendar, MessageSquare, Send, User } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Calendar } from "lucide-react";
 import ContactForm from "../components/contact/ContactForm";
 import AppointmentForm from "../components/contact/AppointmentForm";
-import { submitContact } from "../api/index.js";
+import { submitContact, submitAppointment, getDoctors } from "../api/index.js";
 import { ContactBackgroundBlobs } from "../components/ui/BG-Decorations";
 
 // Real hospital address — update the map/directions links below too if this changes.
@@ -29,28 +29,41 @@ export default function ContactPage() {
     }, 100);
   }, [location.state]);
 
-  // --- Appointment form state (UI-only for now, no backend yet) ---
+  const [doctors, setDoctors] = useState([]);
+
+  useEffect(() => {
+    getDoctors()
+      .then((data) => setDoctors(data))
+      .catch((err) => console.error("Failed to fetch doctors:", err));
+  }, []);
+
+  // --- Appointment form state ---
   const [apptForm, setApptForm] = useState({
-    doctorName: location.state?.doctorName || "",
-    date: "",
-    time: "",
+    doctorId: location.state?.doctorId || "",
+    date: location.state?.date || "",
+    time: location.state?.time || "",
     patientName: "",
     email: "",
     phone: "",
     notes: "",
   });
-  const [apptStatus, setApptStatus] = useState("idle"); // idle | success
+  const [apptStatus, setApptStatus] = useState("idle"); // idle | loading | success | error
 
   const handleApptChange = (e) => {
     setApptForm({ ...apptForm, [e.target.name]: e.target.value });
   };
 
-  const handleApptSubmit = (e) => {
+  const handleApptSubmit = async (e) => {
     e.preventDefault();
-    // TODO: replace with a real POST to an /api/appointments route once that
-    // backend model exists. For now this just confirms the UI flow works.
-    setApptStatus("success");
-    setApptForm({ doctorName: "", date: "", time: "", patientName: "", email: "", phone: "", notes: "" });
+    setApptStatus("loading");
+    try {
+      await submitAppointment(apptForm);
+      setApptStatus("success");
+      setApptForm({ doctorId: "", date: "", time: "", patientName: "", email: "", phone: "", notes: "" });
+    } catch (err) {
+      console.error(err);
+      setApptStatus("error");
+    }
   };
 
   // --- General contact form state ---
@@ -207,6 +220,7 @@ export default function ContactPage() {
               handleApptChange={handleApptChange}
               handleApptSubmit={handleApptSubmit}
               setApptStatus={setApptStatus}
+              doctors={doctors}
             />
           </div>
         </div>
