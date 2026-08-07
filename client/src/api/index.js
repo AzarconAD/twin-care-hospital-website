@@ -202,15 +202,25 @@ export async function adminLogout() {
 
 /**
  * getContacts()
- * Fetches all contact submissions (admin only).
- * Returns: [{ _id, name, email, message, submittedAt }, ...]
- * Throws if not authenticated or fetch fails.
+ * Fetches all contact submissions.
  */
 export async function getContacts() {
   const res = await fetch(`${API_BASE}/api/admin/contacts`, {
     credentials: 'include',
   })
-  if (!res.ok) throw new Error(`Failed to fetch contacts (status ${res.status})`)
+  if (!res.ok) throw new Error('Failed to fetch contacts')
+  return res.json()
+}
+
+/**
+ * getTrashContacts()
+ * Fetches all trashed contact submissions.
+ */
+export async function getTrashContacts() {
+  const res = await fetch(`${API_BASE}/api/admin/contacts/trash`, {
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error('Failed to fetch trashed contacts')
   return res.json()
 }
 
@@ -228,6 +238,70 @@ export async function replyToContact(id, message) {
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw new Error(err.error || 'Failed to send reply.')
+  }
+  return res.json()
+}
+
+/**
+ * markContactAsRead(id)
+ * Marks a contact submission as read.
+ */
+export async function markContactAsRead(id) {
+  const res = await fetch(`${API_BASE}/api/admin/contacts/${id}/read`, {
+    method: 'PATCH',
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to mark as read.')
+  }
+  return res.json()
+}
+
+/**
+ * deleteContact(id)
+ * Soft-deletes a contact submission.
+ */
+export async function deleteContact(id) {
+  const res = await fetch(`${API_BASE}/api/admin/contacts/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to delete contact.')
+  }
+  return res.json()
+}
+
+/**
+ * restoreContact(id)
+ * Restores a soft-deleted contact submission from the trash.
+ */
+export async function restoreContact(id) {
+  const res = await fetch(`${API_BASE}/api/admin/contacts/${id}/restore`, {
+    method: 'PATCH',
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to restore contact.')
+  }
+  return res.json()
+}
+
+/**
+ * permanentDeleteContact(id)
+ * Permanently deletes a contact submission.
+ */
+export async function permanentDeleteContact(id) {
+  const res = await fetch(`${API_BASE}/api/admin/contacts/${id}/permanent`, {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to permanently delete contact.')
   }
   return res.json()
 }
@@ -320,6 +394,24 @@ export async function updateAppointmentStatus(id, status) {
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
     throw new Error(err.error || 'Failed to update appointment status.')
+  }
+  return res.json()
+}
+
+/**
+ * replyToAppointment(id, message)
+ * Sends a reply email to an appointment request.
+ */
+export async function replyToAppointment(id, message) {
+  const res = await fetch(`${API_BASE}/api/admin/appointments/${id}/reply`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ message }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to send reply.')
   }
   return res.json()
 }

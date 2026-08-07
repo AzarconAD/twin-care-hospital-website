@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { LogOut, Mail, User, MessageSquare, Clock, ShieldCheck, X, Loader2 } from 'lucide-react'
-import { checkAdminSession, adminLogout, getContacts, replyToContact } from '../api/index.js'
+import { LogOut, Mail, User, MessageSquare, Clock, ShieldCheck, X, Loader2, Trash2 } from 'lucide-react'
+import { 
+  checkAdminSession, 
+  adminLogout, 
+  getContacts, 
+  getTrashContacts,
+  replyToContact, 
+  markContactAsRead, 
+  deleteContact,
+  restoreContact,
+  permanentDeleteContact
+} from '../api/index.js'
 import AdminHeader from '../components/admin/AdminHeader.jsx'
 import ContactReplyModal from '../components/admin/ContactReplyModal.jsx'
 
@@ -18,25 +28,57 @@ export default function AdminDashboard() {
   const navigate = useNavigate()
   const location = useLocation()
 
+  const [view, setView] = useState('inbox')
   const [contacts, setContacts] = useState([])
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState(null)
   const [selectedContact, setSelectedContact] = useState(null)
   const [replyMessage, setReplyMessage] = useState('')
   const [isReplying, setIsReplying] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [replyStatus, setReplyStatus] = useState(null)
   const [adminEmail, setAdminEmail] = useState('')
 
-  const openModal = (contact) => {
+  const fetchContacts = (currentView = view) => {
+    setLoading(true)
+    setError(null)
+    const fetchFn = currentView === 'trash' ? getTrashContacts : getContacts
+    fetchFn()
+      .then(data => {
+        setContacts(data)
+        setLoading(false)
+      })
+      .catch(err => {
+        setError(err.message)
+        setLoading(false)
+      })
+  }
+
+  const openModal = async (contact) => {
     setSelectedContact(contact)
     setReplyMessage('')
     setReplyStatus(null)
+
+    if (!contact.isRead && view === 'inbox') {
+      // Optimistically update local state
+      setContacts((prev) =>
+        prev.map((c) => (c._id === contact._id ? { ...c, isRead: true } : c))
+      )
+      // Call API in the background
+      try {
+        await markContactAsRead(contact._id)
+      } catch (err) {
+        console.error('Failed to mark contact as read:', err)
+      }
+    }
   }
 
   const closeModal = () => {
     setSelectedContact(null)
     setReplyMessage('')
     setReplyStatus(null)
+    setIsDeleting(false)
+    setIsReplying(false)
   }
 
   const handleReply = async () => {
@@ -61,9 +103,50 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleDelete = async () => {
+    if (!selectedContact || !window.confirm('Move this message to the trash?')) return
+    setIsDeleting(true)
+    setReplyStatus(null)
+    try {
+      await deleteContact(selectedContact._id)
+      setContacts((prev) => prev.filter((c) => c._id !== selectedContact._id))
+      closeModal()
+    } catch (err) {
+      setReplyStatus({ type: 'error', message: err.message })
+      setIsDeleting(false)
+    }
+  }
+
+  const handleRestore = async () => {
+    if (!selectedContact) return
+    setIsReplying(true) // Reuse loader state
+    setReplyStatus(null)
+    try {
+      await restoreContact(selectedContact._id)
+      setContacts((prev) => prev.filter((c) => c._id !== selectedContact._id))
+      closeModal()
+    } catch (err) {
+      setReplyStatus({ type: 'error', message: err.message })
+      setIsReplying(false)
+    }
+  }
+
+  const handlePermanentDelete = async () => {
+    if (!selectedContact || !window.confirm('Are you sure you want to PERMANENTLY delete this message? This cannot be undone.')) return
+    setIsDeleting(true)
+    setReplyStatus(null)
+    try {
+      await permanentDeleteContact(selectedContact._id)
+      setContacts((prev) => prev.filter((c) => c._id !== selectedContact._id))
+      closeModal()
+    } catch (err) {
+      setReplyStatus({ type: 'error', message: err.message })
+      setIsDeleting(false)
+    }
+  }
+
   useEffect(() => {
     // First check the session — if not authenticated, redirect immediately.
-    // If authenticated, fetch the contacts list.
     checkAdminSession()
       .then(({ authenticated, adminEmail }) => {
         if (!authenticated) {
@@ -71,15 +154,17 @@ export default function AdminDashboard() {
           return
         }
         setAdminEmail(adminEmail)
-        return getContacts()
-      })
-      .then((data) => {
-        // data is undefined if the session check failed and we're navigating away
-        if (data) setContacts(data)
+        fetchContacts()
       })
       .catch((err) => setError(err.message))
-      .finally(() => setLoading(false))
   }, [navigate])
+
+  // Refetch when view changes if already authenticated
+  useEffect(() => {
+    if (adminEmail) {
+      fetchContacts(view)
+    }
+  }, [view])
 
   const handleLogout = async () => {
     try {
@@ -113,12 +198,31 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="mb-6"
+          className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4"
         >
-          <h2 className="font-display text-2xl text-primary mb-1">Contact Submissions</h2>
-          <p className="font-body text-sm text-primary/60">
-            All messages submitted through the public contact form, newest first.
-          </p>
+          <div>
+            <h2 className="font-display text-2xl text-primary mb-1">Messages</h2>
+            <p className="font-body text-sm text-primary/60">
+              {view === 'inbox' 
+                ? 'All messages submitted through the public contact form, newest first.' 
+                : 'Deleted messages. You can restore them or permanently delete them.'}
+            </p>
+          </div>
+          
+          <div className="flex bg-cream/30 border border-border p-1 rounded-xl">
+            <button 
+              onClick={() => setView('inbox')}
+              className={`px-4 py-1.5 rounded-lg font-body text-sm transition-colors ${view === 'inbox' ? 'bg-primary text-white shadow-sm' : 'text-primary/60 hover:text-primary hover:bg-cream/40'}`}
+            >
+              Inbox
+            </button>
+            <button 
+              onClick={() => setView('trash')}
+              className={`px-4 py-1.5 rounded-lg font-body text-sm transition-colors ${view === 'trash' ? 'bg-primary text-white shadow-sm' : 'text-primary/60 hover:text-primary hover:bg-cream/40'}`}
+            >
+              Trash
+            </button>
+          </div>
         </motion.div>
 
         {/* Loading */}
@@ -142,7 +246,7 @@ export default function AdminDashboard() {
         {!loading && !error && contacts.length === 0 && (
           <div className="text-center py-20 text-primary/40">
             <MessageSquare size={36} className="mx-auto mb-3 opacity-40" />
-            <p className="font-body text-sm">No submissions yet.</p>
+            <p className="font-body text-sm">No messages yet.</p>
           </div>
         )}
 
@@ -177,13 +281,18 @@ export default function AdminDashboard() {
                       onClick={() => openModal(c)}
                       className={`border-b border-border last:border-b-0 hover:bg-cream/40 transition-colors cursor-pointer ${i % 2 === 0 ? '' : 'bg-cream/20'}`}
                     >
-                      <td className="px-5 py-4 font-body text-ink font-medium whitespace-nowrap">{c.name}</td>
-                      <td className="px-5 py-4 font-body text-primary/70">
+                      <td className="px-5 py-4 font-body text-ink whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-2 h-2 rounded-full shrink-0 ${!c.isRead && view === 'inbox' ? 'bg-primary' : 'bg-transparent'}`} />
+                          <span className={c.isRead || view === 'trash' ? 'font-medium opacity-80' : 'font-bold'}>{c.name}</span>
+                        </div>
+                      </td>
+                      <td className={`px-5 py-4 font-body ${c.isRead || view === 'trash' ? 'text-primary/70' : 'text-primary font-medium'}`}>
                         <a href={`mailto:${c.email}`} onClick={(e) => e.stopPropagation()} className="hover:text-secondary transition-colors">
                           {c.email}
                         </a>
                       </td>
-                      <td className="px-5 py-4 font-mono text-xs text-primary/50 whitespace-nowrap">
+                      <td className={`px-5 py-4 font-mono text-xs whitespace-nowrap ${c.isRead || view === 'trash' ? 'text-primary/50' : 'text-primary/80 font-medium'}`}>
                         {formatDate(c.submittedAt)}
                       </td>
                     </tr>
@@ -200,14 +309,17 @@ export default function AdminDashboard() {
                   onClick={() => openModal(c)}
                   className="p-5 space-y-2 cursor-pointer hover:bg-cream/20 transition-colors"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="font-display text-base text-ink">{c.name}</span>
-                    <span className="font-mono text-[10px] text-primary/40">{formatDate(c.submittedAt)}</span>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-2 h-2 rounded-full shrink-0 mt-0.5 ${!c.isRead && view === 'inbox' ? 'bg-primary' : 'bg-transparent'}`} />
+                    <div className="flex-1 flex items-center justify-between">
+                      <span className={`font-display text-base text-ink ${!c.isRead && view === 'inbox' ? 'font-bold' : ''}`}>{c.name}</span>
+                      <span className={`font-mono text-[10px] ${!c.isRead && view === 'inbox' ? 'text-primary/80 font-medium' : 'text-primary/40'}`}>{formatDate(c.submittedAt)}</span>
+                    </div>
                   </div>
                   <a
                     href={`mailto:${c.email}`}
                     onClick={(e) => e.stopPropagation()}
-                    className="font-body text-sm text-secondary block"
+                    className={`font-body text-sm block pl-5 ${!c.isRead && view === 'inbox' ? 'text-secondary font-medium' : 'text-secondary'}`}
                   >
                     {c.email}
                   </a>
@@ -218,7 +330,7 @@ export default function AdminDashboard() {
             {/* Row count footer */}
             <div className="px-5 py-3 border-t border-border bg-cream/40">
               <p className="font-mono text-[10px] uppercase tracking-wider text-primary/40">
-                {contacts.length} {contacts.length === 1 ? 'submission' : 'submissions'} total
+                {contacts.length} {contacts.length === 1 ? 'message' : 'messages'} total
               </p>
             </div>
           </motion.div>
@@ -226,6 +338,7 @@ export default function AdminDashboard() {
       </main>
 
       <ContactReplyModal 
+        view={view}
         selectedContact={selectedContact}
         closeModal={closeModal}
         formatDate={formatDate}
@@ -233,8 +346,12 @@ export default function AdminDashboard() {
         replyMessage={replyMessage}
         setReplyMessage={setReplyMessage}
         isReplying={isReplying}
+        isDeleting={isDeleting}
         replyStatus={replyStatus}
         handleReply={handleReply}
+        handleDelete={handleDelete}
+        handleRestore={handleRestore}
+        handlePermanentDelete={handlePermanentDelete}
       />
     </div>
   )

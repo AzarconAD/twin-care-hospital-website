@@ -16,6 +16,10 @@ export default function DailyScheduleModal({
   const [y, m, d] = selectedDate.split("-");
   const dateObj = new Date(y, m - 1, d);
   const dateLabel = dateObj.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const pad = (n) => String(n).padStart(2, "0");
+  const today = new Date();
+  const todayISO = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+  const isPast = selectedDate < todayISO;
   
   const docsForDay = scheduleByDate[selectedDate] || [];
 
@@ -90,27 +94,38 @@ export default function DailyScheduleModal({
                           <h5 className="font-mono text-[10px] uppercase tracking-widest text-ink/50 mb-3">Available Time Slots</h5>
                           <div className="flex flex-wrap gap-2">
                             {doc.timeSlots && doc.timeSlots.length > 0 ? doc.timeSlots.map(time => (
-                              <Link 
-                                key={time}
-                                to="/contact"
-                                state={{ appointment: true, doctorId: doc.id, date: selectedDate, time }}
-                                className="px-2.5 py-1 bg-white border border-border rounded-md font-mono text-[11px] text-ink/70 hover:border-primary/50 hover:text-primary transition-colors"
-                              >
-                                {time}
-                              </Link>
+                              isPast ? (
+                                <span 
+                                  key={time}
+                                  className="px-2.5 py-1 bg-white border border-border rounded-md font-mono text-[11px] text-ink/70"
+                                >
+                                  {time}
+                                </span>
+                              ) : (
+                                <Link 
+                                  key={time}
+                                  to="/contact"
+                                  state={{ appointment: true, doctorId: doc.id, date: selectedDate, time }}
+                                  className="px-2.5 py-1 bg-white border border-border rounded-md font-mono text-[11px] text-ink/70 hover:border-primary/50 hover:text-primary transition-colors"
+                                >
+                                  {time}
+                                </Link>
+                              )
                             )) : (
                               <span className="font-body text-xs text-ink/50 italic mb-1 block">Walk-in only</span>
                             )}
                           </div>
                         </div>
-                        <Link
-                          to="/contact"
-                          state={{ appointment: true, doctorId: doc.id, date: selectedDate }}
-                          className="main-button shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
-                        >
-                          <CalendarIcon size={16} />
-                          Make an Appointment
-                        </Link>
+                        {!isPast && (
+                          <Link
+                            to="/contact"
+                            state={{ appointment: true, doctorId: doc.id, date: selectedDate }}
+                            className="main-button shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-body font-semibold text-sm transition-all duration-200 active:scale-95"
+                          >
+                            <CalendarIcon size={16} />
+                            Make an Appointment
+                          </Link>
+                        )}
                       </div>
                     </div>
                   );

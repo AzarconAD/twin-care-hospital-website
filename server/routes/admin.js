@@ -92,11 +92,26 @@ router.get('/me', (req, res) => {
  */
 router.get('/contacts', requireAuth, async (req, res) => {
   try {
-    const contacts = await Contact.find().sort({ submittedAt: -1 })
+    const contacts = await Contact.find({ isDeleted: false }).sort({ submittedAt: -1 })
     res.json(contacts)
   } catch (err) {
     console.error('Error fetching contacts:', err)
     res.status(500).json({ error: 'Failed to fetch contact submissions.' })
+  }
+})
+
+/**
+ * GET /api/admin/contacts/trash
+ *
+ * Protected by requireAuth — returns all soft-deleted contact submissions.
+ */
+router.get('/contacts/trash', requireAuth, async (req, res) => {
+  try {
+    const contacts = await Contact.find({ isDeleted: true }).sort({ submittedAt: -1 })
+    res.json(contacts)
+  } catch (err) {
+    console.error('Error fetching trashed contacts:', err)
+    res.status(500).json({ error: 'Failed to fetch trashed contact submissions.' })
   }
 })
 
@@ -141,13 +156,89 @@ router.post('/contacts/:id/reply', requireAuth, async (req, res) => {
       console.log(`[Mock Email] Message:\n${message}`)
     }
 
-    // Automatically delete the submission after a successful reply
-    await Contact.findByIdAndDelete(req.params.id)
+    // Soft-delete the submission after a successful reply to move it to the trash bin
+    await Contact.findByIdAndUpdate(req.params.id, { isDeleted: true })
 
     res.json({ success: true })
   } catch (err) {
     console.error('Error replying to contact:', err)
     res.status(500).json({ error: 'Failed to reply to contact.' })
+  }
+})
+
+/**
+ * PATCH /api/admin/contacts/:id/read
+ *
+ * Protected by requireAuth — marks a contact submission as read.
+ */
+router.patch('/contacts/:id/read', requireAuth, async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndUpdate(
+      req.params.id,
+      { isRead: true },
+      { new: true }
+    )
+    if (!contact) {
+      return res.status(404).json({ error: 'Contact not found.' })
+    }
+    res.json(contact)
+  } catch (err) {
+    console.error('Error marking contact as read:', err)
+    res.status(500).json({ error: 'Failed to mark contact as read.' })
+  }
+})
+
+/**
+ * DELETE /api/admin/contacts/:id
+ *
+ * Protected by requireAuth — soft-deletes a contact submission (moves to trash).
+ */
+router.delete('/contacts/:id', requireAuth, async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true })
+    if (!contact) {
+      return res.status(404).json({ error: 'Contact not found.' })
+    }
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Error deleting contact:', err)
+    res.status(500).json({ error: 'Failed to delete contact.' })
+  }
+})
+
+/**
+ * PATCH /api/admin/contacts/:id/restore
+ *
+ * Protected by requireAuth — restores a soft-deleted contact submission from the trash.
+ */
+router.patch('/contacts/:id/restore', requireAuth, async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndUpdate(req.params.id, { isDeleted: false }, { new: true })
+    if (!contact) {
+      return res.status(404).json({ error: 'Contact not found.' })
+    }
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Error restoring contact:', err)
+    res.status(500).json({ error: 'Failed to restore contact.' })
+  }
+})
+
+/**
+ * DELETE /api/admin/contacts/:id/permanent
+ *
+ * Protected by requireAuth — permanently deletes a contact submission.
+ */
+router.delete('/contacts/:id/permanent', requireAuth, async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndDelete(req.params.id)
+    if (!contact) {
+      return res.status(404).json({ error: 'Contact not found.' })
+    }
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Error permanently deleting contact:', err)
+    res.status(500).json({ error: 'Failed to permanently delete contact.' })
   }
 })
 
@@ -351,6 +442,54 @@ router.patch('/appointments/:id/status', requireAuth, async (req, res) => {
   } catch (err) {
     console.error('Error updating appointment status:', err)
     res.status(500).json({ error: 'Failed to update appointment status.' })
+  }
+})
+
+/**
+ * POST /api/admin/appointments/:id/reply
+ *
+ * Protected by requireAuth — replies to an appointment request via email.
+ */
+router.post('/appointments/:id/reply', requireAuth, async (req, res) => {
+  const { message } = req.body
+
+  if (!message) {
+    return res.status(400).json({ error: 'Reply message is required.' })
+  }
+
+  try {
+    const appointment = await Appointment.findById(req.params.id)
+    if (!appointment) {
+      return res.status(404).json({ error: 'Appointment not found.' })
+    }
+
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@twincarehospital.com'
+    
+    if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD) {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.SMTP_EMAIL,
+          pass: process.env.SMTP_PASSWORD
+        }
+      })
+
+      await transporter.sendMail({
+        from: adminEmail,
+        to: appointment.email,
+        subject: `Re: Your Appointment Request at Twin Care Hospital`,
+        text: message
+      })
+    } else {
+      console.log(`[Mock Email] Setup SMTP_EMAIL and SMTP_PASSWORD in .env to send real emails.`)
+      console.log(`[Mock Email] To: ${appointment.email}, From: ${adminEmail}`)
+      console.log(`[Mock Email] Message:\n${message}`)
+    }
+
+    res.json({ success: true })
+  } catch (err) {
+    console.error('Error replying to appointment:', err)
+    res.status(500).json({ error: 'Failed to reply to appointment.' })
   }
 })
 

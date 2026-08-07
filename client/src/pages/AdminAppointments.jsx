@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { User, Mail, Calendar, Phone } from 'lucide-react'
-import { checkAdminSession, adminLogout, getAppointments, updateAppointmentStatus, getDoctors } from '../api/index.js'
+import { checkAdminSession, adminLogout, getAppointments, updateAppointmentStatus, getDoctors, replyToAppointment } from '../api/index.js'
 import AdminHeader from '../components/admin/AdminHeader.jsx'
+import AppointmentReplyModal from '../components/admin/AppointmentReplyModal.jsx'
 
 export default function AdminAppointments() {
   const navigate = useNavigate()
@@ -14,13 +15,20 @@ export default function AdminAppointments() {
   const [error, setError] = useState(null)
   const [statusUpdateLoading, setStatusUpdateLoading] = useState(null) // ID of appointment being updated
 
+  const [adminEmail, setAdminEmail] = useState('')
+  const [selectedAppointment, setSelectedAppointment] = useState(null)
+  const [replyMessage, setReplyMessage] = useState('')
+  const [isReplying, setIsReplying] = useState(false)
+  const [replyStatus, setReplyStatus] = useState(null)
+
   useEffect(() => {
     checkAdminSession()
-      .then(({ authenticated }) => {
+      .then(({ authenticated, adminEmail }) => {
         if (!authenticated) {
           navigate('/admin/login', { replace: true })
           return
         }
+        setAdminEmail(adminEmail)
         
         // Fetch doctors and appointments concurrently
         return Promise.all([
@@ -64,6 +72,36 @@ export default function AdminAppointments() {
       alert("Failed to update status: " + err.message)
     } finally {
       setStatusUpdateLoading(null)
+    }
+  }
+
+  const openModal = (appt) => {
+    setSelectedAppointment(appt)
+    setReplyMessage('')
+    setReplyStatus(null)
+  }
+
+  const closeModal = () => {
+    setSelectedAppointment(null)
+    setReplyMessage('')
+    setReplyStatus(null)
+  }
+
+  const handleReply = async () => {
+    if (!replyMessage.trim() || !selectedAppointment) return
+    setIsReplying(true)
+    setReplyStatus(null)
+    try {
+      await new Promise(r => setTimeout(r, 600))
+      await replyToAppointment(selectedAppointment._id, replyMessage)
+      setReplyStatus({ type: 'success', message: 'Reply sent successfully! (Check terminal if SMTP not configured)' })
+      setTimeout(() => {
+        closeModal()
+      }, 2000)
+    } catch (err) {
+      setReplyStatus({ type: 'error', message: err.message })
+    } finally {
+      setIsReplying(false)
     }
   }
 
@@ -134,13 +172,13 @@ export default function AdminAppointments() {
                 <thead>
                   <tr className="border-b border-border bg-cream/60">
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">
-                      <span className="flex items-center gap-1.5"><User size={12} /> Patient Info</span>
+                      <span className="flex items-center gap-1.5"><User size={12} /> Name</span>
                     </th>
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">
-                      <span className="flex items-center gap-1.5"><Calendar size={12} /> Request Details</span>
+                      <span className="flex items-center gap-1.5"><User size={12} /> Doctor</span>
                     </th>
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">
-                      Notes
+                      <span className="flex items-center gap-1.5"><Calendar size={12} /> Submitted</span>
                     </th>
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">
                       Status
@@ -153,34 +191,22 @@ export default function AdminAppointments() {
                     return (
                       <tr
                         key={appt._id}
-                        className={`border-b border-border last:border-b-0 hover:bg-cream/40 transition-colors ${i % 2 === 0 ? '' : 'bg-cream/20'}`}
+                        onClick={() => openModal(appt)}
+                        className={`border-b border-border last:border-b-0 hover:bg-cream/40 transition-colors cursor-pointer ${i % 2 === 0 ? '' : 'bg-cream/20'}`}
                       >
-                        <td className="px-5 py-4">
-                          <p className="font-body text-ink font-medium">{appt.patientName}</p>
-                          <div className="flex items-center gap-3 mt-1 text-primary/60 text-xs">
-                            <a href={`mailto:${appt.email}`} className="flex items-center gap-1 hover:text-secondary"><Mail size={10} /> {appt.email}</a>
-                            <a href={`tel:${appt.phone}`} className="flex items-center gap-1 hover:text-secondary"><Phone size={10} /> {appt.phone}</a>
-                          </div>
+                        <td className="px-5 py-4 font-body text-ink font-medium whitespace-nowrap">
+                          {appt.patientName}
                         </td>
-                        <td className="px-5 py-4">
-                          <p className="font-body text-primary text-sm font-medium">
-                            {doc ? `${doc.name}` : 'Unknown Doctor'}
-                          </p>
-                          <p className="font-mono text-xs text-ink/60 mt-1">
-                            {appt.date} at {appt.time}
-                          </p>
-                          <p className="font-mono text-[10px] text-primary/40 mt-1 uppercase">
-                            Submitted: {formatDate(appt.createdAt)}
-                          </p>
+                        <td className="px-5 py-4 font-body text-primary/70 whitespace-nowrap">
+                          {doc ? `${doc.name}` : 'Unknown Doctor'}
                         </td>
-                        <td className="px-5 py-4">
-                          <p className="font-body text-xs text-ink/70 max-w-xs line-clamp-2" title={appt.notes}>
-                            {appt.notes || <span className="italic opacity-50">No notes</span>}
-                          </p>
+                        <td className="px-5 py-4 font-mono text-xs text-primary/50 whitespace-nowrap">
+                          {formatDate(appt.createdAt)}
                         </td>
                         <td className="px-5 py-4">
                           <select
                             value={appt.status}
+                            onClick={(e) => e.stopPropagation()}
                             onChange={(e) => handleStatusChange(appt._id, e.target.value)}
                             disabled={statusUpdateLoading === appt._id}
                             className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 ${getStatusColor(appt.status)} ${statusUpdateLoading === appt._id ? 'opacity-50' : ''}`}
@@ -205,6 +231,19 @@ export default function AdminAppointments() {
           </motion.div>
         )}
       </main>
+
+      <AppointmentReplyModal 
+        selectedAppointment={selectedAppointment}
+        closeModal={closeModal}
+        formatDate={formatDate}
+        adminEmail={adminEmail}
+        replyMessage={replyMessage}
+        setReplyMessage={setReplyMessage}
+        isReplying={isReplying}
+        replyStatus={replyStatus}
+        handleReply={handleReply}
+        doctorName={selectedAppointment && doctorsMap[selectedAppointment.doctorId] ? doctorsMap[selectedAppointment.doctorId].name : 'Unknown Doctor'}
+      />
     </div>
   )
 }

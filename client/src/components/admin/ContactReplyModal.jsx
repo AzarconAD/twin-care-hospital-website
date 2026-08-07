@@ -1,8 +1,9 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { X, Loader2 } from 'lucide-react'
+import { X, Loader2, Trash2, ArchiveRestore } from 'lucide-react'
 
 export default function ContactReplyModal({ 
+  view,
   selectedContact, 
   closeModal, 
   formatDate, 
@@ -10,8 +11,12 @@ export default function ContactReplyModal({
   replyMessage, 
   setReplyMessage, 
   isReplying, 
+  isDeleting,
   replyStatus, 
-  handleReply 
+  handleReply,
+  handleDelete,
+  handleRestore,
+  handlePermanentDelete
 }) {
   if (!selectedContact) return null;
 
@@ -43,56 +48,105 @@ export default function ContactReplyModal({
           ))}
         </div>
 
-        {/* Reply Section */}
-        <div className="space-y-3 pt-4 border-t border-border">
-          <div className="flex items-center justify-between">
-            <h4 className="font-mono text-[10px] uppercase tracking-wider text-primary/60">Reply</h4>
-            {adminEmail && (
-              <span className="font-mono text-[10px] text-primary/50">
-                Replying as: <span className="font-medium text-primary/70">{adminEmail}</span>
-              </span>
-            )}
-          </div>
-          <textarea
-            value={replyMessage}
-            onChange={(e) => setReplyMessage(e.target.value)}
-            placeholder="Write your response here..."
-            className="w-full bg-cream/20 border border-border rounded-xl p-3 font-body text-sm text-ink focus:outline-none focus:border-primary/30 transition-colors resize-none h-24"
-            disabled={isReplying}
-          />
-          
-          {replyStatus && (
-            <div className={`text-xs font-body p-2 rounded-lg ${replyStatus.type === 'error' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'}`}>
-              {replyStatus.message}
-            </div>
-          )}
-          
-          <div className="flex justify-end gap-3">
-            <button
-              onClick={closeModal}
-              className="px-4 py-2 rounded-lg font-body text-sm text-primary/60 hover:text-primary transition-colors"
-              disabled={isReplying}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleReply}
-              disabled={isReplying || !replyMessage.trim() || replyStatus?.type === 'success'}
-              className="px-4 py-2 bg-primary text-white rounded-lg font-body text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px]"
-            >
-              {isReplying ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 size={16} className="animate-spin" />
-                  Sending...
+        {/* Action Section */}
+        {view === 'inbox' ? (
+          <div className="space-y-3 pt-4 border-t border-border">
+            <div className="flex items-center justify-between">
+              <h4 className="font-mono text-[10px] uppercase tracking-wider text-primary/60">Reply</h4>
+              {adminEmail && (
+                <span className="font-mono text-[10px] text-primary/50">
+                  Replying as: <span className="font-medium text-primary/70">{adminEmail}</span>
                 </span>
-              ) : replyStatus?.type === 'success' ? (
-                'Sent!'
-              ) : (
-                'Send Reply'
               )}
-            </button>
+            </div>
+            <textarea
+              value={replyMessage}
+              onChange={(e) => setReplyMessage(e.target.value)}
+              placeholder="Write your response here..."
+              className="w-full bg-cream/20 border border-border rounded-xl p-3 font-body text-sm text-ink focus:outline-none focus:border-primary/30 transition-colors resize-none h-24"
+              disabled={isReplying}
+            />
+            
+            {replyStatus && (
+              <div className={`text-xs font-body p-2 rounded-lg ${replyStatus.type === 'error' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'}`}>
+                {replyStatus.message}
+              </div>
+            )}
+            
+            <div className="flex justify-between items-center gap-3">
+              <button
+                onClick={handleDelete}
+                disabled={isReplying || isDeleting}
+                className="p-2 rounded-lg text-accent hover:bg-accent/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Move to trash"
+              >
+                {isDeleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
+              </button>
+              
+              <div className="flex gap-3">
+                <button
+                  onClick={closeModal}
+                  className="px-4 py-2 rounded-lg font-body text-sm text-primary/60 hover:text-primary transition-colors"
+                  disabled={isReplying || isDeleting}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleReply}
+                  disabled={isReplying || isDeleting || !replyMessage.trim() || replyStatus?.type === 'success'}
+                  className="px-4 py-2 bg-primary text-white rounded-lg font-body text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px]"
+                >
+                  {isReplying ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 size={16} className="animate-spin" />
+                      Sending...
+                    </span>
+                  ) : replyStatus?.type === 'success' ? (
+                    'Sent!'
+                  ) : (
+                    'Send Reply'
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="pt-4 border-t border-border">
+            {replyStatus && (
+              <div className={`text-xs font-body p-2 rounded-lg mb-4 ${replyStatus.type === 'error' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'}`}>
+                {replyStatus.message}
+              </div>
+            )}
+            <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-3">
+              <button
+                onClick={handlePermanentDelete}
+                disabled={isReplying || isDeleting}
+                className="w-full sm:w-auto px-4 py-2 flex items-center justify-center gap-2 rounded-lg font-body text-sm text-accent hover:bg-accent/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isDeleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                Permanently Delete
+              </button>
+              
+              <div className="w-full sm:w-auto flex gap-3">
+                <button
+                  onClick={closeModal}
+                  className="flex-1 sm:flex-none px-4 py-2 rounded-lg font-body text-sm text-primary/60 hover:text-primary transition-colors"
+                  disabled={isReplying || isDeleting}
+                >
+                  Close
+                </button>
+                <button
+                  onClick={handleRestore}
+                  disabled={isReplying || isDeleting}
+                  className="flex-1 sm:flex-none px-4 py-2 bg-primary text-white rounded-lg font-body text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isReplying ? <Loader2 size={16} className="animate-spin" /> : <ArchiveRestore size={16} />}
+                  Restore Message
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </motion.div>
     </div>
   )

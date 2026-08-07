@@ -26,7 +26,7 @@ export default function DoctorsCalendar({
   return (
     <>
       {/* Calendar Controls */}
-      <div className="flex items-center justify-between gap-4 p-5 border-b border-primary/15 relative z-10">
+      <div className="flex items-center justify-between gap-4 p-5 border-b border-border relative z-10">
         <h2 className="font-display text-2xl sm:text-3xl text-primary">
           {MONTHS[month]} <span className="text-primary/60">{year}</span>
         </h2>
@@ -51,9 +51,9 @@ export default function DoctorsCalendar({
 
       {/* Desktop Calendar Grid (>640px) */}
       <div className="hidden sm:block relative z-10">
-        <div className="grid grid-cols-7 border-b border-primary/15 bg-secondary/10">
+        <div className="grid grid-cols-7 border-b border-border bg-secondary/10">
           {WEEKDAYS.map(day => (
-            <div key={day} className="py-3 text-center font-mono text-xs uppercase text-secondary font-semibold tracking-wider border-r last:border-r-0 border-primary/15">
+            <div key={day} className="py-3 text-center font-mono text-xs uppercase text-secondary font-semibold tracking-wider border-r last:border-r-0 border-border">
               {day}
             </div>
           ))}
@@ -62,7 +62,7 @@ export default function DoctorsCalendar({
         <div className="grid grid-cols-7 auto-rows-fr">
           {/* Empty padding cells for start of month */}
           {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-            <div key={`pad-start-${i}`} className="min-h-[120px] p-2 border-r border-b border-primary/15 bg-transparent last:border-r-0"></div>
+            <div key={`pad-start-${i}`} className="min-h-[120px] p-2 border-r border-b border-border bg-transparent last:border-r-0"></div>
           ))}
           
           {/* Actual days */}
@@ -76,7 +76,7 @@ export default function DoctorsCalendar({
               <div 
                 key={day} 
                 onClick={() => setSelectedDate(dateKey)}
-                className={`min-h-[120px] p-2 border-r border-b border-primary/15 relative transition-colors duration-200 cursor-pointer group ${isToday ? 'bg-secondary/10' : 'bg-transparent hover:bg-white/60'}`}
+                className={`min-h-[120px] p-2 border-r border-b border-border relative transition-colors duration-200 cursor-pointer group ${isToday ? 'bg-secondary/10' : 'bg-transparent hover:bg-white/60'}`}
               >
                 <div className={`font-mono text-sm mb-3 w-7 h-7 flex items-center justify-center rounded-full transition-colors ${isToday ? 'bg-secondary text-white' : 'text-primary/70 group-hover:text-primary'}`}>
                   {day}
@@ -114,13 +114,13 @@ export default function DoctorsCalendar({
           
           {/* Empty padding cells for end of month */}
           {Array.from({ length: (7 - ((firstDayOfMonth + daysInMonth) % 7)) % 7 }).map((_, i) => (
-            <div key={`pad-end-${i}`} className="min-h-[120px] p-2 border-r border-b border-primary/15 bg-transparent"></div>
+            <div key={`pad-end-${i}`} className="min-h-[120px] p-2 border-r border-b border-border bg-transparent"></div>
           ))}
         </div>
       </div>
 
       {/* Mobile Agenda List (<640px) */}
-      <div className="sm:hidden overflow-hidden flex flex-col divide-y divide-primary/15 relative z-10">
+      <div className="sm:hidden overflow-hidden flex flex-col divide-y divide-border relative z-10">
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1;
           const dateKey = formatKey(day);

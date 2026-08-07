@@ -18,6 +18,8 @@ const contactSchema = new mongoose.Schema({
   email:       { type: String, required: true, trim: true, lowercase: true },
   message:     { type: String, required: true, trim: true },
   submittedAt: { type: Date, default: Date.now },
+  isRead:      { type: Boolean, default: false },
+  isDeleted:   { type: Boolean, default: false },
 })
 
 export default mongoose.model('Contact', contactSchema)
