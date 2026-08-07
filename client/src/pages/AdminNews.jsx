@@ -136,7 +136,7 @@ export default function AdminNews() {
   }
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-slate-100">
       {/* Top bar */}
       <AdminHeader handleLogout={handleLogout} />
 
@@ -179,12 +179,12 @@ export default function AdminNews() {
         )}
 
         {!loading && !error && news.length === 0 && (
-          <div className="bg-white border border-border rounded-2xl p-12 text-center shadow-sm">
-            <div className="w-16 h-16 bg-cream rounded-full flex items-center justify-center mx-auto mb-4">
-              <Calendar className="text-primary/40" size={24} />
+          <div className="flex flex-col items-center justify-center py-24 bg-white/40 border-2 border-dashed border-primary/20 rounded-2xl">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
+              <Calendar size={28} className="text-primary/40" />
             </div>
-            <h3 className="font-display text-lg text-ink mb-2">No news articles yet</h3>
-            <p className="font-body text-sm text-ink/60 mb-6 max-w-sm mx-auto">
+            <p className="font-display text-xl text-primary/80 mb-1">No news articles yet</p>
+            <p className="font-body text-sm text-primary/50 text-center max-w-sm mb-6">
               Create your first announcement or update to display it on the home page.
             </p>
             <button onClick={openCreateModal} className="secondary-button px-4 py-2 rounded-lg text-sm font-semibold">
@@ -198,12 +198,12 @@ export default function AdminNews() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="bg-white border border-border rounded-2xl shadow-sm overflow-hidden"
+            className="bg-white border border-border rounded-2xl shadow-md overflow-hidden"
           >
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border bg-cream/60">
+                  <tr className="border-b border-border bg-primary/5">
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3 w-16">Image</th>
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">Title &amp; Tag</th>
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">Date</th>
@@ -215,16 +215,16 @@ export default function AdminNews() {
                   {news.map((item, i) => (
                     <tr
                       key={item._id}
-                      className={`border-b border-border last:border-b-0 hover:bg-cream/40 transition-colors ${i % 2 === 0 ? '' : 'bg-cream/20'}`}
+                      className="border-b border-border last:border-b-0 hover:bg-slate-50 transition-colors bg-white"
                     >
                       <td className="px-5 py-3">
-                        <div className="w-12 h-12 rounded overflow-hidden bg-cream border border-border shrink-0">
+                        <div className="w-12 h-12 rounded overflow-hidden bg-slate-200 border border-border shrink-0">
                           <img src={item.image} alt="" className="w-full h-full object-cover" onError={(e) => { e.target.style.display = 'none' }} />
                         </div>
                       </td>
                       <td className="px-5 py-4">
                         <p className="font-body text-ink font-medium leading-snug mb-1">{item.title}</p>
-                        <span className="inline-block font-mono text-[9px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-cream border border-border/60 text-ink/70">
+                        <span className="inline-block font-mono text-[9px] uppercase tracking-wide font-semibold px-2 py-0.5 rounded-full bg-slate-200 border border-border/60 text-ink/70">
                           {item.tag}
                         </span>
                       </td>
@@ -260,6 +260,17 @@ export default function AdminNews() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            <div className="px-5 py-4 border-t border-border bg-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center justify-center bg-primary/10 text-primary font-mono text-xs font-bold px-2.5 py-1 rounded-md">
+                  {news.length}
+                </span>
+                <p className="font-mono text-xs uppercase tracking-wider text-primary/70 font-semibold">
+                  {news.length === 1 ? 'Article Total' : 'Articles Total'}
+                </p>
+              </div>
             </div>
           </motion.div>
         )}

@@ -446,6 +446,28 @@ router.patch('/appointments/:id/status', requireAuth, async (req, res) => {
 })
 
 /**
+ * PATCH /api/admin/appointments/:id/read
+ *
+ * Protected by requireAuth — marks an appointment as read.
+ */
+router.patch('/appointments/:id/read', requireAuth, async (req, res) => {
+  try {
+    const appointment = await Appointment.findByIdAndUpdate(
+      req.params.id,
+      { isRead: true },
+      { new: true, runValidators: true }
+    )
+    if (!appointment) {
+      return res.status(404).json({ error: 'Appointment not found.' })
+    }
+    res.json(appointment)
+  } catch (err) {
+    console.error('Error marking appointment as read:', err)
+    res.status(500).json({ error: 'Failed to mark appointment as read.' })
+  }
+})
+
+/**
  * POST /api/admin/appointments/:id/reply
  *
  * Protected by requireAuth — replies to an appointment request via email.

@@ -186,7 +186,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-slate-100">
       {/* Top bar */}
       <AdminHeader handleLogout={handleLogout} />
 
@@ -209,16 +209,16 @@ export default function AdminDashboard() {
             </p>
           </div>
           
-          <div className="flex bg-cream/30 border border-border p-1 rounded-xl">
+          <div className="flex bg-slate-200/50 border border-border p-1 rounded-xl">
             <button 
               onClick={() => setView('inbox')}
-              className={`px-4 py-1.5 rounded-lg font-body text-sm transition-colors ${view === 'inbox' ? 'bg-primary text-white shadow-sm' : 'text-primary/60 hover:text-primary hover:bg-cream/40'}`}
+              className={`px-4 py-1.5 rounded-lg font-body text-sm transition-colors ${view === 'inbox' ? 'bg-primary text-white shadow-sm' : 'text-primary/60 hover:text-primary hover:bg-slate-200/50'}`}
             >
               Inbox
             </button>
             <button 
               onClick={() => setView('trash')}
-              className={`px-4 py-1.5 rounded-lg font-body text-sm transition-colors ${view === 'trash' ? 'bg-primary text-white shadow-sm' : 'text-primary/60 hover:text-primary hover:bg-cream/40'}`}
+              className={`px-4 py-1.5 rounded-lg font-body text-sm transition-colors ${view === 'trash' ? 'bg-primary text-white shadow-sm' : 'text-primary/60 hover:text-primary hover:bg-slate-200/50'}`}
             >
               Trash
             </button>
@@ -244,9 +244,14 @@ export default function AdminDashboard() {
 
         {/* Empty state */}
         {!loading && !error && contacts.length === 0 && (
-          <div className="text-center py-20 text-primary/40">
-            <MessageSquare size={36} className="mx-auto mb-3 opacity-40" />
-            <p className="font-body text-sm">No messages yet.</p>
+          <div className="flex flex-col items-center justify-center py-24 bg-white/40 border-2 border-dashed border-primary/20 rounded-2xl">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
+              <MessageSquare size={28} className="text-primary/40" />
+            </div>
+            <p className="font-display text-xl text-primary/80 mb-1">No messages found</p>
+            <p className="font-body text-sm text-primary/50 text-center max-w-sm">
+              {view === 'inbox' ? 'When users submit contact forms, they will appear here.' : 'There are no deleted messages in the trash bin.'}
+            </p>
           </div>
         )}
 
@@ -256,13 +261,13 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="bg-white border border-border rounded-2xl shadow-sm overflow-hidden"
+            className="bg-white border border-border rounded-2xl shadow-md overflow-hidden"
           >
             {/* Desktop table */}
             <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border bg-cream/60">
+                  <tr className="border-b border-border bg-primary/5">
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">
                       <span className="flex items-center gap-1.5"><User size={12} /> Name</span>
                     </th>
@@ -279,7 +284,7 @@ export default function AdminDashboard() {
                     <tr
                       key={c._id}
                       onClick={() => openModal(c)}
-                      className={`border-b border-border last:border-b-0 hover:bg-cream/40 transition-colors cursor-pointer ${i % 2 === 0 ? '' : 'bg-cream/20'}`}
+                      className="border-b border-border last:border-b-0 hover:bg-slate-50 transition-colors cursor-pointer bg-white"
                     >
                       <td className="px-5 py-4 font-body text-ink whitespace-nowrap">
                         <div className="flex items-center gap-3">
@@ -307,7 +312,7 @@ export default function AdminDashboard() {
                 <div 
                   key={c._id} 
                   onClick={() => openModal(c)}
-                  className="p-5 space-y-2 cursor-pointer hover:bg-cream/20 transition-colors"
+                  className="p-5 space-y-2 cursor-pointer hover:bg-slate-50 transition-colors bg-white"
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full shrink-0 mt-0.5 ${!c.isRead && view === 'inbox' ? 'bg-primary' : 'bg-transparent'}`} />
@@ -328,10 +333,15 @@ export default function AdminDashboard() {
             </div>
 
             {/* Row count footer */}
-            <div className="px-5 py-3 border-t border-border bg-cream/40">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-primary/40">
-                {contacts.length} {contacts.length === 1 ? 'message' : 'messages'} total
-              </p>
+            <div className="px-5 py-4 border-t border-border bg-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center justify-center bg-primary/10 text-primary font-mono text-xs font-bold px-2.5 py-1 rounded-md">
+                  {contacts.length}
+                </span>
+                <p className="font-mono text-xs uppercase tracking-wider text-primary/70 font-semibold">
+                  {contacts.length === 1 ? 'Message Total' : 'Messages Total'}
+                </p>
+              </div>
             </div>
           </motion.div>
         )}

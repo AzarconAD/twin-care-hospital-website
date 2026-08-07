@@ -399,6 +399,22 @@ export async function updateAppointmentStatus(id, status) {
 }
 
 /**
+ * markAppointmentAsRead(id)
+ * Marks an appointment request as read.
+ */
+export async function markAppointmentAsRead(id) {
+  const res = await fetch(`${API_BASE}/api/admin/appointments/${id}/read`, {
+    method: 'PATCH',
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to mark as read.')
+  }
+  return res.json()
+}
+
+/**
  * replyToAppointment(id, message)
  * Sends a reply email to an appointment request.
  */

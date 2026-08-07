@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { User, Mail, Calendar, Phone } from 'lucide-react'
-import { checkAdminSession, adminLogout, getAppointments, updateAppointmentStatus, getDoctors, replyToAppointment } from '../api/index.js'
+import { checkAdminSession, adminLogout, getAppointments, updateAppointmentStatus, getDoctors, replyToAppointment, markAppointmentAsRead } from '../api/index.js'
 import AdminHeader from '../components/admin/AdminHeader.jsx'
 import AppointmentReplyModal from '../components/admin/AppointmentReplyModal.jsx'
 
@@ -75,10 +75,21 @@ export default function AdminAppointments() {
     }
   }
 
-  const openModal = (appt) => {
+  const openModal = async (appt) => {
     setSelectedAppointment(appt)
     setReplyMessage('')
     setReplyStatus(null)
+
+    if (!appt.isRead) {
+      try {
+        await markAppointmentAsRead(appt._id)
+        setAppointments(prev => prev.map(a => 
+          a._id === appt._id ? { ...a, isRead: true } : a
+        ))
+      } catch (err) {
+        console.error('Failed to mark appointment as read:', err)
+      }
+    }
   }
 
   const closeModal = () => {
@@ -122,7 +133,7 @@ export default function AdminAppointments() {
   }
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-slate-100">
       <AdminHeader handleLogout={handleLogout} />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
@@ -154,9 +165,14 @@ export default function AdminAppointments() {
         )}
 
         {!loading && !error && appointments.length === 0 && (
-          <div className="text-center py-20 text-primary/40">
-            <Calendar size={36} className="mx-auto mb-3 opacity-40" />
-            <p className="font-body text-sm">No appointment requests yet.</p>
+          <div className="flex flex-col items-center justify-center py-24 bg-white/40 border-2 border-dashed border-primary/20 rounded-2xl">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
+              <Calendar size={28} className="text-primary/40" />
+            </div>
+            <p className="font-display text-xl text-primary/80 mb-1">No appointments found</p>
+            <p className="font-body text-sm text-primary/50 text-center max-w-sm">
+              When patients request appointments, they will appear here.
+            </p>
           </div>
         )}
 
@@ -165,12 +181,12 @@ export default function AdminAppointments() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="bg-white border border-border rounded-2xl shadow-sm overflow-hidden"
+            className="bg-white border border-border rounded-2xl shadow-md overflow-hidden"
           >
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border bg-cream/60">
+                  <tr className="border-b border-border bg-primary/5">
                     <th className="text-left font-mono text-[10px] uppercase tracking-wider text-primary/50 px-5 py-3">
                       <span className="flex items-center gap-1.5"><User size={12} /> Name</span>
                     </th>
@@ -192,10 +208,13 @@ export default function AdminAppointments() {
                       <tr
                         key={appt._id}
                         onClick={() => openModal(appt)}
-                        className={`border-b border-border last:border-b-0 hover:bg-cream/40 transition-colors cursor-pointer ${i % 2 === 0 ? '' : 'bg-cream/20'}`}
+                        className="border-b border-border last:border-b-0 hover:bg-slate-50 transition-colors cursor-pointer bg-white"
                       >
-                        <td className="px-5 py-4 font-body text-ink font-medium whitespace-nowrap">
-                          {appt.patientName}
+                        <td className="px-5 py-4 font-body text-ink whitespace-nowrap">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-2 h-2 rounded-full shrink-0 mt-0.5 ${!appt.isRead ? 'bg-primary' : 'bg-transparent'}`} />
+                            <span className={!appt.isRead ? 'font-bold' : 'font-medium'}>{appt.patientName}</span>
+                          </div>
                         </td>
                         <td className="px-5 py-4 font-body text-primary/70 whitespace-nowrap">
                           {doc ? `${doc.name}` : 'Unknown Doctor'}
@@ -223,10 +242,15 @@ export default function AdminAppointments() {
               </table>
             </div>
 
-            <div className="px-5 py-3 border-t border-border bg-cream/40">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-primary/40">
-                {appointments.length} {appointments.length === 1 ? 'request' : 'requests'} total
-              </p>
+            <div className="px-5 py-4 border-t border-border bg-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center justify-center bg-primary/10 text-primary font-mono text-xs font-bold px-2.5 py-1 rounded-md">
+                  {appointments.length}
+                </span>
+                <p className="font-mono text-xs uppercase tracking-wider text-primary/70 font-semibold">
+                  {appointments.length === 1 ? 'Request Total' : 'Requests Total'}
+                </p>
+              </div>
             </div>
           </motion.div>
         )}

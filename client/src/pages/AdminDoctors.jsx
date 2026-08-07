@@ -210,7 +210,7 @@ export default function AdminDoctors() {
   }
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-slate-100">
       {/* Top bar */}
       <AdminHeader handleLogout={handleLogout} />
 
@@ -248,7 +248,7 @@ export default function AdminDoctors() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="bg-white border border-border rounded-2xl shadow-sm overflow-hidden p-6"
+            className="bg-white border border-border rounded-2xl shadow-md overflow-hidden p-6"
           >
             <div className="mb-6 flex flex-col sm:flex-row sm:items-end gap-4">
               <div className="flex-1">
@@ -284,7 +284,7 @@ export default function AdminDoctors() {
 
             {selectedDoctorId && (
               <div className="border border-border rounded-xl overflow-hidden">
-                <div className="flex items-center justify-between p-4 bg-cream/60 border-b border-border flex-wrap gap-4">
+                <div className="flex items-center justify-between p-4 bg-slate-100 border-b border-border flex-wrap gap-4">
                   <h3 className="font-display text-xl text-primary flex items-center gap-4">
                     <span>{MONTHS[month]} {year}</span>
                   </h3>
@@ -298,7 +298,7 @@ export default function AdminDoctors() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-7 bg-cream/30 border-b border-border">
+                <div className="grid grid-cols-7 bg-slate-200 border-b border-border">
                   {WEEKDAYS.map(day => (
                     <div key={day} className="py-3 text-center font-mono text-xs uppercase text-primary/60 font-semibold tracking-wider">
                       {day}
@@ -323,7 +323,7 @@ export default function AdminDoctors() {
                       <div 
                         key={day} 
                         onClick={() => handleDayClick(day)}
-                        className={`min-h-[80px] p-2 border-b border-r border-border/50 cursor-pointer transition-colors relative flex flex-col items-center justify-center gap-1 ${isAvailable ? 'bg-secondary/10 hover:bg-secondary/20' : 'bg-transparent hover:bg-cream'}`}
+                        className={`min-h-[80px] p-2 border-b border-r border-border/50 cursor-pointer transition-colors relative flex flex-col items-center justify-center gap-1 ${isAvailable ? 'bg-secondary/10 hover:bg-secondary/20' : 'bg-transparent hover:bg-slate-100'}`}
                       >
                         <span className={`font-mono text-sm w-7 h-7 flex items-center justify-center rounded-full ${isAvailable ? 'bg-secondary text-white' : 'text-primary/70'}`}>
                           {day}

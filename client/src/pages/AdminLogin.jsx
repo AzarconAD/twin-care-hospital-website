@@ -46,7 +46,7 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-cream bg-[url('/news-bg-pattern.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center px-4">
+    <div className="min-h-screen bg-slate-100 bg-[url('/news-bg-pattern.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}

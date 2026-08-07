@@ -10,6 +10,7 @@ const appointmentSchema = new mongoose.Schema(
     phone: { type: String, required: true, trim: true },
     notes: { type: String, trim: true, default: "" },
     status: { type: String, enum: ["pending", "confirmed", "cancelled"], default: "pending" },
+    isRead: { type: Boolean, default: false },
   },
   { timestamps: true }
 )
