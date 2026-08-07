@@ -31,7 +31,7 @@ export default function NewsSection({ news = [], loading = false, error = null, 
   const rest = featured ? news.filter((n) => n._id !== featured._id).slice(0, 3) : [];
 
   return (
-    <section id="news" className="relative w-full py-20 bg-white scroll-mt-8">
+    <section id="news" className="relative w-full py-20 bg-cream scroll-mt-8">
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
