@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, Clock, HeartHandshake, ChevronLeft, ChevronRight } from 'lucide-react';
 import Button from '../ui/Button';
 import { HeroBackgroundBlobs } from '../ui/BG-Decorations';
@@ -11,29 +11,22 @@ const trustPoints = [
   { icon: HeartHandshake, text: 'Compassionate Approach' },
 ];
 
+const heroImages = [
+  "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000&auto=format&fit=crop"
+];
+
 export default function Hero({ onImageClick, news = [], onSelectNews }) {
-  const [newsIndex, setNewsIndex] = useState(0);
+  const activeNews = news.length > 0 ? (news.find(n => n.featured) || news[0]) : null;
+  const [imageIndex, setImageIndex] = useState(0);
 
   useEffect(() => {
-    if (news.length > 0) {
-      const defaultIndex = news.findIndex((n) => n.featured);
-      setNewsIndex(defaultIndex >= 0 ? defaultIndex : 0);
-    }
-  }, [news]);
-
-  const handlePrev = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setNewsIndex((prev) => (prev === 0 ? news.length - 1 : prev - 1));
-  };
-
-  const handleNext = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setNewsIndex((prev) => (prev === news.length - 1 ? 0 : prev + 1));
-  };
-
-  const activeNews = news.length > 0 ? news[newsIndex] : null;
+    const interval = setInterval(() => {
+      setImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section
@@ -85,18 +78,26 @@ export default function Hero({ onImageClick, news = [], onSelectNews }) {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative h-64 sm:h-80 md:h-[400px] w-full"
         >
-          <div 
-            className="relative h-full w-full rounded-3xl overflow-hidden shadow-xl cursor-pointer group z-10 bg-[url('/news-bg-pattern.png')] bg-no-repeat bg-cover bg-center"
-            onClick={() => onImageClick?.(activeNews?.image || "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop")}
-          >
-            <motion.img
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              src={activeNews?.image || "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop"}
-              alt={activeNews?.title || "Modern hospital facility"}
-              className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-            />
+          <div className="main-container-wrapper h-full">
+            <div className="main-container h-full relative z-10 p-0">
+              <div 
+                className="relative h-full w-full rounded-[inherit] overflow-hidden shadow-xl cursor-pointer group"
+                onClick={() => onImageClick?.(heroImages[imageIndex])}
+              >
+                <AnimatePresence>
+                  <motion.img
+                    key={imageIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1 }}
+                    src={heroImages[imageIndex]}
+                    alt="Twin Care Hospital"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </AnimatePresence>
+              </div>
+            </div>
           </div>
 
           {/*
@@ -114,7 +115,7 @@ export default function Hero({ onImageClick, news = [], onSelectNews }) {
               animate={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ duration: 0.4 }}
-              className="absolute -bottom-12 left-4 sm:left-6 bg-white border border-border rounded-xl shadow-lg p-4 flex items-center gap-3 max-w-[75%] cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group z-20"
+              className="absolute -bottom-6 left-4 sm:left-6 bg-white border border-border rounded-xl shadow-lg p-4 flex items-center gap-3 max-w-[75%] cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all group z-20"
             >
               <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                 <HeartHandshake size={20} className="text-white" strokeWidth={1.75} />
@@ -131,26 +132,6 @@ export default function Hero({ onImageClick, news = [], onSelectNews }) {
                 </p>
               </div>
             </motion.a>
-          )}
-
-          {/* Carousel Navigation Arrows - Sides */}
-          {news.length > 1 && (
-            <>
-              <button 
-                onClick={handlePrev} 
-                className="absolute top-1/2 -left-6 sm:-left-10 lg:-left-14 -translate-y-1/2 bg-white hover:bg-cream border border-border rounded-full shadow-md flex items-center justify-center w-10 h-10 text-ink/70 hover:text-primary transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary z-20 group-hover/hero:opacity-100 sm:opacity-70 opacity-100"
-                aria-label="Previous news"
-              >
-                <ChevronLeft size={20} strokeWidth={2.5} className="-ml-0.5" />
-              </button>
-              <button 
-                onClick={handleNext} 
-                className="absolute top-1/2 -right-6 sm:-right-10 lg:-right-14 -translate-y-1/2 bg-white hover:bg-cream border border-border rounded-full shadow-md flex items-center justify-center w-10 h-10 text-ink/70 hover:text-primary transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary z-20 group-hover/hero:opacity-100 sm:opacity-70 opacity-100"
-                aria-label="Next news"
-              >
-                <ChevronRight size={20} strokeWidth={2.5} className="ml-0.5" />
-              </button>
-            </>
           )}
         </motion.div>
       </div>
