@@ -26,66 +26,7 @@ const ICON_MAP = {
   "specialist-clinics": BriefcaseMedical,
 };
 
-// "slug" is the future URL for each service's dedicated page (/services/:slug).
-// That page doesn't exist yet — these links will 404 until it's built. Keep
-// slugs stable once real service pages exist; changing one later breaks any
-// bookmarked/shared links.
-const defaultServices = [
-  {
-    slug: "emergency-room",
-    title: "Emergency Room",
-    text: "24/7 emergency care for critical and life-threatening conditions.",
-    photo: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=500&h=375",
-  },
-  {
-    slug: "trauma-critical-care",
-    title: "Trauma & Critical Care",
-    text: "A rapid-response team ready for high-acuity trauma cases at any hour.",
-    photo: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=500&h=375",
-  },
-  {
-    slug: "ambulance-transport",
-    title: "Ambulance & Transport",
-    text: "Round-the-clock ambulance dispatch for urgent patient transport.",
-    photo: "https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&w=500&h=375",
-  },
-  {
-    slug: "wellness-nutrition",
-    title: "Wellness & Nutrition",
-    text: "Personalized nutrition and lifestyle counseling for long-term health.",
-    photo: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=500&h=375",
-  },
-  {
-    slug: "vaccination-immunization",
-    title: "Vaccination & Immunization",
-    text: "Full immunization schedules and boosters for every age group.",
-    photo: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=500&h=375",
-  },
-  {
-    slug: "annual-checkups",
-    title: "Annual Checkups",
-    text: "Comprehensive physical exams designed to catch issues early.",
-    photo: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=500&h=375",
-  },
-  {
-    slug: "laboratory-services",
-    title: "Laboratory Services",
-    text: "Fast, accurate lab testing across a full range of diagnostics.",
-    photo: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=500&h=375",
-  },
-  {
-    slug: "imaging-radiology",
-    title: "Imaging & Radiology",
-    text: "On-site X-ray, ultrasound, and CT imaging with quick turnaround.",
-    photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=500&h=375",
-  },
-  {
-    slug: "specialist-clinics",
-    title: "Specialist Clinics",
-    text: "Cardiology, pediatrics, OB-GYN, and other specialist consultations.",
-    photo: "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=500&h=375",
-  },
-];
+
 
 const containerVariants = {
   hidden: {},
@@ -99,9 +40,9 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
-export default function ServicesSection({ services = defaultServices, onImageClick }) {
+export default function ServicesSection({ services, onImageClick }) {
   return (
-    <section id="services" className="w-full bg-cream py-20 relative overflow-hidden">
+    <section className="w-full bg-cream py-20 relative overflow-hidden">
       {/* Decorative background blobs */}
       <ServicesBackgroundBlobs />
       

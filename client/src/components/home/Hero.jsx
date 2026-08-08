@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Clock, HeartHandshake, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShieldCheck, Clock, HeartHandshake } from 'lucide-react';
 import Button from '../ui/Button';
 import { HeroBackgroundBlobs } from '../ui/BG-Decorations';
 
@@ -30,7 +30,6 @@ export default function Hero({ onImageClick, news = [], onSelectNews }) {
 
   return (
     <section
-      id="home"
       className="relative flex min-h-screen items-center py-16"
     >
       {/* Decorative background blobs — purely visual texture, sits behind everything */}
@@ -100,13 +99,7 @@ export default function Hero({ onImageClick, news = [], onSelectNews }) {
             </div>
           </div>
 
-          {/*
-            FLOATING HIGHLIGHT CARD — placeholder content for now.
-            This is deliberately the spot to swap in real hospital news later
-            (e.g. "New Pediatric Wing Now Open", "Free Checkup Week This March").
-            Keep the same position/size; just swap the icon, label, and text,
-            or replace the whole card with a small news carousel component.
-          */}
+
           {activeNews && (
             <motion.a
               href="#news"

@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
 
 
-// tagColor rotates through the existing brand colors — same functional-color
-// pattern used for Services/Doctors categories, just without a filter system
-// since news doesn't need one. Swap "image" paths once real photos exist.
+
 
 
 
