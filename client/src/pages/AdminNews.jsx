@@ -262,7 +262,7 @@ export default function AdminNews() {
               </table>
             </div>
 
-            <div className="px-5 py-4 border-t border-border bg-slate-200 flex items-center justify-between">
+            <div className="px-5 py-4 border-t border-border bg-white flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="flex items-center justify-center bg-primary/10 text-primary font-mono text-xs font-bold px-2.5 py-1 rounded-md">
                   {news.length}
